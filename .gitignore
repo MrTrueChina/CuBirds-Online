@@ -1,9 +1,11 @@
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-Assets/AssetStoreTools*
+# Unity 的文件，由于 git 库不是直接在 Unity 项目中需要添加 Unity 项目所在文件夹的路径
+Cubirds-Online-Frontend/[Ll]ibrary/
+Cubirds-Online-Frontend/[Tt]emp/
+Cubirds-Online-Frontend/[Oo]bj/
+Cubirds-Online-Frontend/[Bb]uild/
+Cubirds-Online-Frontend/[Bb]uilds/
+Cubirds-Online-Frontend/Assets/[Pp]lugins/
+Cubirds-Online-Frontend/Assets/AssetStoreTools*
 
 # Visual Studio cache directory
 .vs/
