@@ -6,3 +6,4 @@ Unity 前端
 
 ### 需要的资源（全部放入 Assets/Plugins）：
 1. DoTween 1.2.632，包括 DoTween 的 Resources 文件夹也放入 Plugins
+2. TextMeshPro 3.0.6
