@@ -45,7 +45,7 @@ public class CenterAreaLineController : MonoBehaviour
             Card card = Cards[i];
 
             // 计算卡牌距离中心点的偏移
-            float offset = (Cards.Count - 1) * -60 + i * 120;
+            float offset = (Cards.Count - 1) * -50 + i * 100;
 
             // 移动卡牌
             card.MoveTo(LinePosition.position - LinePosition.right * offset, 0.2f);
