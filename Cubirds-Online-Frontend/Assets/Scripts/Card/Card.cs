@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using DG.Tweening.Core;
+using DG.Tweening.Plugins.Options;
 
 /// <summary>
 /// 卡牌组件
@@ -76,6 +79,15 @@ public class Card : MonoBehaviour
     /// 组成大鸟群所需卡牌数量
     /// </summary>
     public int BigGroupNumber { get; private set; }
+
+    /// <summary>
+    /// 卡牌移动的补间动画
+    /// </summary>
+    private TweenerCore<Vector3, Vector3, VectorOptions> moveTween;
+    /// <summary>
+    /// 卡牌旋转的补间动画
+    /// </summary>
+    private TweenerCore<Quaternion, Quaternion, NoOptions> rotateTween;
 
     private void Awake()
     {
@@ -166,5 +178,55 @@ public class Card : MonoBehaviour
             // 隐藏种类角标
             typeImageComponent.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// 将这张卡片移动到指定位置
+    /// </summary>
+    /// <param name="targetPosition">要移动到的位置</param>
+    /// <param name="callBack">移动结束后的回调</param>
+    /// <param name="duration">移动时间</param>
+    public void MoveTo(Vector3 targetPosition, TweenCallback callBack = null, float duration = 0.5f)
+    {
+        // 取消正在进行的移动补间动画
+        if(moveTween != null)
+        {
+            moveTween.Kill();
+        }
+
+        // 使用 DOTween 进行移动并记录这个补间
+        moveTween = transform.DOMove(targetPosition, duration);
+
+        // 如果有回调则给补间动画添加回调
+        if(callBack != null)
+        {
+            moveTween.onComplete += callBack;
+        }
+    }
+    /// <summary>
+    /// 将这张卡片移动到指定位置
+    /// </summary>
+    /// <param name="targetPosition">要移动到的位置</param>
+    /// <param name="duration">移动时间</param>
+    public void MoveTo(Vector3 targetPosition, float duration)
+    {
+        MoveTo(targetPosition, null, duration);
+    }
+
+    /// <summary>
+    /// 将这张卡旋转到指定角度
+    /// </summary>
+    /// <param name="rotation"></param>
+    /// <param name="duration"></param>
+    public void RotateTo(Quaternion rotation, float duration = 0.5f)
+    {
+        // 取消正在进行的旋转补间动画
+        if (rotateTween != null)
+        {
+            rotateTween.Kill();
+        }
+
+        // 使用 DOTween 进行移动并记录这个补间
+        rotateTween = transform.DORotateQuaternion(rotation, duration);
     }
 }

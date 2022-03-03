@@ -57,6 +57,12 @@ public class GameController : MonoBehaviour
     [SerializeField]
     [Header("中央区行控制器")]
     private List<CenterAreaLineController> centerAreaLineControllers;
+    /// <summary>
+    /// 玩家位置列表
+    /// </summary>
+    [SerializeField]
+    [Header("玩家位置列表")]
+    private List<Transform> playerPositions;
 
     /// <summary>
     /// 卡牌预制
@@ -84,7 +90,28 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        // 生成所有玩家
+        for(int i = 0;i < playerPositions.Count; i++)
+        {
+            // 创建玩家物体
+            PlayerController player = new GameObject("Player " + i).AddComponent<PlayerController>();
+
+            // 初始化
+            player.Init(i, playerPositions[i], tableCanvas);
+
+            // 保存这个玩家
+            players.Add(player);
+        }
+
         // 通知牌组控制器初始化牌组
-        deckController.InitDeck();
+        deckController.InitDeck(() =>
+        {
+            Debug.Log("初始化卡组回调执行");
+
+            deckController.DealCards(() =>
+            {
+                Debug.Log("发牌回调执行");
+            });
+        });
     }
 }
