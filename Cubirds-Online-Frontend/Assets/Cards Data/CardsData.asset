@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e68014b3f736cc241a12173143ab0b46, type: 3}
+  m_Name: CardsData
+  m_EditorClassIdentifier: 
+  cardsData:
+  - name: "\u706B\u70C8\u9E1F"
+    cardType: 1
+    cardPicture: {fileID: 21300000, guid: 4ed62c397127b764eac325ee63a28d38, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: be0ec7e288ceb564fac2475e91a43cce, type: 3}
+    typeImage: {fileID: 21300000, guid: a2c293f0dc7a4584fa40d3bf941421e7, type: 3}
+    smallGroupNumber: 2
+    bigGroupNumber: 3
+    cardNumber: 7
+  - name: "\u732B\u5934\u9E70"
+    cardType: 2
+    cardPicture: {fileID: 21300000, guid: b7a8c61e103ad454b8ff2b089920710d, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: ba5be5de7ae93224e992db99cd345707, type: 3}
+    typeImage: {fileID: 21300000, guid: dbd2fdd8e8984bd4eb0f40bb5232a08f, type: 3}
+    smallGroupNumber: 3
+    bigGroupNumber: 4
+    cardNumber: 10
+  - name: "\u5DE8\u5634\u9E1F"
+    cardType: 3
+    cardPicture: {fileID: 21300000, guid: 9f43974176b9e2f418e0bfbdba6645ae, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: accd276000d080b41bac09a59a8c7757, type: 3}
+    typeImage: {fileID: 21300000, guid: ca7085d469b176942859c8f810c08a6b, type: 3}
+    smallGroupNumber: 3
+    bigGroupNumber: 4
+    cardNumber: 10
+  - name: "\u7EFF\u5934\u9E2D"
+    cardType: 4
+    cardPicture: {fileID: 21300000, guid: 0b7e408f74eb48c4cb05a7f76bd74fc9, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: dad1561c6a736e24293ef38d57b4bd1d, type: 3}
+    typeImage: {fileID: 21300000, guid: 90eb0edb67671924b9b41dc0a3c7c90d, type: 3}
+    smallGroupNumber: 4
+    bigGroupNumber: 6
+    cardNumber: 13
+  - name: "\u91D1\u521A\u9E66\u9E49"
+    cardType: 5
+    cardPicture: {fileID: 21300000, guid: 44bc6b22cf51ed945908e6ce718016df, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: c35232e476db47441b79148d7edd2bd0, type: 3}
+    typeImage: {fileID: 21300000, guid: 809a363d47aaada46aabda0606a30f84, type: 3}
+    smallGroupNumber: 4
+    bigGroupNumber: 6
+    cardNumber: 13
+  - name: "\u559C\u9E4A"
+    cardType: 6
+    cardPicture: {fileID: 21300000, guid: f6029596c90f84247a0f12ba588559be, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: c00d63e5b3934354baa57ff698d7e3e0, type: 3}
+    typeImage: {fileID: 21300000, guid: 6af48dcbc22424f4f87602c0e36acb1e, type: 3}
+    smallGroupNumber: 5
+    bigGroupNumber: 7
+    cardNumber: 17
+  - name: "\u4E1C\u65B9\u6728\u76AE\u5A01"
+    cardType: 7
+    cardPicture: {fileID: 21300000, guid: 398a6ee5846b1c24fbb0a3def35952b3, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: 769e8470922aa1147b7985299049d8b9, type: 3}
+    typeImage: {fileID: 21300000, guid: 57ef0eea0b5da5b409cf2b8c3498739b, type: 3}
+    smallGroupNumber: 6
+    bigGroupNumber: 9
+    cardNumber: 20
+  - name: "\u77E5\u66F4\u9E1F"
+    cardType: 8
+    cardPicture: {fileID: 21300000, guid: 6e8d313ba06ebf74ba44f855e0af9a9d, type: 3}
+    groupNumberImage: {fileID: 21300000, guid: d38b155ee96f1654cb7adf089bac1e09, type: 3}
+    typeImage: {fileID: 21300000, guid: 4e97ce6c9579e3c4d8dcdc11afafc68f, type: 3}
+    smallGroupNumber: 6
+    bigGroupNumber: 9
+    cardNumber: 20

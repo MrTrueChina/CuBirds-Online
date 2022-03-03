@@ -65,6 +65,13 @@ public class GameController : MonoBehaviour
     [SerializeField]
     [Header("卡牌预制")]
     private GameObject cardPrefab;
+    /// <summary>
+    /// 卡组数据
+    /// </summary>
+    public CardsData CardsData { get { return cardsData; } }
+    [SerializeField]
+    [Header("卡牌数据")]
+    private CardsData cardsData;
 
     /// <summary>
     /// 所有玩家

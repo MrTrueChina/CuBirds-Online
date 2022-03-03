@@ -53,11 +53,16 @@ public class Card : MonoBehaviour
     private Sprite groupNumberImage;
 
     /// <summary>
-    /// 鸟类图片
+    /// 鸟类角标图片
     /// </summary>
     [SerializeField]
-    [Header("鸟类图片")]
+    [Header("鸟类角标图片")]
     private Sprite typeImage;
+
+    /// <summary>
+    /// 这张牌的 ID
+    /// </summary>
+    public int Id { get; private set; }
 
     /// <summary>
     /// 鸟类
@@ -97,6 +102,34 @@ public class Card : MonoBehaviour
         {
             typeImageComponent.sprite = typeImage;
         }
+    }
+
+    /// <summary>
+    /// 初始化卡牌
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="cardData"></param>
+    public void InitData(int id, CardData cardData)
+    {
+        // ID
+        Id = id;
+
+        // 卡图
+        cardPicture = cardData.cardPicture;
+        cardPictureComponent.sprite = cardPicture;
+        // 组群数量角标图片
+        groupNumberImage = cardData.groupNumberImage;
+        groupNumberImageComponent.sprite = groupNumberImage;
+        // 鸟类角标图片
+        typeImage = cardData.typeImage;
+        typeImageComponent.sprite = typeImage;
+
+        // 鸟类
+        CardType = cardData.cardType;
+        // 组成小鸟群需要的数量
+        SmallGroupNumber = cardData.smallGroupNumber;
+        // 组成大鸟群需要的数量
+        BigGroupNumber = cardData.bigGroupNumber;
     }
 
     /// <summary>
