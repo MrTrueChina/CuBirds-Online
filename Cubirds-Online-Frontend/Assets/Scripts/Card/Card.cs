@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 卡牌组件
 /// </summary>
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, IPointerClickHandler
 {
     /// <summary>
     /// 卡牌主画布
@@ -274,5 +275,13 @@ public class Card : MonoBehaviour
 
         // 使用 DOTween 进行移动并记录这个补间
         rotateTween = transform.DORotateQuaternion(rotation, duration);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.LogFormat("点击卡牌 {0} {1}", CardType, Id);
+
+        // 设为已使用
+        eventData.Use();
     }
 }

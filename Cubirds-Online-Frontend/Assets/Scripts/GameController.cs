@@ -151,4 +151,42 @@ public class GameController : MonoBehaviour
             });
         });
     }
+
+    /// <summary>
+    /// 单个玩家的回合
+    /// </summary>
+    private void PlayerTurn()
+    {
+        // 打出牌
+
+        // 组群
+        
+        // 对空手的判断
+
+        // 下一回合
+    }
+
+    /// <summary>
+    /// 打牌阶段
+    /// </summary>
+    private void PlayBirdCards()
+    {
+
+    }
+
+    /// <summary>
+    /// 组群阶段
+    /// </summary>
+    private void MakeGroup()
+    {
+
+    }
+
+    /// <summary>
+    /// 空手判断阶段
+    /// </summary>
+    private void EmptyHandCheck()
+    {
+
+    }
 }
