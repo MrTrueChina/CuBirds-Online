@@ -42,18 +42,21 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 卡组控制器
     /// </summary>
+    public DeckController DeckController { get { return deckController; } }
     [SerializeField]
     [Header("卡组控制器")]
     private DeckController deckController;
     /// <summary>
     /// 弃牌堆控制器
     /// </summary>
+    public DiscardCardsController DiscardCardsController { get { return discardCardsController; } }
     [SerializeField]
     [Header("弃牌堆控制器")]
     private DiscardCardsController discardCardsController;
     /// <summary>
     /// 中央区行控制器
     /// </summary>
+    public List<CenterAreaLineController> CenterAreaLineControllers { get { return centerAreaLineControllers; } }
     [SerializeField]
     [Header("中央区行控制器")]
     private List<CenterAreaLineController> centerAreaLineControllers;
@@ -97,20 +100,35 @@ public class GameController : MonoBehaviour
             PlayerController player = new GameObject("Player " + i).AddComponent<PlayerController>();
 
             // 初始化
-            player.Init(i, playerPositions[i], tableCanvas);
+            player.Init(i, playerPositions[i], TableCanvas);
 
             // 保存这个玩家
             players.Add(player);
         }
 
         // 通知牌组控制器初始化牌组
-        deckController.InitDeck(() =>
+        DeckController.InitDeck(() =>
         {
             Debug.Log("初始化卡组回调执行");
 
-            deckController.DealCards(() =>
+            DeckController.FillCenterArea(() =>
             {
-                Debug.Log("发牌回调执行");
+                Debug.Log("填充中央区回调执行");
+
+                DiscardCardsController.BackToDeck(() =>
+                {
+                    Debug.Log("弃牌区返回卡组回调执行");
+
+                    DeckController.Shuffle(() =>
+                    {
+                        Debug.Log("洗牌回调执行");
+
+                        DeckController.DealCards(() =>
+                        {
+                            Debug.Log("发牌回调执行");
+                        });
+                    });
+                });
             });
         });
     }

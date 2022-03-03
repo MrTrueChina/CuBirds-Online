@@ -184,9 +184,9 @@ public class Card : MonoBehaviour
     /// 将这张卡片移动到指定位置
     /// </summary>
     /// <param name="targetPosition">要移动到的位置</param>
-    /// <param name="callBack">移动结束后的回调</param>
     /// <param name="duration">移动时间</param>
-    public void MoveTo(Vector3 targetPosition, TweenCallback callBack = null, float duration = 0.5f)
+    /// <param name="callBack">移动结束后的回调</param>
+    public void MoveTo(Vector3 targetPosition, float duration = 0.5f, TweenCallback callBack = null)
     {
         // 取消正在进行的移动补间动画
         if(moveTween != null)
@@ -207,10 +207,10 @@ public class Card : MonoBehaviour
     /// 将这张卡片移动到指定位置
     /// </summary>
     /// <param name="targetPosition">要移动到的位置</param>
-    /// <param name="duration">移动时间</param>
-    public void MoveTo(Vector3 targetPosition, float duration)
+    /// <param name="callBack">移动结束后的回调</param>
+    public void MoveTo(Vector3 targetPosition, TweenCallback callBack = null)
     {
-        MoveTo(targetPosition, null, duration);
+        MoveTo(targetPosition, 0.5f, callBack);
     }
 
     /// <summary>

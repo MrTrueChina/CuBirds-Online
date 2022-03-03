@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,6 +13,7 @@ public class DeckController : MonoBehaviour
     /// <summary>
     /// 卡组位置
     /// </summary>
+    public Transform DeckPosition { get { return deckPosition; } }
     [SerializeField]
     [Header("卡组位置")]
     private Transform deckPosition;
@@ -72,7 +74,7 @@ public class DeckController : MonoBehaviour
     /// 洗牌
     /// </summary>
     /// <param name="callBack">洗完牌后的回调</param>
-    private void Shuffle(Action callBack)
+    public void Shuffle(Action callBack)
     {
         // 洗牌
         List<Card> shuffledCards = new List<Card>();
@@ -97,6 +99,29 @@ public class DeckController : MonoBehaviour
     }
 
     /// <summary>
+    /// 将卡牌放入卡组
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    public void TakeCard(Card card, Action callback = null)
+    {
+        // 把卡扣过来
+        card.SetOpen(false);
+
+        // 把卡片添加到列表里
+        cards.Add(card);
+
+        // 把卡片移动到顶层
+        card.MoveTo(deckPosition.position + Vector3.up * cards.Count, 0.2f);
+
+        // 执行回调
+        if(callback != null)
+        {
+            callback.Invoke();
+        }
+    }
+
+    /// <summary>
     /// 按照卡牌列表显示卡组
     /// </summary>
     private void DisplayeDeck()
@@ -106,10 +131,99 @@ public class DeckController : MonoBehaviour
         {
             Card card = cards[i];
             // 设置卡牌位置，越靠后越高
-            card.transform.position = deckPosition.position + (Vector3.up * i);
+            card.MoveTo(DeckPosition.position + (Vector3.up * i), 0.1f);
             // 设置卡牌显示次序，越靠后越靠前
             card.SetDisplaySort(i);
         }
+    }
+
+    /// <summary>
+    /// 开场时填充中央区的方法
+    /// </summary>
+    /// <param name="callback"></param>
+    public void FillCenterArea(Action callback)
+    {
+        // 让协程进行填充
+        StartCoroutine(nameof(FillCenterAreaCoroutine), callback);
+    }
+    /// <summary>
+    /// 开场时填充中央区的协程
+    /// </summary>
+    private IEnumerator FillCenterAreaCoroutine(Action callback)
+    {
+        // 获取中央区行的控制器，并创建一个字典以记录发出的牌的数量
+        List<CenterAreaLineController> lines = GameController.Instance.CenterAreaLineControllers;
+
+        // 有卡片正在发送
+        bool cardSending = false;
+
+        // 填充完毕的中央行会移除，一直循环到所有中央行都填充完毕
+        while (lines.Count > 0)
+        {
+            // 获取牌库顶的卡
+            Card targetCard = cards.FindLast(c => true);
+
+            // 从卡组中移除这张卡
+            cards.Remove(targetCard);
+
+            // 记录有卡牌正在发送
+            cardSending = true;
+
+            // 翻开
+            targetCard.SetOpen(true);
+
+            // 查找可以放入的中央行
+            CenterAreaLineController targetLine = lines.Find(line =>
+                // 如果这一行里没有类型和翻开的卡同类的卡，则这张卡可以放入这一行
+                line.Cards.Find(lineCard => Equals(lineCard.CardType, targetCard.CardType)) == null
+            );
+
+            if (targetLine != null)
+            {
+                // 成功找到可以放入的中央行
+
+                // 将牌移动到行的位置
+                targetCard.MoveTo(targetLine.LinePosition.position, 0.3f, () =>
+                {
+                    // 到位置后通知行放下卡
+                    targetLine.PutCard(targetCard, true, () =>
+                    {
+                        // 当这一行达到 3 张卡时，这一行已填满，移除这一行
+                        if(targetLine.Cards.Count >= 3)
+                        {
+                            lines.Remove(targetLine);
+                        }
+
+                        // 记录没有卡牌正在发送
+                        cardSending = false;
+                    });
+                });
+            }
+            else
+            {
+                // 没找到可以放入的中央行
+
+                // 把牌移动到弃牌区的位置
+                targetCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), 0.3f, () =>
+                {
+                    // 把牌扔进弃牌区
+                    GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
+                    {
+                        // 记录没有卡牌正在发送
+                        cardSending = false;
+                    });
+                });
+            }
+
+            // 等待正在发送的卡片发送完毕再进行下一张卡的发送
+            yield return new WaitUntil(() => !cardSending);
+        }
+
+        // 等所有发出的牌都接收到
+        yield return new WaitUntil(() => !cardSending);
+
+        // 执行回调
+        callback.Invoke();
     }
 
     /// <summary>
@@ -119,9 +233,8 @@ public class DeckController : MonoBehaviour
     public void DealCards(Action callback)
     {
         // 让协程进行发牌
-        StartCoroutine("DealCardsCoroutine", callback);
+        StartCoroutine(nameof(DealCardsCoroutine), callback);
     }
-
     /// <summary>
     /// 给所有玩家发牌的协程
     /// </summary>

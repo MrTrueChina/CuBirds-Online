@@ -7680,6 +7680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   discardCardsPosition: {fileID: 2013784036}
+  discardOffsetRange: {x: 10, y: 10, z: 0}
 --- !u!4 &1605392423
 Transform:
   m_ObjectHideFlags: 0
