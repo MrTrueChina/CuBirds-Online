@@ -31,7 +31,7 @@ public class DeckController : MonoBehaviour
         GameController.Instance.CardsData.cardsData.ForEach(cardData =>
         {
             // 生成对应数量的牌
-            for(int i = 0;i < cardData.cardNumber; i++)
+            for (int i = 0; i < cardData.cardNumber; i++)
             {
                 // id 计数器前进
                 id++;
@@ -51,9 +51,16 @@ public class DeckController : MonoBehaviour
         });
 
         // 洗牌
+        Shuffle();
+    }
+
+    // 洗牌
+    private void Shuffle()
+    {
+        // 洗牌
         List<Card> shuffledCards = new List<Card>();
         // 循环直到旧牌堆的牌都洗进新牌堆
-        while(cards.Count > 0)
+        while (cards.Count > 0)
         {
             // 随机一个索引
             int cardIndex = Random.Range(0, cards.Count);
@@ -65,8 +72,17 @@ public class DeckController : MonoBehaviour
         // 洗牌后的牌堆设为牌堆
         cards = shuffledCards;
 
+        // 洗牌后更新卡组的显示
+        DisplayeDeck();
+    }
+
+    /// <summary>
+    /// 按照卡牌列表显示卡组
+    /// </summary>
+    private void DisplayeDeck()
+    {
         // 调整卡牌位置和显示顺序
-        for (int i = 0;i < cards.Count; i++)
+        for (int i = 0; i < cards.Count; i++)
         {
             Card card = cards[i];
             // 设置卡牌位置，越靠后越高
