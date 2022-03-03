@@ -231,7 +231,6 @@ public class Card : MonoBehaviour
                 callBack.Invoke();
             }
         };
-
     }
     /// <summary>
     /// 将这张卡片移动到指定位置
