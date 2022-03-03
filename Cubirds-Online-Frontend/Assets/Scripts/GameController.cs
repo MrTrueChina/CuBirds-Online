@@ -102,7 +102,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void StartGame()
     {
-
         // 生成所有玩家
         for (int i = 0; i < playerPositions.Count; i++)
         {
