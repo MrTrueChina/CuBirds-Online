@@ -88,6 +88,10 @@ public class Card : MonoBehaviour
     /// 卡牌旋转的补间动画
     /// </summary>
     private TweenerCore<Quaternion, Quaternion, NoOptions> rotateTween;
+    /// <summary>
+    /// 保存显示顺序的字段
+    /// </summary>
+    private int displaySort;
 
     private void Awake()
     {
@@ -147,11 +151,26 @@ public class Card : MonoBehaviour
     /// <summary>
     /// 设置卡牌显示次序
     /// </summary>
-    /// <param name="i"></param>
-    public void SetDisplaySort(int i)
+    /// <param name="sort"></param>
+    public void SetDisplaySort(int sort)
     {
+        // 记录下来
+        displaySort = sort;
+
+        // 设置显示次序
+        SetTempDisplaySort(displaySort);
+    }
+
+    /// <summary>
+    /// 设置卡牌显示次序，但是不保存显示次序
+    /// </summary>
+    /// <param name="sort"></param>
+    private void SetTempDisplaySort(int sort)
+    {
+        // 画布改为覆盖显示顺序
         mainCanvas.overrideSorting = true;
-        mainCanvas.sortingOrder = i;
+        // 设置显示顺序
+        mainCanvas.sortingOrder = sort;
     }
 
     /// <summary>
@@ -186,7 +205,7 @@ public class Card : MonoBehaviour
     /// <param name="targetPosition">要移动到的位置</param>
     /// <param name="duration">移动时间</param>
     /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, float duration = 0.5f, TweenCallback callBack = null)
+    public void MoveTo(Vector3 targetPosition, float duration = 0.5f, Action callBack = null)
     {
         // 取消正在进行的移动补间动画
         if(moveTween != null)
@@ -194,21 +213,32 @@ public class Card : MonoBehaviour
             moveTween.Kill();
         }
 
+        // 设置一个极高的显示顺序，防止卡牌移动的时候被放在桌子上的卡挡住
+        SetTempDisplaySort(1000);
+
         // 使用 DOTween 进行移动并记录这个补间
         moveTween = transform.DOMove(targetPosition, duration);
 
-        // 如果有回调则给补间动画添加回调
-        if(callBack != null)
+        // 添加回调
+        moveTween.onComplete += () =>
         {
-            moveTween.onComplete += callBack;
-        }
+            // 恢复原来的显示顺序
+            SetDisplaySort(displaySort);
+
+            // 如果有传入的回调则执行
+            if (callBack != null)
+            {
+                callBack.Invoke();
+            }
+        };
+
     }
     /// <summary>
     /// 将这张卡片移动到指定位置
     /// </summary>
     /// <param name="targetPosition">要移动到的位置</param>
     /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, TweenCallback callBack = null)
+    public void MoveTo(Vector3 targetPosition, Action callBack = null)
     {
         MoveTo(targetPosition, 0.5f, callBack);
     }
