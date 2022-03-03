@@ -161,7 +161,7 @@ public class DeckController : MonoBehaviour
         while (lines.Count > 0)
         {
             // 获取牌库顶的卡
-            Card targetCard = cards.FindLast(c => true);
+            Card targetCard = cards.Last();
 
             // 从卡组中移除这张卡
             cards.Remove(targetCard);
@@ -262,7 +262,7 @@ public class DeckController : MonoBehaviour
                 yield return new WaitUntil(() => Time.time - lastSendCardTime >= sendCardInterval);
 
                 // 获取最后一张卡
-                Card card = cards.FindLast((c) => true);
+                Card card = cards.Last();
 
                 // 从卡组中移除这张卡
                 cards.Remove(card);
@@ -277,7 +277,7 @@ public class DeckController : MonoBehaviour
                 card.MoveTo(player.transform.position, () =>
                 {
                     // 移动完成时通知玩家拿走这张卡
-                    player.TakeCard(card, () =>
+                    player.TakeHandCard(card, () =>
                     {
                         // 玩家拿走卡后完成发送的卡的计数器增加
                         takedCardNumber++;
@@ -291,6 +291,61 @@ public class DeckController : MonoBehaviour
 
         // 等待所有卡牌都送到
         yield return new WaitUntil(() => takedCardNumber == sendedCardNumber);
+
+        // 执行回调
+        callback.Invoke();
+    }
+
+    /// <summary>
+    /// 给每个玩家一个初始鸟群
+    /// </summary>
+    /// <param name="callback"></param>
+    public void GivePlayersStartGroup(Action callback)
+    {
+        // 交给协程进行
+        StartCoroutine(nameof(GivePlayersStartGroupCoroutine), callback);
+    }
+    /// <summary>
+    /// 给每个玩家一个初始鸟群的协程
+    /// </summary>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    private IEnumerator GivePlayersStartGroupCoroutine(Action callback)
+    {
+        // 是否有卡在转移的标志变量
+        bool cardSending = false;
+
+        // 遍历每一个玩家
+        foreach (PlayerController player in GameController.Instance.players)
+        {
+            // 获取牌库顶的卡
+            Card card = cards.Last();
+
+            // 改为有卡在转移
+            cardSending = true;
+
+            // 翻到正面
+            card.SetOpen(true);
+
+            // 从牌库里移除
+            cards.Remove(card);
+
+            // 把卡牌转到玩家的角度
+            card.RotateTo(player.transform.rotation);
+            // 移动到玩家的位置
+            card.MoveTo(player.transform.position, () =>
+            {
+                // 到玩家的位置后交给玩家
+                player.TakeGroupCard(card, () =>
+                {
+                    // 玩家拿到卡后改为没有卡在转移
+                    cardSending = false;
+                });
+            });
+
+            // 等到卡牌转移完毕
+            yield return new WaitUntil(() => !cardSending);
+        }
 
         // 执行回调
         callback.Invoke();

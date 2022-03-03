@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// 玩家控制器
@@ -53,7 +54,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback">获取卡牌后的回调</param>
-    public void TakeCard(Card card, Action callback)
+    public void TakeHandCard(Card card, Action callback)
     {
         //Debug.LogFormat("玩家 {0} 获取卡牌 {1} {2}", Id, card.Id, card.CardType);
 
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour
         card.SetOpen(true);
 
         // 显示手牌
-        DisplayCards();
+        DisplayHandCards();
 
         // 执行回调
         callback.Invoke();
@@ -73,7 +74,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 显示手牌
     /// </summary>
-    private void DisplayCards()
+    private void DisplayHandCards()
     {
         // 玩家可能空手，此时不进行显示手牌的操作
         if(handCards.Count == 0)
@@ -97,6 +98,75 @@ public class PlayerController : MonoBehaviour
 
             // 移动卡牌
             card.MoveTo(transform.position - transform.right * offset, 0.2f);
+        }
+    }
+
+    /// <summary>
+    /// 获取鸟群卡
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    public void TakeGroupCard(Card card, Action callback = null)
+    {
+        // 添加到鸟群卡列表中
+        groupCards.Add(card);
+
+        // 显示鸟群卡
+        DisplayGroupCards(callback);
+    }
+
+    /// <summary>
+    /// 显示鸟群卡
+    /// </summary>
+    /// <param name="callback"></param>
+    private void DisplayGroupCards(Action callback = null)
+    {
+        // 将鸟群卡进行排序
+        groupCards.Sort((a, b) => (int)b.CardType - (int)a.CardType);
+
+        // 提取出现有的鸟群卡的种类列表
+        List<CardType> cardTypes = groupCards.Select(c => c.CardType).Distinct().ToList();
+
+        // 转化出鸟类卡种类对应的横轴偏移量映射表
+        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -60f) + (cardTypes.IndexOf(t) * 120));
+
+        // 同种类的卡出现了多少次的计数器
+        int typeNumber = 0;
+        // 记录上一张卡的种类
+        CardType lastType = groupCards.First().CardType;
+
+        // 遍历卡
+        groupCards.ForEach(card =>
+        {
+            // 如果这张卡的种类和上一张卡的种类不同，清空同种卡出现次数计数，记录新的种类
+            if (card.CardType != lastType)
+            {
+                lastType = card.CardType;
+                typeNumber = 0;
+            }
+
+            // 水平偏移量
+            float horizontalOffset = typeToOffset[card.CardType];
+            // 垂直偏移量，鸟群卡整体向上偏移，之后每张同类牌向上多偏移一点
+            float verticalOffset = 140 + typeNumber * 40;
+
+            // 移动卡牌
+            card.MoveTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, 0.1f);
+
+            // 每遍历一张，这个种类的计数器增加
+            typeNumber++;
+        });
+
+        // 设置显示顺序
+        for(int i = 0; i < groupCards.Count; i++)
+        {
+            // 越靠后的显示顺序越高，因为同类的卡的显示效果是最下面那张完全显示
+            groupCards[i].SetDisplaySort(groupCards.Count - i);
+        }
+
+        if(callback != null)
+        {
+            callback.Invoke();
         }
     }
 }

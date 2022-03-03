@@ -93,8 +93,18 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        // 开始游戏
+        StartGame();
+    }
+
+    /// <summary>
+    /// 开始游戏
+    /// </summary>
+    private void StartGame()
+    {
+
         // 生成所有玩家
-        for(int i = 0;i < playerPositions.Count; i++)
+        for (int i = 0; i < playerPositions.Count; i++)
         {
             // 创建玩家物体
             PlayerController player = new GameObject("Player " + i).AddComponent<PlayerController>();
@@ -111,21 +121,31 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("初始化卡组回调执行");
 
+            // 向中央区摆放 3*4 的卡牌矩阵作为开局基础
             DeckController.FillCenterArea(() =>
             {
                 Debug.Log("填充中央区回调执行");
 
+                // 把摆放矩阵期间弃掉的牌收回主卡组
                 DiscardCardsController.BackToDeck(() =>
                 {
                     Debug.Log("弃牌区返回卡组回调执行");
 
+                    // 弃掉的牌收回主卡组后洗牌
                     DeckController.Shuffle(() =>
                     {
                         Debug.Log("洗牌回调执行");
 
+                        // 发牌给所有玩家
                         DeckController.DealCards(() =>
                         {
                             Debug.Log("发牌回调执行");
+
+                            // 给每个玩家发一个鸟群卡
+                            DeckController.GivePlayersStartGroup(() =>
+                            {
+                                Debug.Log("发出初始鸟群卡回调执行");
+                            });
                         });
                     });
                 });
