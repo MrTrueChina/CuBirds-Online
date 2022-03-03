@@ -131,7 +131,7 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 0
+  m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
@@ -189,9 +189,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d0b8aa24cbb41641a5332264e895d8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainCanvas: {fileID: 7927194787866553131}
   cardPictureComponent: {fileID: 7927194788235559640}
   groupNumberImageComponent: {fileID: 7927194787291134471}
   typeImageComponent: {fileID: 7927194788018090535}
+  cardBack: {fileID: 21300000, guid: 27529ff235fda3b41b1b4bec8238aad5, type: 3}
   cardPicture: {fileID: 21300000, guid: 4ed62c397127b764eac325ee63a28d38, type: 3}
   groupNumberImage: {fileID: 21300000, guid: be0ec7e288ceb564fac2475e91a43cce, type: 3}
   typeImage: {fileID: 21300000, guid: a2c293f0dc7a4584fa40d3bf941421e7, type: 3}
