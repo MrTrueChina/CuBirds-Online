@@ -765,6 +765,8 @@ Transform:
   - {fileID: 2122627359}
   - {fileID: 1109013409}
   - {fileID: 943177445}
+  - {fileID: 702007447}
+  - {fileID: 1751496431}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2316,6 +2318,7 @@ GameObject:
   - component: {fileID: 527173919}
   - component: {fileID: 527173918}
   - component: {fileID: 527173917}
+  - component: {fileID: 527173920}
   m_Layer: 5
   m_Name: Line 3 Right Button
   m_TagString: Untagged
@@ -2330,12 +2333,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527173915}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1322304961}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2385,7 +2388,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 527173918}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 527173920}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &527173918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2424,6 +2439,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 527173915}
   m_CullTransparentMesh: 0
+--- !u!114 &527173920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 527173915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 2
+  isLeft: 0
 --- !u!1 &551674179
 GameObject:
   m_ObjectHideFlags: 0
@@ -2436,6 +2466,7 @@ GameObject:
   - component: {fileID: 551674183}
   - component: {fileID: 551674182}
   - component: {fileID: 551674181}
+  - component: {fileID: 551674184}
   m_Layer: 5
   m_Name: Line 2 Left Button
   m_TagString: Untagged
@@ -2450,12 +2481,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551674179}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1778364615}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2505,7 +2536,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 551674182}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 551674184}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &551674182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2544,6 +2587,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551674179}
   m_CullTransparentMesh: 0
+--- !u!114 &551674184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551674179}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 1
+  isLeft: 1
 --- !u!1 &551971481
 GameObject:
   m_ObjectHideFlags: 0
@@ -2710,6 +2768,7 @@ GameObject:
   - component: {fileID: 568747958}
   - component: {fileID: 568747957}
   - component: {fileID: 568747956}
+  - component: {fileID: 568747959}
   m_Layer: 5
   m_Name: Line 1 Right Button
   m_TagString: Untagged
@@ -2724,12 +2783,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 568747954}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 551971482}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2779,7 +2838,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 568747957}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 568747959}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &568747957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2818,6 +2889,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 568747954}
   m_CullTransparentMesh: 0
+--- !u!114 &568747959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 568747954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 0
+  isLeft: 0
 --- !u!1 &572959968
 GameObject:
   m_ObjectHideFlags: 0
@@ -3798,6 +3884,112 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 650011052}
   m_CullTransparentMesh: 0
+--- !u!1 &654779363
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 654779364}
+  - component: {fileID: 654779367}
+  - component: {fileID: 654779366}
+  - component: {fileID: 654779365}
+  m_Layer: 5
+  m_Name: Put Card Buttons Canvas
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &654779364
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654779363}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1440645398}
+  - {fileID: 568747955}
+  - {fileID: 551674180}
+  - {fileID: 672129606}
+  - {fileID: 1898859151}
+  - {fileID: 527173916}
+  - {fileID: 1577341369}
+  - {fileID: 736149592}
+  m_Father: {fileID: 1959123039}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &654779365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654779363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+--- !u!114 &654779366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654779363}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_UiScaleMode: 0
+  m_ReferencePixelsPerUnit: 100
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 800, y: 600}
+  m_ScreenMatchMode: 0
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+--- !u!223 &654779367
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 654779363}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 0
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &672129605
 GameObject:
   m_ObjectHideFlags: 0
@@ -3810,6 +4002,7 @@ GameObject:
   - component: {fileID: 672129609}
   - component: {fileID: 672129608}
   - component: {fileID: 672129607}
+  - component: {fileID: 672129610}
   m_Layer: 5
   m_Name: Line 2 Right Button
   m_TagString: Untagged
@@ -3824,12 +4017,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 672129605}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 148134242}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -3879,7 +4072,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 672129608}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 672129610}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &672129608
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3918,6 +4123,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 672129605}
   m_CullTransparentMesh: 0
+--- !u!114 &672129610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672129605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 1
+  isLeft: 0
 --- !u!1 &673877695
 GameObject:
   m_ObjectHideFlags: 0
@@ -4068,6 +4288,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 692478365}
   m_CullTransparentMesh: 0
+--- !u!1 &702007446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 702007447}
+  - component: {fileID: 702007448}
+  m_Layer: 0
+  m_Name: Input Controller
+  m_TagString: InputController
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &702007447
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702007446}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 139098543}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &702007448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702007446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e1f2f930d6dcf44b94f109fd5ae47c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &712110174
 GameObject:
   m_ObjectHideFlags: 0
@@ -4230,6 +4493,7 @@ GameObject:
   - component: {fileID: 736149595}
   - component: {fileID: 736149594}
   - component: {fileID: 736149593}
+  - component: {fileID: 736149596}
   m_Layer: 5
   m_Name: Line 4 Right Button
   m_TagString: Untagged
@@ -4244,12 +4508,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736149591}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 583209346}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -4299,7 +4563,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 736149594}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 736149596}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &736149594
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4338,6 +4614,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736149591}
   m_CullTransparentMesh: 0
+--- !u!114 &736149596
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736149591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 3
+  isLeft: 0
 --- !u!1 &739531857
 GameObject:
   m_ObjectHideFlags: 0
@@ -8001,6 +8292,7 @@ GameObject:
   - component: {fileID: 1440645401}
   - component: {fileID: 1440645400}
   - component: {fileID: 1440645399}
+  - component: {fileID: 1440645402}
   m_Layer: 5
   m_Name: Line 1 Left Button
   m_TagString: Untagged
@@ -8015,12 +8307,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1440645397}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1519271484}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -8070,7 +8362,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1440645400}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1440645402}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1440645400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8109,6 +8413,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1440645397}
   m_CullTransparentMesh: 0
+--- !u!114 &1440645402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1440645397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 0
+  isLeft: 1
 --- !u!1 &1446142857
 GameObject:
   m_ObjectHideFlags: 0
@@ -8725,6 +9044,7 @@ GameObject:
   - component: {fileID: 1577341372}
   - component: {fileID: 1577341371}
   - component: {fileID: 1577341370}
+  - component: {fileID: 1577341373}
   m_Layer: 5
   m_Name: Line 4 Left Button
   m_TagString: Untagged
@@ -8739,12 +9059,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577341368}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1059845638}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -8794,7 +9114,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1577341371}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1577341373}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1577341371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8833,6 +9165,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1577341368}
   m_CullTransparentMesh: 0
+--- !u!114 &1577341373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1577341368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 3
+  isLeft: 1
 --- !u!1 &1581441298
 GameObject:
   m_ObjectHideFlags: 0
@@ -9957,6 +10304,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1746099698}
   m_CullTransparentMesh: 0
+--- !u!1 &1751496430
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1751496431}
+  - component: {fileID: 1751496432}
+  m_Layer: 0
+  m_Name: Play Cards Controller
+  m_TagString: PlayCardsController
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1751496431
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751496430}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 139098543}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1751496432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1751496430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979e353fbf23f6249a6bfb8801674560, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectPutLineButtonCanvas: {fileID: 654779363}
 --- !u!1 &1766013287
 GameObject:
   m_ObjectHideFlags: 0
@@ -10707,6 +11098,7 @@ GameObject:
   - component: {fileID: 1898859154}
   - component: {fileID: 1898859153}
   - component: {fileID: 1898859152}
+  - component: {fileID: 1898859155}
   m_Layer: 5
   m_Name: Line 3 Left Button
   m_TagString: Untagged
@@ -10721,12 +11113,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1898859150}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 632147180}
-  m_Father: {fileID: 1959123039}
+  m_Father: {fileID: 654779364}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -10776,7 +11168,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1898859153}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1898859155}
+        m_TargetAssemblyTypeName: PutCardButton, Assembly-CSharp
+        m_MethodName: OnSelectPositionButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1898859153
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10815,6 +11219,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1898859150}
   m_CullTransparentMesh: 0
+--- !u!114 &1898859155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898859150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 592c505ee7ffab749b7e6403ff33bc4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playCardsController: {fileID: 1751496432}
+  lineIndex: 2
+  isLeft: 1
 --- !u!1 &1924793987
 GameObject:
   m_ObjectHideFlags: 0
@@ -10995,14 +11414,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1440645398}
-  - {fileID: 568747955}
-  - {fileID: 551674180}
-  - {fileID: 672129606}
-  - {fileID: 1898859151}
-  - {fileID: 527173916}
-  - {fileID: 1577341369}
-  - {fileID: 736149592}
+  - {fileID: 654779364}
   m_Father: {fileID: 2011713507}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

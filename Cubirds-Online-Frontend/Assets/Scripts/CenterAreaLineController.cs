@@ -48,9 +48,10 @@ public class CenterAreaLineController : MonoBehaviour
             float offset = (Cards.Count - 1) * -50 + i * 100;
 
             // 移动卡牌
-            card.MoveTo(LinePosition.position - LinePosition.right * offset, 0.2f);
+            card.MoveTo(LinePosition.position + LinePosition.right * offset, 0.2f);
         }
 
+        // TODO：收牌和不收牌功能，这个回调也要一起往后走，也可能移动到更深层的调用里。
         // 执行回调
         callback.Invoke();
     }

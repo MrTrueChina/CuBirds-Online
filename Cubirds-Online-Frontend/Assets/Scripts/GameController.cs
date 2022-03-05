@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -89,7 +90,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 当前回合操作的玩家
     /// </summary>
-    public PlayerController currentTrunPlayre { get; private set; }
+    public PlayerController CurrentTrunPlayre { get; private set; }
 
     private void Start()
     {
@@ -114,6 +115,9 @@ public class GameController : MonoBehaviour
             // 保存这个玩家
             players.Add(player);
         }
+
+        // 将第一个玩家设为现在回合的玩家
+        CurrentTrunPlayre = players[0];
 
         // 通知牌组控制器初始化牌组
         DeckController.InitDeck(() =>
@@ -144,6 +148,12 @@ public class GameController : MonoBehaviour
                             DeckController.GivePlayersStartGroup(() =>
                             {
                                 Debug.Log("发出初始鸟群卡回调执行");
+
+                                // 进入打牌阶段，这是游戏循环流程的入口，之后转为游戏内部进行循环
+                                PlayBirdCards(() =>
+                                {
+                                    Debug.Log("打牌阶段（切入循环时）回调执行");
+                                });
                             });
                         });
                     });
@@ -169,9 +179,52 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 打牌阶段
     /// </summary>
-    private void PlayBirdCards()
+    /// <param name="callback"></param>
+    private void PlayBirdCards(Action callback)
     {
+        // 交给协程进行
+        StartCoroutine(PlayBirdCardsCoroutine(callback));
+    }
+    /// <summary>
+    /// 打牌阶段的协程
+    /// </summary>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    private IEnumerator PlayBirdCardsCoroutine(Action callback)
+    {
+        // 打出牌的玩家的 ID
+        int playerId = default;
+        // 玩家打出的牌的类型
+        CardType cardType = default;
+        // 打到的行的索引
+        int lineIndex = default;
+        // 是否打在左边
+        bool isLeft = default;
 
+        // 玩家是否已经打出了牌
+        bool playerPutedCards = false;
+
+        // 监听玩家打出牌事件
+        InputController.Instance.PlayerPlayCards.AddListener((eventPlayerId,eventCardType, eventLineIndex, eventIsLeft)=> {
+            // 保存玩家操作的参数
+            playerId = eventPlayerId;
+            cardType = eventCardType;
+            lineIndex = eventLineIndex;
+            isLeft = eventIsLeft;
+            // 记录玩家已经打出牌
+            playerPutedCards = true;
+        });
+
+        // 显示玩家选择打牌面板
+        PlayCardsController.Instance.StartPlayCards();
+
+        // 等待玩家打出牌
+        yield return new WaitUntil(() => playerPutedCards);
+
+        Debug.LogFormat("游戏主控制器确认到玩家 {0} 打出牌 {1}，在第 {2} 行，是否在左边 {3}", playerId, cardType, lineIndex, isLeft);
+
+        // 通知这个玩家打牌
+        players.Find(p => p.Id == playerId).PlayCards(cardType, centerAreaLineControllers[lineIndex], isLeft, callback);
     }
 
     /// <summary>

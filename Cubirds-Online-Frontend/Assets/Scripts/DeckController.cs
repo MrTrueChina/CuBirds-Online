@@ -144,15 +144,15 @@ public class DeckController : MonoBehaviour
     public void FillCenterArea(Action callback)
     {
         // 让协程进行填充
-        StartCoroutine(nameof(FillCenterAreaCoroutine), callback);
+        StartCoroutine(FillCenterAreaCoroutine(callback));
     }
     /// <summary>
     /// 开场时填充中央区的协程
     /// </summary>
     private IEnumerator FillCenterAreaCoroutine(Action callback)
     {
-        // 获取中央区行的控制器，并创建一个字典以记录发出的牌的数量
-        List<CenterAreaLineController> lines = GameController.Instance.CenterAreaLineControllers;
+        // 获取中央区行的控制器，并创建一个字典以记录发出的牌的数量。这里是副本，防止操作了主控制器的数据
+        List<CenterAreaLineController> lines = new List<CenterAreaLineController>(GameController.Instance.CenterAreaLineControllers);
 
         // 有卡片正在发送
         bool cardSending = false;
@@ -233,7 +233,7 @@ public class DeckController : MonoBehaviour
     public void DealCards(Action callback)
     {
         // 让协程进行发牌
-        StartCoroutine(nameof(DealCardsCoroutine), callback);
+        StartCoroutine(DealCardsCoroutine(callback));
     }
     /// <summary>
     /// 给所有玩家发牌的协程
@@ -303,7 +303,7 @@ public class DeckController : MonoBehaviour
     public void GivePlayersStartGroup(Action callback)
     {
         // 交给协程进行
-        StartCoroutine(nameof(GivePlayersStartGroupCoroutine), callback);
+        StartCoroutine(GivePlayersStartGroupCoroutine(callback));
     }
     /// <summary>
     /// 给每个玩家一个初始鸟群的协程

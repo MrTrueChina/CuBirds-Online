@@ -169,4 +169,65 @@ public class PlayerController : MonoBehaviour
             callback.Invoke();
         }
     }
+
+    /// <summary>
+    /// 打出牌
+    /// </summary>
+    /// <param name="cardType">打出的牌的种类</param>
+    /// <param name="line">打到的行的索引</param>
+    /// <param name="isLeft">是否打在左边</param>
+    /// <param name="callBack"></param>
+    public void PlayCards(CardType cardType, CenterAreaLineController line, bool isLeft, Action callBack)
+    {
+        // 交给协程处理
+        StartCoroutine(PlayCardsCorotine(cardType, line, isLeft, callBack));
+    }
+    /// <summary>
+    /// 打出牌的协程
+    /// </summary>
+    /// <param name="cardType">打出的牌的种类</param>
+    /// <param name="line">打到的行的索引</param>
+    /// <param name="isLeft">是否打在左边</param>
+    /// <param name="callBack"></param>
+    /// <returns></returns>
+    private IEnumerator PlayCardsCorotine(CardType cardType, CenterAreaLineController line, bool isLeft, Action callBack)
+    {
+        // 找出手牌中所有这个类型的卡
+        List<Card> cards = handCards.FindAll(c => c.CardType == cardType);
+
+        // 从手牌中移除这些卡
+        handCards.RemoveAll(c => cards.Contains(c));
+
+        // 卡牌移动到行上位置的计数器
+        int movedCardsNumber = 0;
+
+        // 遍历这些牌
+        cards.ForEach(card =>
+        {
+            // 让他们移动到行的位置
+            card.MoveTo(line.LinePosition.position, () =>
+            {
+                // 移动到后增加计数器
+                movedCardsNumber++;
+            });
+        });
+
+        // 等待所有的牌移动到位
+        yield return new WaitUntil(() => movedCardsNumber >= cards.Count);
+
+        // 通知行收卡
+        line.PutCard(cards, !isLeft, callBack);
+    }
+
+    /// <summary>
+    /// 检测这个玩家手牌中是否有指定的牌
+    /// </summary>
+    /// <param name="card"></param>
+    /// <returns></returns>
+    public bool HandCardsContainsCard(Card card)
+    {
+        Debug.LogFormat("检测卡牌 {0} {1} 是不是玩家的手牌", card.CardType, card.Id);
+
+        return handCards.Contains(card);
+    }
 }

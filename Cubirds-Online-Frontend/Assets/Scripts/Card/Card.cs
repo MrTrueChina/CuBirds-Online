@@ -281,7 +281,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     {
         Debug.LogFormat("点击卡牌 {0} {1}", CardType, Id);
 
-        // 设为已使用
-        eventData.Use();
+        // 转发点击事件给输入控制器
+        InputController.Instance.CallCardPointClick(this, eventData);
     }
 }
