@@ -28,10 +28,11 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCards">放下的牌</param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
-    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action callback = null, float duration = 0.5f)
     {
         // 交给协程进行
-        StartCoroutine(PutCardCorotine(player, putCards, right, callback));
+        StartCoroutine(PutCardCorotine(player, putCards, right, callback, duration));
     }
     /// <summary>
     /// 将卡牌放到这一行里
@@ -40,9 +41,10 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCard"></param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
-    public void PutCard(PlayerController player, Card putCard, bool right, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void PutCard(PlayerController player, Card putCard, bool right, Action callback = null, float duration = 0.5f)
     {
-        PutCard(player, new List<Card>() { putCard }, right, callback);
+        PutCard(player, new List<Card>() { putCard }, right, callback, duration);
     }
     /// <summary>
     /// 将卡牌放到这一行里的协程
@@ -51,9 +53,26 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCards">放下的牌</param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动时间</param>
     /// <returns></returns>
-    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback)
+    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback, float duration)
     {
+        // 记录移动到位置的卡的数量的计数器
+        int movedCardNumbers = 0;
+        // 遍历所有要打到行里的的牌
+        putCards.ForEach(putCard =>
+        {
+            // 移动到行里
+            putCard.MoveToAndRotateTo(LinePosition.position, LinePosition.rotation, duration, () =>
+            {
+                // 移动到位后增加计数器
+                movedCardNumbers++;
+            });
+        });
+
+        // 等待所有牌移动到位
+        yield return new WaitUntil(() => movedCardNumbers >= putCards.Count);
+
         // 收到的牌的列表
         List<Card> getCards = new List<Card>();
 
@@ -96,34 +115,63 @@ public class CenterAreaLineController : MonoBehaviour
             Cards.InsertRange(0, putCards);
         }
 
-        Debug.LogFormat("有 {0} 张卡被收走", getCards.Count);
-
-        // 把收走的卡从卡牌列表中移除
-        Cards.RemoveAll(c => getCards.Contains(c));
-
-        // 已经发送出去的卡的数量的计数器
-        int sendedCardsNumber = 0;
-
-        // 遍历收走的牌
-        getCards.ForEach(getCard =>
+        // 传入了玩家，表示是玩家打的牌，需要进行收牌判断，没有传入玩家则是卡组在铺场和补牌，没有收牌步骤
+        if(player != null)
         {
-            // 移动到玩家的位置
-            getCard.MoveTo(player.transform.position, () =>
+            Debug.LogFormat("有 {0} 张卡被收走", getCards.Count);
+
+            // 把收走的卡从卡牌列表中移除
+            Cards.RemoveAll(c => getCards.Contains(c));
+
+            // 已经发送出去的卡的数量的计数器
+            int sendedCardsNumber = 0;
+            // 遍历收走的牌
+            getCards.ForEach(getCard =>
             {
-                // 移动到玩家位置后把牌给玩家
+                // 把牌给玩家
                 player.TakeHandCard(getCard, () =>
                 {
                     // 玩家拿到牌后增加计数器
                     sendedCardsNumber++;
                 });
             });
-        });
+            // 等待收走的牌全部交到玩家手里
+            yield return new WaitUntil(() => sendedCardsNumber >= getCards.Count);
 
-        // 等待收走的牌全部交到玩家手里
-        yield return new WaitUntil(() => sendedCardsNumber >= getCards.Count);
+            Debug.Log("被收走的卡已经全部交给玩家");
 
-        Debug.Log("被收走的卡已经全部交给玩家");
+            // 显示卡牌
+            DisplayCards();
 
+            // 如果这一行的牌全是同类的牌，进行补牌，直到这一行出现不同种类的牌。这里判断的方式是：类型和第一张卡相同的卡的数量和所有卡数量相同 => 所有卡都和第一张卡类型相同 => 所有卡都是同类卡
+            while (Cards.FindAll(c=>c.CardType == Cards[0].CardType).Count == Cards.Count)
+            {
+                // 记录是否填充了卡片
+                bool geted = false;
+
+                // 让卡组往这一行填充牌
+                GameController.Instance.DeckController.SupplementCardToCenterLine(this, right, () =>
+                {
+                    geted = true;
+                });
+
+                // 等待收到卡牌
+                yield return new WaitUntil(() => geted);
+            }
+        }
+
+        // 显示卡牌
+        DisplayCards();
+
+        // 执行回调
+        callback.Invoke();
+    }
+
+    /// <summary>
+    /// 更新卡牌的显示
+    /// </summary>
+    private void DisplayCards()
+    {
         // 移动卡牌位置
         for (int i = 0; i < Cards.Count; i++)
         {
@@ -133,10 +181,7 @@ public class CenterAreaLineController : MonoBehaviour
             float offset = (Cards.Count - 1) * -50 + i * 100;
 
             // 移动卡牌
-            card.MoveTo(LinePosition.position + LinePosition.right * offset, 0.2f);
+            card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
         }
-
-        // 执行回调
-        callback.Invoke();
     }
 }

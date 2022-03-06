@@ -201,17 +201,23 @@ public class Card : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
-    /// 将这张卡片移动到指定位置
+    /// 将这张卡移动和旋转到指定位置
     /// </summary>
-    /// <param name="targetPosition">要移动到的位置</param>
-    /// <param name="duration">移动时间</param>
-    /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, float duration, Action callBack)
+    /// <param name="targetPosition">移动到的目标位置</param>
+    /// <param name="targetRoattion">旋转到的目标旋转值</param>
+    /// <param name="duration">移动和旋转的时间</param>
+    /// <param name="callback">完成后执行的回调，以移动完成为准</param>
+    public void MoveToAndRotateTo(Vector3 targetPosition, Quaternion targetRoattion, float duration = 0.5f, Action callback = null)
     {
         // 取消正在进行的移动补间动画
-        if(moveTween != null)
+        if (moveTween != null)
         {
             moveTween.Kill();
+        }
+        // 取消正在进行的旋转补间动画
+        if (rotateTween != null)
+        {
+            rotateTween.Kill();
         }
 
         // 设置一个极高的显示顺序，防止卡牌移动的时候被放在桌子上的卡挡住
@@ -219,6 +225,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         // 使用 DOTween 进行移动并记录这个补间
         moveTween = transform.DOMove(targetPosition, duration);
+        // 使用 DOTween 进行移动并记录这个补间
+        rotateTween = transform.DORotateQuaternion(targetRoattion, duration);
 
         // 添加回调
         moveTween.onComplete += () =>
@@ -227,54 +235,21 @@ public class Card : MonoBehaviour, IPointerClickHandler
             SetDisplaySort(displaySort);
 
             // 如果有传入的回调则执行
-            if (callBack != null)
+            if (callback != null)
             {
-                callBack.Invoke();
+                callback.Invoke();
             }
         };
     }
     /// <summary>
-    /// 将这张卡片移动到指定位置
+    /// 将这张卡移动和旋转到指定位置
     /// </summary>
-    /// <param name="targetPosition">要移动到的位置</param>
-    /// <param name="duration">移动时间</param>
-    public void MoveTo(Vector3 targetPosition, float duration)
+    /// <param name="targetPosition">移动到的目标位置</param>
+    /// <param name="targetRoattion">旋转到的目标旋转值</param>
+    /// <param name="callback">完成后执行的回调，以移动完成为准</param>
+    public void MoveToAndRotateTo(Vector3 targetPosition, Quaternion targetRoattion, Action callback = null)
     {
-        MoveTo(targetPosition, duration, null);
-    }
-    /// <summary>
-    /// 将这张卡片移动到指定位置
-    /// </summary>
-    /// <param name="targetPosition">要移动到的位置</param>
-    /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, Action callBack)
-    {
-        MoveTo(targetPosition, 0.5f, callBack);
-    }
-    /// <summary>
-    /// 将这张卡片移动到指定位置
-    /// </summary>
-    /// <param name="targetPosition">要移动到的位置</param>
-    public void MoveTo(Vector3 targetPosition)
-    {
-        MoveTo(targetPosition, 0.5f, null);
-    }
-
-    /// <summary>
-    /// 将这张卡旋转到指定角度
-    /// </summary>
-    /// <param name="rotation"></param>
-    /// <param name="duration"></param>
-    public void RotateTo(Quaternion rotation, float duration = 0.5f)
-    {
-        // 取消正在进行的旋转补间动画
-        if (rotateTween != null)
-        {
-            rotateTween.Kill();
-        }
-
-        // 使用 DOTween 进行移动并记录这个补间
-        rotateTween = transform.DORotateQuaternion(rotation, duration);
+        MoveToAndRotateTo(targetPosition, targetRoattion, 0.5f, callback);
     }
 
     public void OnPointerClick(PointerEventData eventData)

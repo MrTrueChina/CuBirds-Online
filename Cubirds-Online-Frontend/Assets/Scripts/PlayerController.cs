@@ -50,13 +50,30 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 获取卡牌
+    /// 获取手牌
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback">获取卡牌后的回调</param>
-    public void TakeHandCard(Card card, Action callback)
+    /// <param name="duration">移动卡牌的时间</param>
+    public void TakeHandCard(Card card, Action callback, float duration = 0.5f)
     {
-        //Debug.LogFormat("玩家 {0} 获取卡牌 {1} {2}", Id, card.Id, card.CardType);
+        // 交给协程处理
+        StartCoroutine(TakeHandCardCoroutine(card, callback, duration));
+    }
+    /// <summary>
+    /// 获取手牌的协程
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback">获取卡牌后的回调</param>
+    /// <param name="duration">移动卡牌的时间</param>
+    public IEnumerator TakeHandCardCoroutine(Card card, Action callback, float duration = 0.5f)
+    {
+        //Debug.LogFormat("玩家 {0} 获取卡牌 {1} {2} 协程启动", Id, card.Id, card.CardType);
+
+        // 移动卡牌到玩家位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
 
         // 把卡牌添加到手牌里
         handCards.Add(card);
@@ -72,7 +89,7 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示手牌
+    /// 调整手牌的显示顺序和位置
     /// </summary>
     private void DisplayHandCards()
     {
@@ -97,7 +114,7 @@ public class PlayerController : MonoBehaviour
             float offset = (handCards.Count - 1) * -25 + i * 50;
 
             // 移动卡牌
-            card.MoveTo(transform.position - transform.right * offset, 0.2f);
+            card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);
         }
     }
 
@@ -106,8 +123,19 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback"></param>
-    public void TakeGroupCard(Card card, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void TakeGroupCard(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 交给协程进行
+        StartCoroutine(TakeGroupCardCoroutine(card, callback, duration));
+    }
+    public IEnumerator TakeGroupCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
+    {
+        // 移动卡牌到玩家位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
+
         // 添加到鸟群卡列表中
         groupCards.Add(card);
 
@@ -151,7 +179,7 @@ public class PlayerController : MonoBehaviour
             float verticalOffset = 140 + typeNumber * 40;
 
             // 移动卡牌
-            card.MoveTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, 0.1f);
+            card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.1f);
 
             // 每遍历一张，这个种类的计数器增加
             typeNumber++;
@@ -198,28 +226,13 @@ public class PlayerController : MonoBehaviour
         // 从手牌中移除这些卡
         handCards.RemoveAll(c => cards.Contains(c));
 
-        // 卡牌移动到行上位置的计数器
-        int movedCardsNumber = 0;
-
-        // 遍历这些牌
-        cards.ForEach(card =>
-        {
-            // 让他们移动到行的位置
-            card.MoveTo(line.LinePosition.position, () =>
-            {
-                // 移动到后增加计数器
-                movedCardsNumber++;
-            });
-        });
-
         // 调整手牌的显示
         DisplayHandCards();
 
-        // 等待所有的牌移动到位
-        yield return new WaitUntil(() => movedCardsNumber >= cards.Count);
-
         // 通知行收卡
         line.PutCard(this, cards, !isLeft, callBack);
+
+        yield return null;
     }
 
     /// <summary>
@@ -249,7 +262,7 @@ public class PlayerController : MonoBehaviour
         handCards.RemoveAll(c => makeGroupCards.Contains(c));
 
         // 记录能够获取的鸟群卡的数量，如果能组成大鸟群是两张，否则是一张
-        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 1 : 2;
+        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 2 : 1;
 
         // 记录需要发送的卡的数量
         int needSendCardsNumber = makeGroupCards.Count;
@@ -275,15 +288,11 @@ public class PlayerController : MonoBehaviour
         // 把剩下的牌扔到弃牌区
         foreach(Card discardCard in makeGroupCards)
         {
-            // 把牌移动到弃牌区
-            discardCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), () =>
+            // 把牌丢入弃牌区
+            GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
             {
-                // 把牌丢入弃牌区
-                GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
-                {
-                    // 牌扔到弃牌区后增加完成发送的卡的数量
-                    sendedCardsNumber++;
-                });
+                // 牌扔到弃牌区后增加完成发送的卡的数量
+                sendedCardsNumber++;
             });
         }
 

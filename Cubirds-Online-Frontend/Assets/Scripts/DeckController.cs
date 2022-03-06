@@ -103,8 +103,25 @@ public class DeckController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback"></param>
-    public void TakeCard(Card card, Action callback = null)
+    /// <param name="duration">卡牌移动的时间</param>
+    public void TakeCard(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 交给协程进行
+        StartCoroutine(TakeCardCoroutine(card, callback, duration));
+    }
+    /// <summary>
+    /// 将卡牌放入卡组的协程
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动的时间</param>
+    public IEnumerator TakeCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
+    {
+        // 移动卡牌到卡组位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(DeckPosition.position, DeckPosition.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
+
         // 把卡扣过来
         card.SetOpen(false);
 
@@ -112,10 +129,10 @@ public class DeckController : MonoBehaviour
         cards.Add(card);
 
         // 把卡片移动到顶层
-        card.MoveTo(deckPosition.position + Vector3.up * cards.Count, 0.2f);
+        card.MoveToAndRotateTo(deckPosition.position + Vector3.up * cards.Count, deckPosition.rotation, 0.2f);
 
         // 执行回调
-        if(callback != null)
+        if (callback != null)
         {
             callback.Invoke();
         }
@@ -131,7 +148,7 @@ public class DeckController : MonoBehaviour
         {
             Card card = cards[i];
             // 设置卡牌位置，越靠后越高
-            card.MoveTo(DeckPosition.position + (Vector3.up * i), 0.1f);
+            card.MoveToAndRotateTo(DeckPosition.position + (Vector3.up * i), DeckPosition.rotation, 0.1f);
             // 设置卡牌显示次序，越靠后越靠前
             card.SetDisplaySort(i);
         }
@@ -154,7 +171,7 @@ public class DeckController : MonoBehaviour
         // 获取中央区行的控制器，并创建一个字典以记录发出的牌的数量。这里是副本，防止操作了主控制器的数据
         List<CenterAreaLineController> lines = new List<CenterAreaLineController>(GameController.Instance.CenterAreaLineControllers);
 
-        // 有卡片正在发送
+        // 有卡片正在发送的标志变量
         bool cardSending = false;
 
         // 填充完毕的中央行会移除，一直循环到所有中央行都填充完毕
@@ -182,37 +199,29 @@ public class DeckController : MonoBehaviour
             {
                 // 成功找到可以放入的中央行
 
-                // 将牌移动到行的位置
-                targetCard.MoveTo(targetLine.LinePosition.position, 0.3f, () =>
+                // 把牌打到中央区的行里，从卡组出牌没有玩家，玩家传的是 null
+                targetLine.PutCard(null, targetCard, true, () =>
                 {
-                    // 到位置后通知行放下卡，从卡组出牌没有玩家，玩家传的是 null
-                    targetLine.PutCard(null, targetCard, true, () =>
+                    // 当这一行达到 3 张卡时，这一行已填满，移除这一行
+                    if (targetLine.Cards.Count >= 3)
                     {
-                        // 当这一行达到 3 张卡时，这一行已填满，移除这一行
-                        if(targetLine.Cards.Count >= 3)
-                        {
-                            lines.Remove(targetLine);
-                        }
+                        lines.Remove(targetLine);
+                    }
 
-                        // 记录没有卡牌正在发送
-                        cardSending = false;
-                    });
-                });
+                    // 记录没有卡牌正在发送
+                    cardSending = false;
+                }, 0.4f);
             }
             else
             {
                 // 没找到可以放入的中央行
 
-                // 把牌移动到弃牌区的位置
-                targetCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), 0.3f, () =>
+                // 把牌扔进弃牌区
+                GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
                 {
-                    // 把牌扔进弃牌区
-                    GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
-                    {
-                        // 记录没有卡牌正在发送
-                        cardSending = false;
-                    });
-                });
+                    // 记录没有卡牌正在发送
+                    cardSending = false;
+                }, 0.3f);
             }
 
             // 等待正在发送的卡片发送完毕再进行下一张卡的发送
@@ -227,20 +236,77 @@ public class DeckController : MonoBehaviour
     }
 
     /// <summary>
-    /// 给所有玩家发牌
+    /// 向中央行补充卡牌
     /// </summary>
+    /// <param name="centerLine">要补充到的中央行</param>
+    /// <param name="right">是否放在右边</param>
     /// <param name="callback"></param>
-    public void DealCards(Action callback)
+    public void SupplementCardToCenterLine(CenterAreaLineController centerLine, bool right, Action callback)
     {
-        // 让协程进行发牌
-        StartCoroutine(DealCardsCoroutine(callback));
+        // 交给协程处理
+        StartCoroutine(SupplementCardToCenterLineCoroutine(centerLine, right, callback));
     }
     /// <summary>
-    /// 给所有玩家发牌的协程
+    /// 向中央行补充卡牌的协程
     /// </summary>
+    /// <param name="centerLine">要补充到的中央行</param>
+    /// <param name="right">是否放在右边</param>
+    /// <param name="callback"></param>
+    private IEnumerator SupplementCardToCenterLineCoroutine(CenterAreaLineController centerLine, bool right, Action callback)
+    {
+        // 获取牌库顶的卡
+        Card targetCard = cards.Last();
+
+        // 从卡组中移除这张卡
+        cards.Remove(targetCard);
+
+        // 记录卡牌是否已经发送到
+        bool sended = false;
+
+        // 翻开
+        targetCard.SetOpen(true);
+
+        // 把卡放到行中
+        centerLine.PutCard(null, targetCard, right, () =>
+        {
+            sended = true;
+        }, 0.5f);
+
+        // 等待卡牌放到行中
+        yield return new WaitUntil(() => sended);
+
+        callback.Invoke();
+    }
+
+    /// <summary>
+    /// 给玩家发牌
+    /// </summary>
+    /// <param name="player">发牌给哪个玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
+    /// <param name="callback"></param>
+    public void DealCards(PlayerController player, int cardsNumber, Action callback)
+    {
+        DealCards(new List<PlayerController>() { player }, cardsNumber, callback);
+    }
+    /// <summary>
+    /// 给玩家发牌
+    /// </summary>
+    /// <param name="players">发牌给哪些玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
+    /// <param name="callback"></param>
+    public void DealCards(List<PlayerController> players, int cardsNumber, Action callback)
+    {
+        // 让协程进行发牌
+        StartCoroutine(DealCardsCoroutine(players, cardsNumber, callback));
+    }
+    /// <summary>
+    /// 给玩家发牌的协程
+    /// </summary>
+    /// <param name="players">发牌给哪些玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
     /// <param name="callback"></param>
     /// <returns></returns>
-    private IEnumerator DealCardsCoroutine(Action callback)
+    private IEnumerator DealCardsCoroutine(List<PlayerController> players, int cardsNumber, Action callback)
     {
         Debug.LogFormat("给所有玩家发牌");
 
@@ -250,11 +316,11 @@ public class DeckController : MonoBehaviour
         int takedCardNumber = 0;
 
         // 遍历所有玩家
-        foreach (PlayerController player in GameController.Instance.players)
+        foreach (PlayerController player in players)
         {
             //Debug.LogFormat("给玩家 {0} 发牌", player.Id);
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < cardsNumber; i++)
             {
                 //Debug.LogFormat("给玩家 {0} 发第 {1} 张牌", player.Id, i);
 
@@ -270,18 +336,11 @@ public class DeckController : MonoBehaviour
                 // 发出的牌计数器增加
                 sendedCardNumber++;
 
-                // 将卡旋转到玩家的朝向
-                card.RotateTo(player.transform.rotation);
-
-                // 将卡移动到玩家的位置
-                card.MoveTo(player.transform.position, () =>
+                // 把这张卡给玩家
+                player.TakeHandCard(card, () =>
                 {
-                    // 移动完成时通知玩家拿走这张卡
-                    player.TakeHandCard(card, () =>
-                    {
-                        // 玩家拿走卡后完成发送的卡的计数器增加
-                        takedCardNumber++;
-                    });
+                    // 玩家拿走卡后完成发送的卡的计数器增加
+                    takedCardNumber++;
                 });
 
                 // 记录这次发牌时间
@@ -330,17 +389,11 @@ public class DeckController : MonoBehaviour
             // 从牌库里移除
             cards.Remove(card);
 
-            // 把卡牌转到玩家的角度
-            card.RotateTo(player.transform.rotation);
-            // 移动到玩家的位置
-            card.MoveTo(player.transform.position, () =>
+            // 把牌给玩家
+            player.TakeGroupCard(card, () =>
             {
-                // 到玩家的位置后交给玩家
-                player.TakeGroupCard(card, () =>
-                {
-                    // 玩家拿到卡后改为没有卡在转移
-                    cardSending = false;
-                });
+                // 玩家拿到卡后改为没有卡在转移
+                cardSending = false;
             });
 
             // 等到卡牌转移完毕
