@@ -103,8 +103,25 @@ public class DeckController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback"></param>
-    public void TakeCard(Card card, Action callback = null)
+    /// <param name="duration">卡牌移动的时间</param>
+    public void TakeCard(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 交给协程进行
+        StartCoroutine(TakeCardCoroutine(card, callback, duration));
+    }
+    /// <summary>
+    /// 将卡牌放入卡组的协程
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动的时间</param>
+    public IEnumerator TakeCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
+    {
+        // 移动卡牌到卡组位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(DeckPosition.position, DeckPosition.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
+
         // 把卡扣过来
         card.SetOpen(false);
 
@@ -115,7 +132,7 @@ public class DeckController : MonoBehaviour
         card.MoveToAndRotateTo(deckPosition.position + Vector3.up * cards.Count, deckPosition.rotation, 0.2f);
 
         // 执行回调
-        if(callback != null)
+        if (callback != null)
         {
             callback.Invoke();
         }

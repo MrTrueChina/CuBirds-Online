@@ -96,7 +96,7 @@ public class DiscardCardsController : MonoBehaviour
                 {
                     // 增加收到的卡的计数器
                     takedCards++;
-                });
+                }, 0.3f);
             });
         });
 
