@@ -139,8 +139,8 @@ public class GameController : MonoBehaviour
                     {
                         Debug.Log("洗牌回调执行");
 
-                        // 发牌给所有玩家
-                        DeckController.DealCards(() =>
+                        // 给所有玩家发 8 张牌
+                        DeckController.DealCards(players, 8, () =>
                         {
                             Debug.Log("发牌回调执行");
 

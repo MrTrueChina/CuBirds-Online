@@ -235,21 +235,36 @@ public class DeckController : MonoBehaviour
         callback.Invoke();
     }
 
+
     /// <summary>
-    /// 给所有玩家发牌
+    /// 给玩家发牌
     /// </summary>
+    /// <param name="player">发牌给哪个玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
     /// <param name="callback"></param>
-    public void DealCards(Action callback)
+    public void DealCards(PlayerController player, int cardsNumber, Action callback)
     {
-        // 让协程进行发牌
-        StartCoroutine(DealCardsCoroutine(callback));
+        DealCards(new List<PlayerController>() { player }, cardsNumber, callback);
     }
     /// <summary>
-    /// 给所有玩家发牌的协程
+    /// 给玩家发牌
     /// </summary>
+    /// <param name="players">发牌给哪些玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
+    /// <param name="callback"></param>
+    public void DealCards(List<PlayerController> players, int cardsNumber, Action callback)
+    {
+        // 让协程进行发牌
+        StartCoroutine(DealCardsCoroutine(players, cardsNumber, callback));
+    }
+    /// <summary>
+    /// 给玩家发牌的协程
+    /// </summary>
+    /// <param name="players">发牌给哪些玩家</param>
+    /// <param name="cardsNumber">每个玩家的发牌数量</param>
     /// <param name="callback"></param>
     /// <returns></returns>
-    private IEnumerator DealCardsCoroutine(Action callback)
+    private IEnumerator DealCardsCoroutine(List<PlayerController> players, int cardsNumber, Action callback)
     {
         Debug.LogFormat("给所有玩家发牌");
 
@@ -259,11 +274,11 @@ public class DeckController : MonoBehaviour
         int takedCardNumber = 0;
 
         // 遍历所有玩家
-        foreach (PlayerController player in GameController.Instance.players)
+        foreach (PlayerController player in players)
         {
             //Debug.LogFormat("给玩家 {0} 发牌", player.Id);
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < cardsNumber; i++)
             {
                 //Debug.LogFormat("给玩家 {0} 发第 {1} 张牌", player.Id, i);
 
