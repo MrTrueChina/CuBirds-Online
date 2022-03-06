@@ -266,15 +266,11 @@ public class DeckController : MonoBehaviour
                 // 发出的牌计数器增加
                 sendedCardNumber++;
 
-                // 将卡移动到玩家的位置
-                card.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
+                // 把这张卡给玩家
+                player.TakeHandCard(card, () =>
                 {
-                    // 移动完成时通知玩家拿走这张卡
-                    player.TakeHandCard(card, () =>
-                    {
-                        // 玩家拿走卡后完成发送的卡的计数器增加
-                        takedCardNumber++;
-                    });
+                    // 玩家拿走卡后完成发送的卡的计数器增加
+                    takedCardNumber++;
                 });
 
                 // 记录这次发牌时间

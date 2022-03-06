@@ -123,15 +123,11 @@ public class CenterAreaLineController : MonoBehaviour
         // 遍历收走的牌
         getCards.ForEach(getCard =>
         {
-            // 移动到玩家的位置
-            getCard.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
+            // 把牌给玩家
+            player.TakeHandCard(getCard, () =>
             {
-                // 移动到玩家位置后把牌给玩家
-                player.TakeHandCard(getCard, () =>
-                {
-                    // 玩家拿到牌后增加计数器
-                    sendedCardsNumber++;
-                });
+                // 玩家拿到牌后增加计数器
+                sendedCardsNumber++;
             });
         });
 
