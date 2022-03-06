@@ -115,30 +115,63 @@ public class CenterAreaLineController : MonoBehaviour
             Cards.InsertRange(0, putCards);
         }
 
-        Debug.LogFormat("有 {0} 张卡被收走", getCards.Count);
-
-        // 把收走的卡从卡牌列表中移除
-        Cards.RemoveAll(c => getCards.Contains(c));
-
-        // 已经发送出去的卡的数量的计数器
-        int sendedCardsNumber = 0;
-
-        // 遍历收走的牌
-        getCards.ForEach(getCard =>
+        // 传入了玩家，表示是玩家打的牌，需要进行收牌判断，没有传入玩家则是卡组在铺场和补牌，没有收牌步骤
+        if(player != null)
         {
-            // 把牌给玩家
-            player.TakeHandCard(getCard, () =>
+            Debug.LogFormat("有 {0} 张卡被收走", getCards.Count);
+
+            // 把收走的卡从卡牌列表中移除
+            Cards.RemoveAll(c => getCards.Contains(c));
+
+            // 已经发送出去的卡的数量的计数器
+            int sendedCardsNumber = 0;
+            // 遍历收走的牌
+            getCards.ForEach(getCard =>
             {
-                // 玩家拿到牌后增加计数器
-                sendedCardsNumber++;
+                // 把牌给玩家
+                player.TakeHandCard(getCard, () =>
+                {
+                    // 玩家拿到牌后增加计数器
+                    sendedCardsNumber++;
+                });
             });
-        });
+            // 等待收走的牌全部交到玩家手里
+            yield return new WaitUntil(() => sendedCardsNumber >= getCards.Count);
 
-        // 等待收走的牌全部交到玩家手里
-        yield return new WaitUntil(() => sendedCardsNumber >= getCards.Count);
+            Debug.Log("被收走的卡已经全部交给玩家");
 
-        Debug.Log("被收走的卡已经全部交给玩家");
+            // 显示卡牌
+            DisplayCards();
 
+            // 如果这一行的牌全是同类的牌，进行补牌，直到这一行出现不同种类的牌。这里判断的方式是：类型和第一张卡相同的卡的数量和所有卡数量相同 => 所有卡都和第一张卡类型相同 => 所有卡都是同类卡
+            while (Cards.FindAll(c=>c.CardType == Cards[0].CardType).Count == Cards.Count)
+            {
+                // 记录是否填充了卡片
+                bool geted = false;
+
+                // 让卡组往这一行填充牌
+                GameController.Instance.DeckController.SupplementCardToCenterLine(this, right, () =>
+                {
+                    geted = true;
+                });
+
+                // 等待收到卡牌
+                yield return new WaitUntil(() => geted);
+            }
+        }
+
+        // 显示卡牌
+        DisplayCards();
+
+        // 执行回调
+        callback.Invoke();
+    }
+
+    /// <summary>
+    /// 更新卡牌的显示
+    /// </summary>
+    private void DisplayCards()
+    {
         // 移动卡牌位置
         for (int i = 0; i < Cards.Count; i++)
         {
@@ -150,8 +183,5 @@ public class CenterAreaLineController : MonoBehaviour
             // 移动卡牌
             card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
         }
-
-        // 执行回调
-        callback.Invoke();
     }
 }

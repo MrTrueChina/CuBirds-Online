@@ -235,6 +235,48 @@ public class DeckController : MonoBehaviour
         callback.Invoke();
     }
 
+    /// <summary>
+    /// 向中央行补充卡牌
+    /// </summary>
+    /// <param name="centerLine">要补充到的中央行</param>
+    /// <param name="right">是否放在右边</param>
+    /// <param name="callback"></param>
+    public void SupplementCardToCenterLine(CenterAreaLineController centerLine, bool right, Action callback)
+    {
+        // 交给协程处理
+        StartCoroutine(SupplementCardToCenterLineCoroutine(centerLine, right, callback));
+    }
+    /// <summary>
+    /// 向中央行补充卡牌的协程
+    /// </summary>
+    /// <param name="centerLine">要补充到的中央行</param>
+    /// <param name="right">是否放在右边</param>
+    /// <param name="callback"></param>
+    private IEnumerator SupplementCardToCenterLineCoroutine(CenterAreaLineController centerLine, bool right, Action callback)
+    {
+        // 获取牌库顶的卡
+        Card targetCard = cards.Last();
+
+        // 从卡组中移除这张卡
+        cards.Remove(targetCard);
+
+        // 记录卡牌是否已经发送到
+        bool sended = false;
+
+        // 翻开
+        targetCard.SetOpen(true);
+
+        // 把卡放到行中
+        centerLine.PutCard(null, targetCard, right, () =>
+        {
+            sended = true;
+        }, 0.5f);
+
+        // 等待卡牌放到行中
+        yield return new WaitUntil(() => sended);
+
+        callback.Invoke();
+    }
 
     /// <summary>
     /// 给玩家发牌
