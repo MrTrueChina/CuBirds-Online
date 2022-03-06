@@ -318,6 +318,54 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("空手判断阶段协程启动");
 
-        yield return null;
+        if(CurrentTrunPlayre.HandCardsCount() == 0)
+        {
+            // 玩家手里没牌了
+
+            // 完成弃牌的玩家的计数器
+            int discardCardsPlayersNumber = 0;
+
+            // 遍历所有玩家
+            players.ForEach(player =>
+            {
+                // 把手牌全都扔进弃牌堆
+                player.DiscardAllHandCards(() =>
+                {
+                    // 完成弃牌的玩家计数器增加
+                    discardCardsPlayersNumber++;
+                });
+            });
+
+            // 等待所有玩家弃牌完成
+            yield return new WaitUntil(() => discardCardsPlayersNumber == players.Count );
+
+            // 记录发牌是否完成的计数器
+            bool dealCarded = false;
+
+            // 让牌堆发牌
+            deckController.DealCards(players, 8, () =>
+            {
+                // 记录完成发牌
+                dealCarded = true;
+            });
+
+            // 等待发牌完毕
+            yield return new WaitUntil(() => dealCarded);
+
+            // 回到打牌阶段，这个玩家再来一回合
+            PlayBirdCards();
+        }
+        else
+        {
+            // 玩家手里还有牌
+
+            // 回合交给下一个玩家
+            CurrentTrunPlayre = players.IndexOf(CurrentTrunPlayre) != players.Count - 1 ? CurrentTrunPlayre = players[players.IndexOf(CurrentTrunPlayre) + 1] : players[0];
+
+            Debug.LogFormat("回合交给玩家 {0}", CurrentTrunPlayre);
+
+            // 回到打牌阶段
+            PlayBirdCards();
+        }
     }
 }
