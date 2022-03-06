@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示手牌
+    /// 调整手牌的显示顺序和位置
     /// </summary>
     private void DisplayHandCards()
     {
@@ -123,8 +123,19 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback"></param>
-    public void TakeGroupCard(Card card, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void TakeGroupCard(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 交给协程进行
+        StartCoroutine(TakeGroupCardCoroutine(card, callback, duration));
+    }
+    public IEnumerator TakeGroupCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
+    {
+        // 移动卡牌到玩家位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
+
         // 添加到鸟群卡列表中
         groupCards.Add(card);
 
@@ -251,7 +262,7 @@ public class PlayerController : MonoBehaviour
         handCards.RemoveAll(c => makeGroupCards.Contains(c));
 
         // 记录能够获取的鸟群卡的数量，如果能组成大鸟群是两张，否则是一张
-        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 1 : 2;
+        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 2 : 1;
 
         // 记录需要发送的卡的数量
         int needSendCardsNumber = makeGroupCards.Count;
@@ -277,15 +288,11 @@ public class PlayerController : MonoBehaviour
         // 把剩下的牌扔到弃牌区
         foreach(Card discardCard in makeGroupCards)
         {
-            // 把牌移动到弃牌区
-            discardCard.MoveToAndRotateTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), GameController.Instance.DiscardCardsController.GetDiscardRotation(), () =>
+            // 把牌丢入弃牌区
+            GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
             {
-                // 把牌丢入弃牌区
-                GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
-                {
-                    // 牌扔到弃牌区后增加完成发送的卡的数量
-                    sendedCardsNumber++;
-                });
+                // 牌扔到弃牌区后增加完成发送的卡的数量
+                sendedCardsNumber++;
             });
         }
 

@@ -32,8 +32,25 @@ public class DiscardCardsController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback"></param>
-    public void TakeCard(Card card, Action callback = null)
+    /// <param name="duration">卡牌移动的时间</param>
+    public void TakeCard(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 交给协程进行
+        StartCoroutine(TakeCardCoroutine(card, callback, duration));
+    }
+    /// <summary>
+    /// 将牌弃入这个弃牌堆的协程
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动的时间</param>
+    public IEnumerator TakeCardCoroutine(Card card, Action callback, float duration)
+    {
+        // 移动卡牌到弃牌堆位置并等待卡牌移动到位
+        bool moved = false;
+        card.MoveToAndRotateTo(GetDiscardPosition(), discardCardsPosition.rotation, duration, () => { moved = true; });
+        yield return new WaitUntil(() => moved);
+
         // 加入到列表里
         Cards.Add(card);
 
@@ -41,7 +58,7 @@ public class DiscardCardsController : MonoBehaviour
         card.SetDisplaySort(Cards.Count);
 
         // 执行回调
-        if(callback != null)
+        if (callback != null)
         {
             callback.Invoke();
         }
@@ -100,14 +117,5 @@ public class DiscardCardsController : MonoBehaviour
         return discardCardsPosition.position + new Vector3(Random.Range(discardOffsetRange.x, -discardOffsetRange.x),
             Random.Range(discardOffsetRange.y, -discardOffsetRange.y),
             Random.Range(discardOffsetRange.z, -discardOffsetRange.z));
-    }
-
-    /// <summary>
-    /// 获取弃牌堆旋转值
-    /// </summary>
-    /// <returns></returns>
-    public Quaternion GetDiscardRotation()
-    {
-        return discardCardsPosition.rotation;
     }
 }

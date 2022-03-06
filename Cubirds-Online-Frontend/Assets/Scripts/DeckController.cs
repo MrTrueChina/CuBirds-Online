@@ -199,16 +199,12 @@ public class DeckController : MonoBehaviour
             {
                 // 没找到可以放入的中央行
 
-                // 把牌移动到弃牌区的位置
-                targetCard.MoveToAndRotateTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), GameController.Instance.DiscardCardsController.GetDiscardRotation(), 0.3f, () =>
+                // 把牌扔进弃牌区
+                GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
                 {
-                    // 把牌扔进弃牌区
-                    GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
-                    {
-                        // 记录没有卡牌正在发送
-                        cardSending = false;
-                    });
-                });
+                    // 记录没有卡牌正在发送
+                    cardSending = false;
+                }, 0.3f);
             }
 
             // 等待正在发送的卡片发送完毕再进行下一张卡的发送
@@ -319,15 +315,11 @@ public class DeckController : MonoBehaviour
             // 从牌库里移除
             cards.Remove(card);
 
-            // 移动到玩家的位置
-            card.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
+            // 把牌给玩家
+            player.TakeGroupCard(card, () =>
             {
-                // 到玩家的位置后交给玩家
-                player.TakeGroupCard(card, () =>
-                {
-                    // 玩家拿到卡后改为没有卡在转移
-                    cardSending = false;
-                });
+                // 玩家拿到卡后改为没有卡在转移
+                cardSending = false;
             });
 
             // 等到卡牌转移完毕
