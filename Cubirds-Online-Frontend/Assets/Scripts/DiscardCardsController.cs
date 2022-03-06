@@ -54,7 +54,7 @@ public class DiscardCardsController : MonoBehaviour
     public void BackToDeck(Action callback = null)
     {
         // 让协程处理
-        StartCoroutine(nameof(BackToDeckCoroutine), callback);
+        StartCoroutine(BackToDeckCoroutine(callback));
     }
     /// <summary>
     /// 将弃牌区的牌返回主卡组的协程，注意这个操作不会导致主卡组洗牌

@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// 卡牌组件
 /// </summary>
-public class Card : MonoBehaviour
+public class Card : MonoBehaviour, IPointerClickHandler
 {
     /// <summary>
     /// 卡牌主画布
@@ -205,7 +206,7 @@ public class Card : MonoBehaviour
     /// <param name="targetPosition">要移动到的位置</param>
     /// <param name="duration">移动时间</param>
     /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, float duration = 0.5f, Action callBack = null)
+    public void MoveTo(Vector3 targetPosition, float duration, Action callBack)
     {
         // 取消正在进行的移动补间动画
         if(moveTween != null)
@@ -236,10 +237,27 @@ public class Card : MonoBehaviour
     /// 将这张卡片移动到指定位置
     /// </summary>
     /// <param name="targetPosition">要移动到的位置</param>
+    /// <param name="duration">移动时间</param>
+    public void MoveTo(Vector3 targetPosition, float duration)
+    {
+        MoveTo(targetPosition, duration, null);
+    }
+    /// <summary>
+    /// 将这张卡片移动到指定位置
+    /// </summary>
+    /// <param name="targetPosition">要移动到的位置</param>
     /// <param name="callBack">移动结束后的回调</param>
-    public void MoveTo(Vector3 targetPosition, Action callBack = null)
+    public void MoveTo(Vector3 targetPosition, Action callBack)
     {
         MoveTo(targetPosition, 0.5f, callBack);
+    }
+    /// <summary>
+    /// 将这张卡片移动到指定位置
+    /// </summary>
+    /// <param name="targetPosition">要移动到的位置</param>
+    public void MoveTo(Vector3 targetPosition)
+    {
+        MoveTo(targetPosition, 0.5f, null);
     }
 
     /// <summary>
@@ -257,5 +275,13 @@ public class Card : MonoBehaviour
 
         // 使用 DOTween 进行移动并记录这个补间
         rotateTween = transform.DORotateQuaternion(rotation, duration);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.LogFormat("点击卡牌 {0} {1}", CardType, Id);
+
+        // 转发点击事件给输入控制器
+        InputController.Instance.CallCardPointClick(this, eventData);
     }
 }
