@@ -54,12 +54,24 @@ public class CenterAreaLineController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback)
     {
-        // 收到的牌的列表
-        List<Card> getCards = new List<Card>();
-
         // 记录移动到位置的卡的数量的计数器
         int movedCardNumbers = 0;
+        // 遍历所有要打到行里的的牌
+        putCards.ForEach(putCard =>
+        {
+            // 移动到行里
+            putCard.MoveToAndRotateTo(LinePosition.position, LinePosition.rotation, () =>
+            {
+                // 移动到位后增加计数器
+                movedCardNumbers++;
+            });
+        });
 
+        // 等待所有牌移动到位
+        yield return new WaitUntil(() => movedCardNumbers >= putCards.Count);
+
+        // 收到的牌的列表
+        List<Card> getCards = new List<Card>();
 
         if (right)
         {

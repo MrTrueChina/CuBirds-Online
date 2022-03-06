@@ -198,28 +198,13 @@ public class PlayerController : MonoBehaviour
         // 从手牌中移除这些卡
         handCards.RemoveAll(c => cards.Contains(c));
 
-        // 卡牌移动到行上位置的计数器
-        int movedCardsNumber = 0;
-
-        // 遍历这些牌
-        cards.ForEach(card =>
-        {
-            // 让他们移动到行的位置
-            card.MoveToAndRotateTo(line.LinePosition.position, line.LinePosition.rotation, () =>
-            {
-                // 移动到后增加计数器
-                movedCardsNumber++;
-            });
-        });
-
         // 调整手牌的显示
         DisplayHandCards();
 
-        // 等待所有的牌移动到位
-        yield return new WaitUntil(() => movedCardsNumber >= cards.Count);
-
         // 通知行收卡
         line.PutCard(this, cards, !isLeft, callBack);
+
+        yield return null;
     }
 
     /// <summary>

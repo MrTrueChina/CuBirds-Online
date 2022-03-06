@@ -182,21 +182,17 @@ public class DeckController : MonoBehaviour
             {
                 // 成功找到可以放入的中央行
 
-                // 将牌移动到行的位置
-                targetCard.MoveToAndRotateTo(targetLine.LinePosition.position, targetLine.LinePosition.rotation, 0.3f, () =>
+                // 把牌打到中央区的行里，从卡组出牌没有玩家，玩家传的是 null
+                targetLine.PutCard(null, targetCard, true, () =>
                 {
-                    // 到位置后通知行放下卡，从卡组出牌没有玩家，玩家传的是 null
-                    targetLine.PutCard(null, targetCard, true, () =>
+                    // 当这一行达到 3 张卡时，这一行已填满，移除这一行
+                    if (targetLine.Cards.Count >= 3)
                     {
-                        // 当这一行达到 3 张卡时，这一行已填满，移除这一行
-                        if(targetLine.Cards.Count >= 3)
-                        {
-                            lines.Remove(targetLine);
-                        }
+                        lines.Remove(targetLine);
+                    }
 
-                        // 记录没有卡牌正在发送
-                        cardSending = false;
-                    });
+                    // 记录没有卡牌正在发送
+                    cardSending = false;
                 });
             }
             else
