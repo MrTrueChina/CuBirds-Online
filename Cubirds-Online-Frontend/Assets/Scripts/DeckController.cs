@@ -112,7 +112,7 @@ public class DeckController : MonoBehaviour
         cards.Add(card);
 
         // 把卡片移动到顶层
-        card.MoveTo(deckPosition.position + Vector3.up * cards.Count, 0.2f);
+        card.MoveToAndRotateTo(deckPosition.position + Vector3.up * cards.Count, deckPosition.rotation, 0.2f);
 
         // 执行回调
         if(callback != null)
@@ -131,7 +131,7 @@ public class DeckController : MonoBehaviour
         {
             Card card = cards[i];
             // 设置卡牌位置，越靠后越高
-            card.MoveTo(DeckPosition.position + (Vector3.up * i), 0.1f);
+            card.MoveToAndRotateTo(DeckPosition.position + (Vector3.up * i), DeckPosition.rotation, 0.1f);
             // 设置卡牌显示次序，越靠后越靠前
             card.SetDisplaySort(i);
         }
@@ -154,7 +154,7 @@ public class DeckController : MonoBehaviour
         // 获取中央区行的控制器，并创建一个字典以记录发出的牌的数量。这里是副本，防止操作了主控制器的数据
         List<CenterAreaLineController> lines = new List<CenterAreaLineController>(GameController.Instance.CenterAreaLineControllers);
 
-        // 有卡片正在发送
+        // 有卡片正在发送的标志变量
         bool cardSending = false;
 
         // 填充完毕的中央行会移除，一直循环到所有中央行都填充完毕
@@ -183,7 +183,7 @@ public class DeckController : MonoBehaviour
                 // 成功找到可以放入的中央行
 
                 // 将牌移动到行的位置
-                targetCard.MoveTo(targetLine.LinePosition.position, 0.3f, () =>
+                targetCard.MoveToAndRotateTo(targetLine.LinePosition.position, targetLine.LinePosition.rotation, 0.3f, () =>
                 {
                     // 到位置后通知行放下卡，从卡组出牌没有玩家，玩家传的是 null
                     targetLine.PutCard(null, targetCard, true, () =>
@@ -204,7 +204,7 @@ public class DeckController : MonoBehaviour
                 // 没找到可以放入的中央行
 
                 // 把牌移动到弃牌区的位置
-                targetCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), 0.3f, () =>
+                targetCard.MoveToAndRotateTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), GameController.Instance.DiscardCardsController.GetDiscardRotation(), 0.3f, () =>
                 {
                     // 把牌扔进弃牌区
                     GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
@@ -270,11 +270,8 @@ public class DeckController : MonoBehaviour
                 // 发出的牌计数器增加
                 sendedCardNumber++;
 
-                // 将卡旋转到玩家的朝向
-                card.RotateTo(player.transform.rotation);
-
                 // 将卡移动到玩家的位置
-                card.MoveTo(player.transform.position, () =>
+                card.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
                 {
                     // 移动完成时通知玩家拿走这张卡
                     player.TakeHandCard(card, () =>
@@ -330,10 +327,8 @@ public class DeckController : MonoBehaviour
             // 从牌库里移除
             cards.Remove(card);
 
-            // 把卡牌转到玩家的角度
-            card.RotateTo(player.transform.rotation);
             // 移动到玩家的位置
-            card.MoveTo(player.transform.position, () =>
+            card.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
             {
                 // 到玩家的位置后交给玩家
                 player.TakeGroupCard(card, () =>

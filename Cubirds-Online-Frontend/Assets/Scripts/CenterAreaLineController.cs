@@ -57,6 +57,10 @@ public class CenterAreaLineController : MonoBehaviour
         // 收到的牌的列表
         List<Card> getCards = new List<Card>();
 
+        // 记录移动到位置的卡的数量的计数器
+        int movedCardNumbers = 0;
+
+
         if (right)
         {
             // 如果放在右侧
@@ -108,7 +112,7 @@ public class CenterAreaLineController : MonoBehaviour
         getCards.ForEach(getCard =>
         {
             // 移动到玩家的位置
-            getCard.MoveTo(player.transform.position, () =>
+            getCard.MoveToAndRotateTo(player.transform.position, player.transform.rotation, () =>
             {
                 // 移动到玩家位置后把牌给玩家
                 player.TakeHandCard(getCard, () =>
@@ -133,7 +137,7 @@ public class CenterAreaLineController : MonoBehaviour
             float offset = (Cards.Count - 1) * -50 + i * 100;
 
             // 移动卡牌
-            card.MoveTo(LinePosition.position + LinePosition.right * offset, 0.2f);
+            card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
         }
 
         // 执行回调

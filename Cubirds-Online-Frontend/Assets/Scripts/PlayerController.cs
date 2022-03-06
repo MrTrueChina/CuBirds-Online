@@ -97,7 +97,7 @@ public class PlayerController : MonoBehaviour
             float offset = (handCards.Count - 1) * -25 + i * 50;
 
             // 移动卡牌
-            card.MoveTo(transform.position - transform.right * offset, 0.2f);
+            card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);
         }
     }
 
@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
             float verticalOffset = 140 + typeNumber * 40;
 
             // 移动卡牌
-            card.MoveTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, 0.1f);
+            card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.1f);
 
             // 每遍历一张，这个种类的计数器增加
             typeNumber++;
@@ -205,7 +205,7 @@ public class PlayerController : MonoBehaviour
         cards.ForEach(card =>
         {
             // 让他们移动到行的位置
-            card.MoveTo(line.LinePosition.position, () =>
+            card.MoveToAndRotateTo(line.LinePosition.position, line.LinePosition.rotation, () =>
             {
                 // 移动到后增加计数器
                 movedCardsNumber++;
@@ -276,7 +276,7 @@ public class PlayerController : MonoBehaviour
         foreach(Card discardCard in makeGroupCards)
         {
             // 把牌移动到弃牌区
-            discardCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), () =>
+            discardCard.MoveToAndRotateTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), GameController.Instance.DiscardCardsController.GetDiscardRotation(), () =>
             {
                 // 把牌丢入弃牌区
                 GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>

@@ -68,14 +68,15 @@ public class MakeGroupController : MonoBehaviour
         // 如果玩家手里的这种类型的卡足够组成鸟群，通知输入控制器发出玩家组成鸟群事件
         if (GameController.Instance.CurrentTrunPlayre.GetHandCardsNumberByCardType(card.CardType) >= card.SmallGroupNumber)
         {
+            // 发出事件
             InputController.Instance.CallPlayerMakeGroup(GameController.Instance.CurrentTrunPlayre.Id, card.CardType);
+
+            // 将事件设为已使用
+            eventData.Use();
+
+            // 发出事件后关闭面板
+            Close();
         }
-
-        // 将事件设为已使用
-        eventData.Use();
-
-        // 关闭面板
-        Close();
     }
 
     /// <summary>

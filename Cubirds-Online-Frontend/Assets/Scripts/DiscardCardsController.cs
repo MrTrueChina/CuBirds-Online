@@ -72,7 +72,7 @@ public class DiscardCardsController : MonoBehaviour
         Cards.ForEach(card =>
         {
             // 让牌移动到卡组的位置
-            card.MoveTo(GameController.Instance.DeckController.DeckPosition.position, () =>
+            card.MoveToAndRotateTo(GameController.Instance.DeckController.DeckPosition.position, GameController.Instance.DeckController.DeckPosition.rotation, () =>
             {
                 // 牌移动到卡组位置后把牌给卡组
                 GameController.Instance.DeckController.TakeCard(card, () =>
@@ -100,5 +100,14 @@ public class DiscardCardsController : MonoBehaviour
         return discardCardsPosition.position + new Vector3(Random.Range(discardOffsetRange.x, -discardOffsetRange.x),
             Random.Range(discardOffsetRange.y, -discardOffsetRange.y),
             Random.Range(discardOffsetRange.z, -discardOffsetRange.z));
+    }
+
+    /// <summary>
+    /// 获取弃牌堆旋转值
+    /// </summary>
+    /// <returns></returns>
+    public Quaternion GetDiscardRotation()
+    {
+        return discardCardsPosition.rotation;
     }
 }
