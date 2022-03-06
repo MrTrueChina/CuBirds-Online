@@ -34,6 +34,15 @@ public class PlayCardsController : MonoBehaviour
     }
     private static PlayCardsController instance;
 
+    /// <summary>
+    /// 打牌操作面板
+    /// </summary>
+    [SerializeField]
+    [Header("打牌操作面板")]
+    private GameObject playCardCanvas;
+    /// <summary>
+    /// 选择打牌位置的按钮的画布
+    /// </summary>
     [SerializeField]
     [Header("选择打牌位置的按钮的画布")]
     private GameObject selectPutLineButtonCanvas;
@@ -51,7 +60,10 @@ public class PlayCardsController : MonoBehaviour
         Debug.Log("开始打牌操作");
 
         // 订阅输入器的卡片被点击事件
-        InputController.Instance.CardPointClickEvent.AddListener(OnCardClick);
+        InputController.Instance.OnCardPointClickEvent.AddListener(OnCardClick);
+
+        // 显示打牌操作面板
+        playCardCanvas.SetActive(true);
     }
 
     /// <summary>
@@ -108,7 +120,10 @@ public class PlayCardsController : MonoBehaviour
         // 关闭选择放置位置的按钮
         selectPutLineButtonCanvas.SetActive(false);
 
+        // 关闭打牌操作面板
+        playCardCanvas.SetActive(false);
+
         // 取消订阅输入控制器的卡片被点击事件
-        InputController.Instance.CardPointClickEvent.RemoveListener(OnCardClick);
+        InputController.Instance.OnCardPointClickEvent.RemoveListener(OnCardClick);
     }
 }

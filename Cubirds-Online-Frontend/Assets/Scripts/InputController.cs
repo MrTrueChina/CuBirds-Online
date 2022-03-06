@@ -37,15 +37,19 @@ public class InputController : MonoBehaviour
     /// <summary>
     /// 卡牌被点击事件
     /// </summary>
-    public UnityEvent<Card, PointerEventData> CardPointClickEvent { get; } = new UnityEvent<Card, PointerEventData>();
+    public UnityEvent<Card, PointerEventData> OnCardPointClickEvent { get; } = new UnityEvent<Card, PointerEventData>();
     /// <summary>
     /// 玩家打出鸟牌事件，参数是 玩家id、牌的种类（鸟类）、打到的中央行的索引、是否打在左侧
     /// </summary>
-    public UnityEvent<int, CardType, int, bool> PlayerPlayCards { get; } = new UnityEvent<int, CardType, int, bool>();
+    public UnityEvent<int, CardType, int, bool> OnPlayerPlayCardsEvent { get; } = new UnityEvent<int, CardType, int, bool>();
     /// <summary>
     /// 玩家组成鸟群事件，参数是 玩家id、组成鸟群的牌的种类（鸟类）
     /// </summary>
-    public UnityEvent<int, CardType> PlayerMakeGroup { get; } = new UnityEvent<int, CardType>();
+    public UnityEvent<int, CardType> OnPlayerMakeGroupEvent { get; } = new UnityEvent<int, CardType>();
+    /// <summary>
+    /// 玩家选择不组成鸟群事件，参数是 玩家id
+    /// </summary>
+    public UnityEvent<int> OnPlayerDontMakeGroupEvent { get; } = new UnityEvent<int>();
 
     /// <summary>
     /// 通知输入控制器有卡牌被点击
@@ -57,7 +61,7 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("卡牌 {0} ({1}) 被点击", card.CardType, card.Id);
 
         // 转发出卡牌被点击事件
-        CardPointClickEvent.Invoke(card, eventData);
+        OnCardPointClickEvent.Invoke(card, eventData);
     }
 
     /// <summary>
@@ -72,7 +76,7 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 打出种类为 {1} 的牌，打到 {2} 行，是否在左侧 {3}", playerId, cardType, lineIndex, putOnLeft);
 
         // 转发玩家打出鸟牌事件
-        PlayerPlayCards.Invoke(playerId, cardType, lineIndex, putOnLeft);
+        OnPlayerPlayCardsEvent.Invoke(playerId, cardType, lineIndex, putOnLeft);
     }
 
     /// <summary>
@@ -85,6 +89,18 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 组成 {1} 鸟类的鸟群", playerId, cardType);
 
         // 转发玩家组成鸟群事件
-        PlayerMakeGroup.Invoke(playerId, cardType);
+        OnPlayerMakeGroupEvent.Invoke(playerId, cardType);
+    }
+
+    /// <summary>
+    /// 通知输入控制器有玩家选择不组成鸟群
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void CallPlayerDontMakeGroup(int playerId)
+    {
+        Debug.LogFormat("玩家 {0} 选择不组成鸟群", playerId);
+
+        // 转发玩家选择不组成鸟群事件
+        OnPlayerDontMakeGroupEvent.Invoke(playerId);
     }
 }

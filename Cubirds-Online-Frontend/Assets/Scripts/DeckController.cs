@@ -185,8 +185,8 @@ public class DeckController : MonoBehaviour
                 // 将牌移动到行的位置
                 targetCard.MoveTo(targetLine.LinePosition.position, 0.3f, () =>
                 {
-                    // 到位置后通知行放下卡
-                    targetLine.PutCard(targetCard, true, () =>
+                    // 到位置后通知行放下卡，从卡组出牌没有玩家，玩家传的是 null
+                    targetLine.PutCard(null, targetCard, true, () =>
                     {
                         // 当这一行达到 3 张卡时，这一行已填满，移除这一行
                         if(targetLine.Cards.Count >= 3)

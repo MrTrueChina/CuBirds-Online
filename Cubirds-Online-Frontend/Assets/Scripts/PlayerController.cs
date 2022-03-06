@@ -212,11 +212,89 @@ public class PlayerController : MonoBehaviour
             });
         });
 
+        // 调整手牌的显示
+        DisplayHandCards();
+
         // 等待所有的牌移动到位
         yield return new WaitUntil(() => movedCardsNumber >= cards.Count);
 
         // 通知行收卡
-        line.PutCard(cards, !isLeft, callBack);
+        line.PutCard(this, cards, !isLeft, callBack);
+    }
+
+    /// <summary>
+    /// 组群
+    /// </summary>
+    /// <param name="cardType">组群的鸟类</param>
+    /// <param name="callback"></param>
+    public void MakeGroup(CardType cardType, Action callback)
+    {
+        // 交给协程进行
+        StartCoroutine(MakeGroupCoroutine(cardType, callback));
+    }
+    /// <summary>
+    /// 组群的协程
+    /// </summary>
+    /// <param name="cardType"></param>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    private IEnumerator MakeGroupCoroutine(CardType cardType, Action callback)
+    {
+        Debug.LogFormat("玩家 {0} 进行 {1} 鸟类的组群", Id, cardType);
+
+        // 找出手牌中这些鸟类的牌
+        List<Card> makeGroupCards = handCards.FindAll(c => c.CardType == cardType);
+
+        // 从手牌中移除
+        handCards.RemoveAll(c => makeGroupCards.Contains(c));
+
+        // 记录能够获取的鸟群卡的数量，如果能组成大鸟群是两张，否则是一张
+        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 1 : 2;
+
+        // 记录需要发送的卡的数量
+        int needSendCardsNumber = makeGroupCards.Count;
+        // 已经完成发送的卡的数量
+        int sendedCardsNumber = 0;
+
+        // 把能收到的鸟群卡放到鸟群区
+        for(int i =0;i < getGroupCardsNumber; i++)
+        {
+            // 拿最前面那张卡当鸟群卡
+            Card groupCard = makeGroupCards[0];
+
+            // 把这张卡移除出手牌
+            makeGroupCards.Remove(groupCard);
+
+            // 把这张牌加入鸟群卡
+            TakeGroupCard(groupCard, () => {
+                // 加入鸟群卡后增加完成发送的卡的数量
+                sendedCardsNumber++;
+            });
+        }
+
+        // 把剩下的牌扔到弃牌区
+        foreach(Card discardCard in makeGroupCards)
+        {
+            // 把牌移动到弃牌区
+            discardCard.MoveTo(GameController.Instance.DiscardCardsController.GetDiscardPosition(), () =>
+            {
+                // 把牌丢入弃牌区
+                GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
+                {
+                    // 牌扔到弃牌区后增加完成发送的卡的数量
+                    sendedCardsNumber++;
+                });
+            });
+        }
+
+        // 更新手卡的显示
+        DisplayHandCards();
+
+        // 等待所有的卡发送完毕
+        yield return new WaitUntil(() => sendedCardsNumber >= needSendCardsNumber);
+
+        // 执行回调
+        callback.Invoke();
     }
 
     /// <summary>
@@ -229,5 +307,18 @@ public class PlayerController : MonoBehaviour
         Debug.LogFormat("检测卡牌 {0} {1} 是不是玩家的手牌", card.CardType, card.Id);
 
         return handCards.Contains(card);
+    }
+
+    /// <summary>
+    /// 获取这个玩家手牌中指定类型的牌的数量
+    /// </summary>
+    /// <param name="cardType"></param>
+    /// <returns></returns>
+    public int GetHandCardsNumberByCardType(CardType cardType)
+    {
+        Debug.LogFormat("检测玩家 {0} 手中 {1} 牌的数量", Id, cardType);
+
+        // 返回数量
+        return handCards.Count(c => c.CardType == cardType);
     }
 }
