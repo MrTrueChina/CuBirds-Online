@@ -54,23 +54,25 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback">获取卡牌后的回调</param>
-    public void TakeHandCard(Card card, Action callback)
+    /// <param name="duration">移动卡牌的时间</param>
+    public void TakeHandCard(Card card, Action callback, float duration = 0.5f)
     {
         // 交给协程处理
-        StartCoroutine(TakeHandCardCoroutine(card, callback));
+        StartCoroutine(TakeHandCardCoroutine(card, callback, duration));
     }
     /// <summary>
     /// 获取手牌的协程
     /// </summary>
     /// <param name="card"></param>
     /// <param name="callback">获取卡牌后的回调</param>
-    public IEnumerator TakeHandCardCoroutine(Card card, Action callback)
+    /// <param name="duration">移动卡牌的时间</param>
+    public IEnumerator TakeHandCardCoroutine(Card card, Action callback, float duration = 0.5f)
     {
         //Debug.LogFormat("玩家 {0} 获取卡牌 {1} {2} 协程启动", Id, card.Id, card.CardType);
 
         // 移动卡牌到玩家位置并等待卡牌移动到位
         bool moved = false;
-        card.MoveToAndRotateTo(transform.position, transform.rotation, () => { moved = true; });
+        card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
 
         // 把卡牌添加到手牌里

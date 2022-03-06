@@ -28,10 +28,11 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCards">放下的牌</param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
-    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action callback = null, float duration = 0.5f)
     {
         // 交给协程进行
-        StartCoroutine(PutCardCorotine(player, putCards, right, callback));
+        StartCoroutine(PutCardCorotine(player, putCards, right, callback, duration));
     }
     /// <summary>
     /// 将卡牌放到这一行里
@@ -40,9 +41,10 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCard"></param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
-    public void PutCard(PlayerController player, Card putCard, bool right, Action callback = null)
+    /// <param name="duration">卡牌移动时间</param>
+    public void PutCard(PlayerController player, Card putCard, bool right, Action callback = null, float duration = 0.5f)
     {
-        PutCard(player, new List<Card>() { putCard }, right, callback);
+        PutCard(player, new List<Card>() { putCard }, right, callback, duration);
     }
     /// <summary>
     /// 将卡牌放到这一行里的协程
@@ -51,8 +53,9 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="putCards">放下的牌</param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
     /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动时间</param>
     /// <returns></returns>
-    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback)
+    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback, float duration)
     {
         // 记录移动到位置的卡的数量的计数器
         int movedCardNumbers = 0;
@@ -60,7 +63,7 @@ public class CenterAreaLineController : MonoBehaviour
         putCards.ForEach(putCard =>
         {
             // 移动到行里
-            putCard.MoveToAndRotateTo(LinePosition.position, LinePosition.rotation, () =>
+            putCard.MoveToAndRotateTo(LinePosition.position, LinePosition.rotation, duration, () =>
             {
                 // 移动到位后增加计数器
                 movedCardNumbers++;

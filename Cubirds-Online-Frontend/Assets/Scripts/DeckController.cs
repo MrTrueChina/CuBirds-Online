@@ -193,7 +193,7 @@ public class DeckController : MonoBehaviour
 
                     // 记录没有卡牌正在发送
                     cardSending = false;
-                });
+                }, 0.4f);
             }
             else
             {
