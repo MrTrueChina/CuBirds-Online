@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using Text = UnityEngine.UI.Text;
 
 /// <summary>
 /// 游戏控制器，就是发牌员和主持
@@ -67,6 +69,18 @@ public class GameController : MonoBehaviour
     [SerializeField]
     [Header("玩家位置列表")]
     private List<Transform> playerPositions;
+    /// <summary>
+    /// 胜利面板画布
+    /// </summary>
+    [SerializeField]
+    [Header("胜利面板画布")]
+    private GameObject winCanvas;
+    /// <summary>
+    /// 胜利面板文本组件
+    /// </summary>
+    [SerializeField]
+    [Header("胜利面板文本组件")]
+    private Text winText;
 
     /// <summary>
     /// 卡牌预制
@@ -221,11 +235,7 @@ public class GameController : MonoBehaviour
                 // 没拿到牌
 
                 // 选择是否抽牌阶段
-                SelectDrawCard(() =>
-                {
-                    // 选择完后再组群
-                    MakeGroup();
-                });
+                SelectDrawCard();
             }
         });
     }
@@ -233,18 +243,16 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 没收到牌时选择是否抽牌的阶段
     /// </summary>
-    /// <param name="callback"></param>
-    private void SelectDrawCard(Action callback)
+    private void SelectDrawCard()
     {
         // 交给协程进行
-        StartCoroutine(SelectDrawCardCoroutine(callback));
+        StartCoroutine(SelectDrawCardCoroutine());
     }
     /// <summary>
-    /// 没收到牌时选择是否抽牌的阶段
+    /// 没收到牌时选择是否抽牌的阶段的协程
     /// </summary>
-    /// 没收到牌时选择是否抽牌的阶段
     /// <returns></returns>
-    private IEnumerator SelectDrawCardCoroutine(Action callback)
+    private IEnumerator SelectDrawCardCoroutine()
     {
         Debug.Log("选择是否抽牌阶段协程启动");
 
@@ -363,8 +371,8 @@ public class GameController : MonoBehaviour
             // 通知这个玩家进行组群
             players.Find(p => p.Id == playerId).MakeGroup(cardType, () =>
             {
-                // 组群完成后执行空手判断阶段
-                EmptyHandCheck();
+                // 组群完成后执行胜利判断阶段
+                WinCheck();
             });
         }
         else
@@ -372,6 +380,58 @@ public class GameController : MonoBehaviour
             // 如果不进行组群
 
             // 立刻进行空手判断阶段
+            EmptyHandCheck();
+        }
+    }
+
+    /// <summary>
+    /// 胜利检测阶段
+    /// </summary>
+    private void WinCheck()
+    {
+        // 记录当前玩家是否胜利的标志变量
+        bool currentPlayerWin = false;
+
+        // 如果玩家手里的鸟群牌的种类达到 7 种，这名玩家获胜
+        if(CurrentTrunPlayre.GroupCards.Select(c => c.CardType).Distinct().ToList().Count >= 7)
+        {
+            currentPlayerWin = true;
+        }
+
+        // 集齐至少三张卡的鸟类的计数器
+        int threeCardsTypeNumber = 0;
+        // 遍历所有鸟类
+        foreach (CardType cardType in (CardType[])Enum.GetValues(typeof(CardType)))
+        {
+            // 如果鸟群卡中这种鸟的种类达到了三张则计数器增加
+            if(CurrentTrunPlayre.GroupCards.Count(c=>c.CardType == cardType) >= 3)
+            {
+                threeCardsTypeNumber++;
+            }
+        }
+        // 如果有两种鸟的卡达到了三张，这名玩家获胜
+        if(threeCardsTypeNumber >= 2)
+        {
+            currentPlayerWin = true;
+        }
+
+        if (currentPlayerWin)
+        {
+            // 如果当前玩家胜利
+            
+            // 激活胜利面板
+            winCanvas.SetActive(true);
+
+            // 设置胜利文本
+            winText.text = string.Format("玩家 {0} 获胜！", CurrentTrunPlayre.Id);
+
+            // 之后不进行其他操作了，流程结束
+        }
+        else
+        {
+            // 当前玩家没有胜利
+
+            // 进入空手判断阶段
             EmptyHandCheck();
         }
     }

@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// 鸟群卡
     /// </summary>
-    private List<Card> groupCards = new List<Card>();
+    public List<Card> GroupCards { get; private set; } = new List<Card>();
 
     /// <summary>
     /// 初始化这个玩家
@@ -137,7 +137,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitUntil(() => moved);
 
         // 添加到鸟群卡列表中
-        groupCards.Add(card);
+        GroupCards.Add(card);
 
         // 显示鸟群卡
         DisplayGroupCards(callback);
@@ -150,10 +150,10 @@ public class PlayerController : MonoBehaviour
     private void DisplayGroupCards(Action callback = null)
     {
         // 将鸟群卡进行排序
-        groupCards.Sort((a, b) => (int)b.CardType - (int)a.CardType);
+        GroupCards.Sort((a, b) => (int)b.CardType - (int)a.CardType);
 
         // 提取出现有的鸟群卡的种类列表
-        List<CardType> cardTypes = groupCards.Select(c => c.CardType).Distinct().ToList();
+        List<CardType> cardTypes = GroupCards.Select(c => c.CardType).Distinct().ToList();
 
         // 转化出鸟类卡种类对应的横轴偏移量映射表
         Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -60f) + (cardTypes.IndexOf(t) * 120));
@@ -161,10 +161,10 @@ public class PlayerController : MonoBehaviour
         // 同种类的卡出现了多少次的计数器
         int typeNumber = 0;
         // 记录上一张卡的种类
-        CardType lastType = groupCards.First().CardType;
+        CardType lastType = GroupCards.First().CardType;
 
         // 遍历卡
-        groupCards.ForEach(card =>
+        GroupCards.ForEach(card =>
         {
             // 如果这张卡的种类和上一张卡的种类不同，清空同种卡出现次数计数，记录新的种类
             if (card.CardType != lastType)
@@ -186,10 +186,10 @@ public class PlayerController : MonoBehaviour
         });
 
         // 设置显示顺序
-        for(int i = 0; i < groupCards.Count; i++)
+        for(int i = 0; i < GroupCards.Count; i++)
         {
             // 越靠后的显示顺序越高，因为同类的卡的显示效果是最下面那张完全显示
-            groupCards[i].SetDisplaySort(groupCards.Count - i);
+            GroupCards[i].SetDisplaySort(GroupCards.Count - i);
         }
 
         if(callback != null)
