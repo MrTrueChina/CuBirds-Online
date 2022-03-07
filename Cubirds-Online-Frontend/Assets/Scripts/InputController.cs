@@ -50,6 +50,14 @@ public class InputController : MonoBehaviour
     /// 玩家选择不组成鸟群事件，参数是 玩家id
     /// </summary>
     public UnityEvent<int> OnPlayerDontMakeGroupEvent { get; } = new UnityEvent<int>();
+    /// <summary>
+    /// 玩家选择抽牌事件，参数是 玩家id
+    /// </summary>
+    public UnityEvent<int> OnPlayerDrawCardsEvent { get; } = new UnityEvent<int>();
+    /// <summary>
+    /// 玩家选择不抽牌事件，参数是 玩家id
+    /// </summary>
+    public UnityEvent<int> OnPlayerDontDrawCardsEvent { get; } = new UnityEvent<int>();
 
     /// <summary>
     /// 通知输入控制器有卡牌被点击
@@ -102,5 +110,29 @@ public class InputController : MonoBehaviour
 
         // 转发玩家选择不组成鸟群事件
         OnPlayerDontMakeGroupEvent.Invoke(playerId);
+    }
+
+    /// <summary>
+    /// 通知输入控制器有玩家选择抽牌
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void CallPlayerDrawCards(int playerId)
+    {
+        Debug.LogFormat("玩家 {0} 选择抽牌", playerId);
+
+        // 转发玩家选择抽牌事件
+        OnPlayerDrawCardsEvent.Invoke(playerId);
+    }
+
+    /// <summary>
+    /// 通知输入控制器有玩家选择不抽牌
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void CallPlayerDontDrawCards(int playerId)
+    {
+        Debug.LogFormat("玩家 {0} 选择不抽牌", playerId);
+
+        // 转发玩家选择不抽牌事件
+        OnPlayerDontDrawCardsEvent.Invoke(playerId);
     }
 }

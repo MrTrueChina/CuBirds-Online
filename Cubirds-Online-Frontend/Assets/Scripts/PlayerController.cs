@@ -204,8 +204,8 @@ public class PlayerController : MonoBehaviour
     /// <param name="cardType">打出的牌的种类</param>
     /// <param name="line">打到的行的索引</param>
     /// <param name="isLeft">是否打在左边</param>
-    /// <param name="callBack"></param>
-    public void PlayCards(CardType cardType, CenterAreaLineController line, bool isLeft, Action callBack)
+    /// <param name="callBack">回调，参数是收到的卡牌数量</param>
+    public void PlayCards(CardType cardType, CenterAreaLineController line, bool isLeft, Action<int> callBack)
     {
         // 交给协程处理
         StartCoroutine(PlayCardsCorotine(cardType, line, isLeft, callBack));
@@ -216,9 +216,9 @@ public class PlayerController : MonoBehaviour
     /// <param name="cardType">打出的牌的种类</param>
     /// <param name="line">打到的行的索引</param>
     /// <param name="isLeft">是否打在左边</param>
-    /// <param name="callBack"></param>
+    /// <param name="callBack">回调，参数是收到的卡牌数量</param>
     /// <returns></returns>
-    private IEnumerator PlayCardsCorotine(CardType cardType, CenterAreaLineController line, bool isLeft, Action callBack)
+    private IEnumerator PlayCardsCorotine(CardType cardType, CenterAreaLineController line, bool isLeft, Action<int> callBack)
     {
         // 找出手牌中所有这个类型的卡
         List<Card> cards = handCards.FindAll(c => c.CardType == cardType);
@@ -262,7 +262,7 @@ public class PlayerController : MonoBehaviour
         handCards.RemoveAll(c => makeGroupCards.Contains(c));
 
         // 记录能够获取的鸟群卡的数量，如果能组成大鸟群是两张，否则是一张
-        int getGroupCardsNumber = GetHandCardsNumberByCardType(cardType) >= makeGroupCards[0].BigGroupNumber ? 2 : 1;
+        int getGroupCardsNumber = makeGroupCards.Count >= makeGroupCards[0].BigGroupNumber ? 2 : 1;
 
         // 记录需要发送的卡的数量
         int needSendCardsNumber = makeGroupCards.Count;
@@ -270,7 +270,7 @@ public class PlayerController : MonoBehaviour
         int sendedCardsNumber = 0;
 
         // 把能收到的鸟群卡放到鸟群区
-        for(int i =0;i < getGroupCardsNumber; i++)
+        for (int i = 0; i < getGroupCardsNumber; i++)
         {
             // 拿最前面那张卡当鸟群卡
             Card groupCard = makeGroupCards[0];

@@ -27,9 +27,9 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="player">放下这些牌的玩家</param>
     /// <param name="putCards">放下的牌</param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
-    /// <param name="callback"></param>
+    /// <param name="callback">回调，参数是收到的牌的数量</param>
     /// <param name="duration">卡牌移动时间</param>
-    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action callback = null, float duration = 0.5f)
+    public void PutCard(PlayerController player, List<Card> putCards, bool right, Action<int> callback = null, float duration = 0.5f)
     {
         // 交给协程进行
         StartCoroutine(PutCardCorotine(player, putCards, right, callback, duration));
@@ -40,9 +40,9 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="player">放下卡的玩家</param>
     /// <param name="putCard"></param>
     /// <param name="right">是否放在右端，如果传入 false 则放在左端</param>
-    /// <param name="callback"></param>
+    /// <param name="callback">回调，参数是收到的牌的数量</param>
     /// <param name="duration">卡牌移动时间</param>
-    public void PutCard(PlayerController player, Card putCard, bool right, Action callback = null, float duration = 0.5f)
+    public void PutCard(PlayerController player, Card putCard, bool right, Action<int> callback = null, float duration = 0.5f)
     {
         PutCard(player, new List<Card>() { putCard }, right, callback, duration);
     }
@@ -55,7 +55,7 @@ public class CenterAreaLineController : MonoBehaviour
     /// <param name="callback"></param>
     /// <param name="duration">卡牌移动时间</param>
     /// <returns></returns>
-    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action callback, float duration)
+    private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action<int> callback, float duration)
     {
         // 记录移动到位置的卡的数量的计数器
         int movedCardNumbers = 0;
@@ -164,7 +164,7 @@ public class CenterAreaLineController : MonoBehaviour
         DisplayCards();
 
         // 执行回调
-        callback.Invoke();
+        callback.Invoke(getCards.Count);
     }
 
     /// <summary>

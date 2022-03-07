@@ -160,20 +160,6 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 单个玩家的回合
-    /// </summary>
-    private void PlayerTurn()
-    {
-        // 打出牌
-
-        // 组群
-        
-        // 对空手的判断
-
-        // 下一回合
-    }
-
-    /// <summary>
     /// 打牌阶段
     /// </summary>
     private void PlayBirdCards()
@@ -221,11 +207,99 @@ public class GameController : MonoBehaviour
         Debug.LogFormat("游戏主控制器确认到玩家 {0} 打出牌 {1}，在第 {2} 行，是否在左边 {3}", playerId, cardType, lineIndex, isLeft);
 
         // 通知这个玩家打牌
-        players.Find(p => p.Id == playerId).PlayCards(cardType, centerAreaLineControllers[lineIndex], isLeft, () =>
+        players.Find(p => p.Id == playerId).PlayCards(cardType, centerAreaLineControllers[lineIndex], isLeft, getCardsNumber =>
         {
-            // 玩家打完牌后进入组群阶段
-            MakeGroup();
+            if(getCardsNumber > 0)
+            {
+                // 拿到了牌
+
+                // 玩家打完牌后进入组群阶段
+                MakeGroup();
+            }
+            else
+            {
+                // 没拿到牌
+
+                // 选择是否抽牌阶段
+                SelectDrawCard(() =>
+                {
+                    // 选择完后再组群
+                    MakeGroup();
+                });
+            }
         });
+    }
+
+    /// <summary>
+    /// 没收到牌时选择是否抽牌的阶段
+    /// </summary>
+    /// <param name="callback"></param>
+    private void SelectDrawCard(Action callback)
+    {
+        // 交给协程进行
+        StartCoroutine(SelectDrawCardCoroutine(callback));
+    }
+    /// <summary>
+    /// 没收到牌时选择是否抽牌的阶段
+    /// </summary>
+    /// 没收到牌时选择是否抽牌的阶段
+    /// <returns></returns>
+    private IEnumerator SelectDrawCardCoroutine(Action callback)
+    {
+        Debug.Log("选择是否抽牌阶段协程启动");
+
+        // 记录玩家是否进行了选择的标志变量
+        bool selected = false;
+        // 进行操作的玩家 id
+        int playerId = default;
+        // 是否抽牌
+        bool drawCrads = default;
+
+        // 监听输入控制器的玩家选择抽牌事件
+        InputController.Instance.OnPlayerDrawCardsEvent.AddListener(eventPlayerId =>
+        {
+            // 记录玩家 id
+            playerId = eventPlayerId;
+            // 记录进行抽牌
+            drawCrads = true;
+            // 改为已经选择
+            selected = true;
+        });
+        // 监听输入控制器的玩家选择不抽牌事件
+        InputController.Instance.OnPlayerDontDrawCardsEvent.AddListener(eventPlayerId =>
+        {
+            // 记录玩家 id
+            playerId = eventPlayerId;
+            // 记录不进行抽牌
+            drawCrads = false;
+            // 改为已经选择
+            selected = true;
+        });
+
+        // 通知选择抽不抽牌操作面板开始操作
+        SelectDrawController.Instance.StartSelect();
+
+        // 等待玩家选择
+        yield return new WaitUntil(() => selected);
+
+        if (drawCrads)
+        {
+            // 玩家选择抽牌
+
+            // 让牌组发两张牌给玩家
+            deckController.DealCards(players.Find(p => p.Id == playerId), 2, () =>
+            {
+                // 发牌完成后进入组群阶段
+                MakeGroup();
+            });
+        }
+        else
+        {
+            // 玩家选择不抽牌
+
+            // 直接进入组群阶段
+            MakeGroup();
+        }
     }
 
     /// <summary>

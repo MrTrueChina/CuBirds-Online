@@ -200,7 +200,7 @@ public class DeckController : MonoBehaviour
                 // 成功找到可以放入的中央行
 
                 // 把牌打到中央区的行里，从卡组出牌没有玩家，玩家传的是 null
-                targetLine.PutCard(null, targetCard, true, () =>
+                targetLine.PutCard(null, targetCard, true, getCardsNumber =>
                 {
                     // 当这一行达到 3 张卡时，这一行已填满，移除这一行
                     if (targetLine.Cards.Count >= 3)
@@ -267,7 +267,7 @@ public class DeckController : MonoBehaviour
         targetCard.SetOpen(true);
 
         // 把卡放到行中
-        centerLine.PutCard(null, targetCard, right, () =>
+        centerLine.PutCard(null, targetCard, right, getCardsNumber =>
         {
             sended = true;
         }, 0.5f);
