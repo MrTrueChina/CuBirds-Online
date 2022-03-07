@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Text = UnityEngine.UI.Text;
+using System.Text;
 
 /// <summary>
 /// 游戏控制器，就是发牌员和主持
@@ -501,5 +502,44 @@ public class GameController : MonoBehaviour
             // 回到打牌阶段
             PlayBirdCards();
         }
+    }
+
+    /// <summary>
+    /// 卡牌耗尽
+    /// </summary>
+    public void RunOutCards()
+    {
+        // 复制一份玩家列表
+        List<PlayerController> sortedPlayers = new List<PlayerController>(players);
+
+        // 按照玩家手里的鸟群卡数量排序
+        sortedPlayers.Sort((a, b) => b.GroupCards.Count - a.GroupCards.Count);
+
+        // 筛选出鸟群卡数量和第一名一样的玩家，即并列第一的玩家们
+        List<PlayerController> winPlayers = sortedPlayers.Where(player => player.GroupCards.Count == sortedPlayers[0].GroupCards.Count).ToList();
+
+        // 玩家胜利文本构造器
+        StringBuilder winTextBuilder = new StringBuilder();
+
+        // 添加前缀
+        winTextBuilder.Append("玩家 ");
+
+        // 把并列第一的玩家们加进去
+        winPlayers.ForEach(player =>
+        {
+            winTextBuilder.Append(player.Id + "、");
+        });
+
+        // 移除最后面的顿号
+        winTextBuilder.Remove(winTextBuilder.Length - 1,1);
+
+        // 添加后缀
+        winTextBuilder.Append(" 获胜！");
+
+        // 打开胜利面板
+        winCanvas.SetActive(true);
+
+        // 设置胜利文本
+        winText.text = winTextBuilder.ToString();
     }
 }

@@ -267,6 +267,16 @@ public class DeckController : MonoBehaviour
             yield return StartCoroutine(ReturnDiscardCards());
 
             Debug.Log("弃牌堆返回卡组完成");
+
+            // 如果弃牌堆洗回牌堆后还是没有牌，说明所有牌都耗尽了
+            if (cards.Count == 0)
+            {
+                // 通知游戏主控制器卡牌耗尽
+                GameController.Instance.RunOutCards();
+
+                // 卡牌耗尽直接结束游戏，直接切断流程不执行回调
+                yield break;
+            }
         }
 
         // 获取牌库顶的卡
@@ -352,6 +362,16 @@ public class DeckController : MonoBehaviour
                     yield return StartCoroutine(ReturnDiscardCards());
 
                     Debug.Log("弃牌堆返回卡组完成");
+
+                    // 如果弃牌堆洗回牌堆后还是没有牌，说明所有牌都耗尽了
+                    if (cards.Count == 0)
+                    {
+                        // 通知游戏主控制器卡牌耗尽
+                        GameController.Instance.RunOutCards();
+
+                        // 卡牌耗尽直接结束游戏，直接切断流程不执行回调
+                        yield break;
+                    }
                 }
 
                 // 获取最后一张卡
