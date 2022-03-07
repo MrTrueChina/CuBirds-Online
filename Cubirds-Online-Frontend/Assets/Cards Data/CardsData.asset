@@ -68,7 +68,7 @@ MonoBehaviour:
     typeImage: {fileID: 21300000, guid: 57ef0eea0b5da5b409cf2b8c3498739b, type: 3}
     smallGroupNumber: 6
     bigGroupNumber: 9
-    cardNumber: 0
+    cardNumber: 20
   - name: "\u77E5\u66F4\u9E1F"
     cardType: 8
     cardPicture: {fileID: 21300000, guid: 6e8d313ba06ebf74ba44f855e0af9a9d, type: 3}
@@ -76,4 +76,4 @@ MonoBehaviour:
     typeImage: {fileID: 21300000, guid: 4e97ce6c9579e3c4d8dcdc11afafc68f, type: 3}
     smallGroupNumber: 6
     bigGroupNumber: 9
-    cardNumber: 0
+    cardNumber: 20
