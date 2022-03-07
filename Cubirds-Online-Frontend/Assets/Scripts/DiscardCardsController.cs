@@ -80,13 +80,20 @@ public class DiscardCardsController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator BackToDeckCoroutine(Action callback = null)
     {
+        Debug.Log("将弃牌区的牌返回主卡组");
+
+        // 复制一份牌列表作为要返回的牌的列表
+        List<Card> needReturnCards = new List<Card>(Cards);
+        // 清空卡牌列表
+        Cards.Clear();
+
         // 记录要发出的牌的总数
-        int sendedCards = Cards.Count;
+        int sendedCards = needReturnCards.Count;
         // 记录对方收到的卡的总数的计数器
         int takedCards = 0;
 
         // 遍历所有的牌
-        Cards.ForEach(card =>
+        needReturnCards.ForEach(card =>
         {
             // 让牌移动到卡组的位置
             card.MoveToAndRotateTo(GameController.Instance.DeckController.DeckPosition.position, GameController.Instance.DeckController.DeckPosition.rotation, () =>
@@ -102,6 +109,8 @@ public class DiscardCardsController : MonoBehaviour
 
         // 等所有的牌都被卡组接收
         yield return new WaitUntil(() => takedCards == sendedCards);
+
+        Debug.Log("将弃牌区的牌返回主卡组完成");
 
         // 执行回调
         callback.Invoke();

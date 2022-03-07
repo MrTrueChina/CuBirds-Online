@@ -76,6 +76,8 @@ public class DeckController : MonoBehaviour
     /// <param name="callBack">洗完牌后的回调</param>
     public void Shuffle(Action callBack)
     {
+        Debug.Log("洗牌");
+
         // 洗牌
         List<Card> shuffledCards = new List<Card>();
         // 循环直到旧牌堆的牌都洗进新牌堆
@@ -93,6 +95,8 @@ public class DeckController : MonoBehaviour
 
         // 洗牌后更新卡组的显示
         DisplayeDeck();
+
+        Debug.Log("洗牌完毕");
 
         // 洗完牌后执行回调
         callBack.Invoke();
@@ -254,6 +258,17 @@ public class DeckController : MonoBehaviour
     /// <param name="callback"></param>
     private IEnumerator SupplementCardToCenterLineCoroutine(CenterAreaLineController centerLine, bool right, Action callback)
     {
+        // 如果卡牌发完了，把弃牌堆的牌洗回来
+        if (cards.Count == 0)
+        {
+            Debug.Log("向中央行补充卡牌时卡组抽空，把弃牌堆返回卡组");
+
+            // 启动洗牌协程并等待洗牌协程完成
+            yield return StartCoroutine(ReturnDiscardCards());
+
+            Debug.Log("弃牌堆返回卡组完成");
+        }
+
         // 获取牌库顶的卡
         Card targetCard = cards.Last();
 
@@ -308,24 +323,36 @@ public class DeckController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator DealCardsCoroutine(List<PlayerController> players, int cardsNumber, Action callback)
     {
-        Debug.LogFormat("给所有玩家发牌");
+        Debug.LogFormat("给玩家发牌");
 
         // 记录总共发出的卡牌数量的计数器
         int sendedCardNumber = 0;
         // 记录已经到了玩家手里的卡的数量的计数器
         int takedCardNumber = 0;
 
-        // 遍历所有玩家
+        // 遍历玩家
         foreach (PlayerController player in players)
         {
             //Debug.LogFormat("给玩家 {0} 发牌", player.Id);
 
+            // 循环发指定数量的牌
             for (int i = 0; i < cardsNumber; i++)
             {
                 //Debug.LogFormat("给玩家 {0} 发第 {1} 张牌", player.Id, i);
 
                 // 等待发牌间隔
                 yield return new WaitUntil(() => Time.time - lastSendCardTime >= sendCardInterval);
+
+                // 如果卡牌发完了，把弃牌堆的牌洗回来
+                if(cards.Count == 0)
+                {
+                    Debug.Log("向玩家发牌时卡组抽空，把弃牌堆返回卡组");
+
+                    // 启动洗牌协程并等待洗牌协程完成
+                    yield return StartCoroutine(ReturnDiscardCards());
+
+                    Debug.Log("弃牌堆返回卡组完成");
+                }
 
                 // 获取最后一张卡
                 Card card = cards.Last();
@@ -402,5 +429,40 @@ public class DeckController : MonoBehaviour
 
         // 执行回调
         callback.Invoke();
+    }
+
+    /// <summary>
+    /// 把弃牌堆的牌收回牌组
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator ReturnDiscardCards()
+    {
+        Debug.Log("回收弃牌堆的牌到卡组里");
+
+        // 记录卡牌是否回到卡组的标志变量
+        bool geted = false;
+
+        // 通知弃牌堆返回卡牌
+        GameController.Instance.DiscardCardsController.BackToDeck(() =>
+        {
+            // 记录已经回到了卡组
+            geted = true;
+        });
+
+        // 等待返回完成
+        yield return new WaitUntil(() => geted);
+
+        // 记录是否洗牌完毕
+        bool shuffled = false;
+
+        // 洗牌
+        Shuffle(() =>
+        {
+            // 记录洗牌完毕
+            shuffled = true;
+        });
+
+        // 等待洗牌完毕
+        yield return new WaitUntil(() => shuffled);
     }
 }
