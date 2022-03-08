@@ -331,8 +331,16 @@ public class GameController : MonoBehaviour
         {
             // 玩家选择不抽牌
 
-            // 直接进入组群阶段
-            MakeGroup();
+            if(CurrentTrunPlayre.HandCardsCount() > 0)
+            {
+                // 玩家还有手牌，进入组群阶段
+                MakeGroup();
+            }
+            else
+            {
+                // 玩家没有手牌了，直接进入空手判断阶段
+                EmptyHandCheck();
+            }
         }
     }
 
