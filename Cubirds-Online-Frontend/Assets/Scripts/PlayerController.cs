@@ -488,4 +488,56 @@ public class PlayerController : MonoBehaviour
     {
         return handCards.Count;
     }
+
+    /// <summary>
+    /// 获取玩家手牌中指定种类的卡进行组群可以获得多少张鸟群卡
+    /// </summary>
+    /// <param name="cardType"></param>
+    /// <returns></returns>
+    public int CanGetGroupCardNumber(CardType cardType)
+    {
+        // 找出手牌中指定类型的卡
+        List<Card> compliantCards = handCards.FindAll(c => c.CardType == cardType);
+
+        // 手中没有这种卡，不能组群，返回 0
+        if(compliantCards.Count == 0)
+        {
+            return 0;
+        }
+
+        // 手中这种卡的数量不够组成小群，返回 0
+        if(compliantCards.Count < compliantCards[0].SmallGroupNumber)
+        {
+            return 0;
+        }
+
+        // 通过小群数量，但是不够组成大群，返回 1
+        if(compliantCards.Count < compliantCards[0].BigGroupNumber)
+        {
+            return 1;
+        }
+
+        // 能够组成大群，返回 2
+        return 2;
+    }
+
+    /// <summary>
+    /// 检测玩家手牌中的牌是否至少可以组一群鸟
+    /// </summary>
+    /// <returns></returns>
+    public bool CanMakeGroup()
+    {
+        // 遍历所有鸟类
+        foreach (CardType cardType in (CardType[])Enum.GetValues(typeof(CardType)))
+        {
+            // 如果玩家手里的牌可以组成这个鸟类的鸟群则返回 true
+            if (CanGetGroupCardNumber(cardType) > 0)
+            {
+                return true;
+            }
+        }
+
+        // 所有鸟类都不能组群，返回 false
+        return false;
+    }
 }

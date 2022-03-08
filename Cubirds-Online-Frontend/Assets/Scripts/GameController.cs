@@ -152,7 +152,7 @@ public class GameController : MonoBehaviour
         {
             Debug.Log("初始化卡组回调执行");
 
-            tipsText.text = "摆放中央区初始卡牌……";
+            ShowTip("摆放中央区初始卡牌……");
 
             // 向中央区摆放 3*4 的卡牌矩阵作为开局基础
             DeckController.FillCenterArea(() =>
@@ -169,14 +169,14 @@ public class GameController : MonoBehaviour
                     {
                         Debug.Log("洗牌回调执行");
 
-                        tipsText.text = "给所有玩家发牌……";
+                        ShowTip("给所有玩家发牌……");
 
                         // 给所有玩家发 8 张牌
                         DeckController.DealCards(players, 8, () =>
                         {
                             Debug.Log("发牌回调执行");
 
-                            tipsText.text = "给每个玩家初始鸟群卡……";
+                            ShowTip("给每个玩家初始鸟群卡……");
 
                             // 给每个玩家发一个鸟群卡
                             DeckController.GivePlayersStartGroup(() =>
@@ -199,7 +199,7 @@ public class GameController : MonoBehaviour
     private void PlayBirdCards()
     {
         // 发出提示
-        tipsText.text = CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id);
+        ShowTip(CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id));
 
         // 交给协程进行
         StartCoroutine(PlayBirdCardsCoroutine());
@@ -269,7 +269,7 @@ public class GameController : MonoBehaviour
     private void SelectDrawCard()
     {
         // 发出提示
-        tipsText.text = CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Id);
+        ShowTip(CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Id));
 
         // 交给协程进行
         StartCoroutine(SelectDrawCardCoroutine());
@@ -341,8 +341,14 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void MakeGroup()
     {
+        // 如果现在是其他玩家的回合，显示这个提示
+        string otherPlayerTip = string.Format("等待玩家 {0} 组成鸟群……", CurrentTrunPlayre.Id);
+
+        // 如果现在是本机玩家的回合，显示这个提示
+        string localPlayerTip = CurrentTrunPlayre.CanMakeGroup() ? "你可以选择将手中的牌组成鸟群，也可以选择不组成鸟群。" : "你手中的牌不能组成鸟群，但你可以等一会再选择不组成鸟群让其他玩家以为你在思考是否组群。";
+
         // 发出提示
-        tipsText.text = CurrentPlayerIsLocalPlayer() ? "你可以选择将手中的牌组成鸟群，也可以选择不组成鸟群。" : string.Format("等待玩家 {0} 组成鸟群……", CurrentTrunPlayre.Id);
+        ShowTip(CurrentPlayerIsLocalPlayer() ? localPlayerTip : otherPlayerTip);
 
         // 交给协程进行
         StartCoroutine(MakeGroupCoroutine());
@@ -486,7 +492,7 @@ public class GameController : MonoBehaviour
             // 玩家手里没牌了
 
             // 发出提示
-            tipsText.text = string.Format("由于{0}将手牌打空，所有玩家弃牌并重新抽牌，{0}将再次获得一个回合。", (CurrentPlayerIsLocalPlayer() ? "你" : "玩家\u00A0" + CurrentTrunPlayre.Id + "\u00A0"));
+            ShowTip(string.Format("由于{0}将手牌打空，所有玩家弃牌并重新抽牌，{0}将再次获得一个回合。", (CurrentPlayerIsLocalPlayer() ? "你" : "玩家\u00A0" + CurrentTrunPlayre.Id + "\u00A0")));
 
             // 完成弃牌的玩家的计数器
             int discardCardsPlayersNumber = 0;
@@ -592,5 +598,14 @@ public class GameController : MonoBehaviour
     public bool CurrentPlayerIsLocalPlayer()
     {
         return IsLocalPlayer(CurrentTrunPlayre);
+    }
+
+    /// <summary>
+    /// 显示提示文本
+    /// </summary>
+    /// <param name="tip"></param>
+    public void ShowTip(string tip)
+    {
+        tipsText.text = tip;
     }
 }

@@ -92,6 +92,9 @@ public class MakeGroupController : MonoBehaviour
 
             // 激活确认组群按钮
             makeGroupButton.interactable = true;
+            
+            // 发出可以得到多少张鸟群卡的提示
+            GameController.Instance.ShowTip("组成这种鸟的鸟群你可以得到 " + GameController.Instance.CurrentTrunPlayre.CanGetGroupCardNumber(selectedCardType) + " 张鸟群卡。");
 
             // 将事件设为已使用
             eventData.Use();
