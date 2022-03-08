@@ -105,35 +105,45 @@ public class DeckController : MonoBehaviour
     /// <summary>
     /// 将卡牌放入卡组
     /// </summary>
-    /// <param name="card"></param>
+    /// <param name="takeCards"></param>
     /// <param name="callback"></param>
     /// <param name="duration">卡牌移动的时间</param>
-    public void TakeCard(Card card, Action callback = null, float duration = 0.5f)
+    public void TakeCard(List<Card> takeCards, Action callback = null, float duration = 0.5f)
     {
         // 交给协程进行
-        StartCoroutine(TakeCardCoroutine(card, callback, duration));
+        StartCoroutine(TakeCardCoroutine(takeCards, callback, duration));
     }
     /// <summary>
     /// 将卡牌放入卡组的协程
     /// </summary>
-    /// <param name="card"></param>
+    /// <param name="takeCards"></param>
     /// <param name="callback"></param>
     /// <param name="duration">卡牌移动的时间</param>
-    public IEnumerator TakeCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
+    public IEnumerator TakeCardCoroutine(List<Card> takeCards, Action callback = null, float duration = 0.5f)
     {
-        // 移动卡牌到卡组位置并等待卡牌移动到位
-        bool moved = false;
-        card.MoveToAndRotateTo(DeckPosition.position, DeckPosition.rotation, duration, () => { moved = true; });
-        yield return new WaitUntil(() => moved);
+        // 移动完成的卡牌的计数器
+        int movedCardsNumber = 0;
 
-        // 把卡扣过来
-        card.SetOpen(false);
+        // 遍历所有要加入卡组的牌
+        for (int i = 0; i < takeCards.Count; i++)
+        {
+            Card takeCard = takeCards[i];
+
+            // 移动卡牌，直接移动到正确的高度
+            takeCard.MoveToAndRotateTo(DeckPosition.position + Vector3.up * (cards.Count + i), DeckPosition.rotation, duration, () =>
+            {
+                // 增加移动完成的卡牌的计数器
+                movedCardsNumber++;
+                // 把这张牌扣下去
+                takeCard.SetOpen(false);
+            });
+        }
+
+        // 等待所有牌移动完成
+        yield return new WaitUntil(() => movedCardsNumber >= takeCards.Count);
 
         // 把卡片添加到列表里
-        cards.Add(card);
-
-        // 把卡片移动到顶层
-        card.MoveToAndRotateTo(deckPosition.position + Vector3.up * cards.Count, deckPosition.rotation, 0.2f);
+        cards.AddRange(takeCards);
 
         // 执行回调
         if (callback != null)

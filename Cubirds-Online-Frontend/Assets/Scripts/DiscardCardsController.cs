@@ -87,28 +87,33 @@ public class DiscardCardsController : MonoBehaviour
         // 清空卡牌列表
         Cards.Clear();
 
-        // 记录要发出的牌的总数
-        int sendedCards = needReturnCards.Count;
-        // 记录对方收到的卡的总数的计数器
-        int takedCards = 0;
+        // 把牌发给卡组并等待卡组完成接收
+        bool deckGeted = false;
+        GameController.Instance.DeckController.TakeCard(needReturnCards, () => deckGeted = true, 0.3f);
+        yield return new WaitUntil(() => deckGeted);
 
-        // 遍历所有的牌
-        needReturnCards.ForEach(card =>
-        {
-            // 让牌移动到卡组的位置
-            card.MoveToAndRotateTo(GameController.Instance.DeckController.DeckPosition.position, GameController.Instance.DeckController.DeckPosition.rotation, () =>
-            {
-                // 牌移动到卡组位置后把牌给卡组
-                GameController.Instance.DeckController.TakeCard(card, () =>
-                {
-                    // 增加收到的卡的计数器
-                    takedCards++;
-                }, 0.3f);
-            });
-        });
+        //// 记录要发出的牌的总数
+        //int sendedCards = needReturnCards.Count;
+        //// 记录对方收到的卡的总数的计数器
+        //int takedCards = 0;
 
-        // 等所有的牌都被卡组接收
-        yield return new WaitUntil(() => takedCards == sendedCards);
+        //// 遍历所有的牌
+        //needReturnCards.ForEach(card =>
+        //{
+        //    // 让牌移动到卡组的位置
+        //    card.MoveToAndRotateTo(GameController.Instance.DeckController.DeckPosition.position, GameController.Instance.DeckController.DeckPosition.rotation, () =>
+        //    {
+        //        // 牌移动到卡组位置后把牌给卡组
+        //        GameController.Instance.DeckController.TakeCard(card, () =>
+        //        {
+        //            // 增加收到的卡的计数器
+        //            takedCards++;
+        //        }, 0.3f);
+        //    });
+        //});
+
+        //// 等所有的牌都被卡组接收
+        //yield return new WaitUntil(() => takedCards == sendedCards);
 
         Debug.Log("将弃牌区的牌返回主卡组完成");
 
