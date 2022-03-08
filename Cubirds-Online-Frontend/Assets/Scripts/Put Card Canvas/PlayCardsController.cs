@@ -78,11 +78,11 @@ public class PlayCardsController : MonoBehaviour
         // 如果点击的卡牌不是当前回合玩家的手牌，说明并不是玩家要打出牌，不处理
         if (!GameController.Instance.CurrentTrunPlayre.HandCardsContainsCard(card))
         {
-            Debug.Log("点击的不是当前回合玩家的手牌，不处理");
+            //Debug.Log("点击的不是当前回合玩家的手牌，不处理");
             return;
         }
 
-        Debug.LogFormat("是当前玩家的手牌，记录");
+        //Debug.LogFormat("是当前玩家的手牌，记录");
 
         // 记录选择的卡的种类
         selectedCardType = card.CardType;

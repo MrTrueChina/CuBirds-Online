@@ -66,7 +66,7 @@ public class InputController : MonoBehaviour
     /// <param name="eventData">点击事件</param>
     public void CallCardPointClick(Card card, PointerEventData eventData)
     {
-        Debug.LogFormat("卡牌 {0} ({1}) 被点击", card.CardType, card.Id);
+        //Debug.LogFormat("卡牌 {0} ({1}) 被点击", card.CardType, card.Id);
 
         // 转发出卡牌被点击事件
         OnCardPointClickEvent.Invoke(card, eventData);
