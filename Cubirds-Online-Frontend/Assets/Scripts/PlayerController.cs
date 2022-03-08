@@ -174,11 +174,21 @@ public class PlayerController : MonoBehaviour
         // 交给协程进行
         StartCoroutine(TakeGroupCardCoroutine(card, callback, duration));
     }
+    /// <summary>
+    /// 获取鸟群卡的协程
+    /// </summary>
+    /// <param name="card"></param>
+    /// <param name="callback"></param>
+    /// <param name="duration">卡牌移动时间</param>
+    /// <returns></returns>
     public IEnumerator TakeGroupCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
     {
+        // 鸟群卡移动到的位置的 x 轴偏移，为了方便写这里用 Vector3 来代替
+        Vector3 moveToPositionXOffset = GroupCards.Count == 0 ? Vector3.zero : transform.right * (GroupCards.Count + 1) * (groupCardHorizontalDistance / 2);
+
         // 移动卡牌到鸟群行的位置并等待卡牌移动到位
         bool moved = false;
-        card.MoveToAndRotateTo(transform.position + transform.up * groupCardHandCardDistance, transform.rotation, duration, () => { moved = true; });
+        card.MoveToAndRotateTo(transform.position + (transform.up * groupCardHandCardDistance) + moveToPositionXOffset, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
 
         // 添加到鸟群卡列表中
@@ -235,7 +245,7 @@ public class PlayerController : MonoBehaviour
             float verticalOffset = groupCardHandCardDistance + typeNumber * groupCardVerticalDistance;
 
             // 移动卡牌
-            card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.1f);
+            card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.3f);
 
             // 每遍历一张，这个种类的计数器增加
             typeNumber++;
@@ -338,7 +348,7 @@ public class PlayerController : MonoBehaviour
             TakeGroupCard(groupCard, () => {
                 // 加入鸟群卡后增加完成发送的卡的数量
                 sendedCardsNumber++;
-            });
+            }, 0.3f);
         }
 
         // 把剩下的牌扔到弃牌区
