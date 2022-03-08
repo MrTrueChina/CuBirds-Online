@@ -123,8 +123,10 @@ public class DiscardCardsController : MonoBehaviour
     public Vector3 GetDiscardPosition()
     {
         // 在弃牌堆随机范围内返回一个位置，这样弃牌堆看起来会比较乱，比较有弃牌的感觉
-        return discardCardsPosition.position + new Vector3(Random.Range(discardOffsetRange.x, -discardOffsetRange.x),
-            Random.Range(discardOffsetRange.y, -discardOffsetRange.y),
-            Random.Range(discardOffsetRange.z, -discardOffsetRange.z));
+        return discardCardsPosition.position
+            // 随机偏移一点位置，让弃牌堆看起来像是散乱丢弃的
+            + new Vector3(Random.Range(discardOffsetRange.x, -discardOffsetRange.x), Random.Range(discardOffsetRange.y, -discardOffsetRange.y), Random.Range(discardOffsetRange.z, -discardOffsetRange.z))
+            // 调整高度，让弃牌堆的牌看起来也有厚度
+            + Vector3.up * Cards.Count;
     }
 }
