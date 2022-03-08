@@ -34,6 +34,12 @@ public class PlayerController : MonoBehaviour
     [Header("鸟群卡竖着的中心距离")]
     private float groupCardVerticalDistance = 15;
     /// <summary>
+    /// 其他玩家的鸟群卡最大中心宽度
+    /// </summary>
+    [SerializeField]
+    [Header("其他玩家的鸟群卡最大中心宽度（当鸟群卡过多时鸟群卡会按照中心位置平铺到这个宽度中")]
+    private float otherPlayerMaxGroupCardWidth = 400;
+    /// <summary>
     /// 本机玩家的手牌最大中心宽度
     /// </summary>
     [SerializeField]
@@ -194,8 +200,19 @@ public class PlayerController : MonoBehaviour
         // 提取出现有的鸟群卡的种类列表
         List<CardType> cardTypes = GroupCards.Select(c => c.CardType).Distinct().ToList();
 
+        // 选取鸟群卡的最大宽度，因为鸟群卡最多显示 7 种所以玩家的鸟群卡不需要最大宽度的限制
+        float maxWidth = GameController.Instance.IsLocalPlayer(this) ? float.PositiveInfinity : otherPlayerMaxGroupCardWidth;
+
         // 转化出鸟类卡种类对应的横轴偏移量映射表
-        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -(groupCardHorizontalDistance / 2)) + (cardTypes.IndexOf(t) * groupCardHorizontalDistance));
+        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t =>
+        {
+            // 判断按照鸟群卡水平距离显示鸟群卡是否超过了宽度限制
+            return (cardTypes.Count - 1) * groupCardHorizontalDistance <= otherPlayerMaxGroupCardWidth ?
+            // 没超过宽度限制，就按照鸟群卡水平距离显示
+            ((cardTypes.Count - 1) * -(groupCardHorizontalDistance / 2)) + (cardTypes.IndexOf(t) * groupCardHorizontalDistance) :
+            // 超过宽度限制，把鸟群卡在限制宽度内平铺显示
+            -(otherPlayerMaxGroupCardWidth / 2) + (cardTypes.IndexOf(t) * (otherPlayerMaxGroupCardWidth / (cardTypes.Count - 1)));
+        });
 
         // 同种类的卡出现了多少次的计数器
         int typeNumber = 0;
