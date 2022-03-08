@@ -109,6 +109,9 @@ public class PlayCardsController : MonoBehaviour
         // 通知输入控制器转发这个点击
         InputController.Instance.CallPlayerPlayCards(GameController.Instance.CurrentTrunPlayre.Id, selectedCardType, lineIndex, putOnLeft);
 
+        // 通知玩家停止抬高显示
+        GameController.Instance.CurrentTrunPlayre.CalcelUpDisplayCards();
+
         // 打出牌后关闭这个面板
         Close();
     }

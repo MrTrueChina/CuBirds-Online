@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
 /// 进行组群的面板的控制器
@@ -41,12 +42,27 @@ public class MakeGroupController : MonoBehaviour
     private GameObject makeGroupCamvas;
 
     /// <summary>
+    /// 确认组群的按钮
+    /// </summary>
+    [SerializeField]
+    [Header("确认组群的按钮")]
+    private Button makeGroupButton;
+
+    /// <summary>
+    /// 选择要组群的种类
+    /// </summary>
+    private CardType selectedCardType;
+
+    /// <summary>
     /// 开始组群操作
     /// </summary>
     public void StartMakeGroup()
     {
         // 显示组群操作面板
         makeGroupCamvas.SetActive(true);
+
+        // 禁用确定组群按钮
+        makeGroupButton.interactable = false;
 
         // 订阅输入控制器的卡牌被点击事件
         InputController.Instance.OnCardPointClickEvent.AddListener(OnCardPointClick);
@@ -68,15 +84,35 @@ public class MakeGroupController : MonoBehaviour
         // 如果玩家手里的这种类型的卡足够组成鸟群，通知输入控制器发出玩家组成鸟群事件
         if (GameController.Instance.CurrentTrunPlayre.GetHandCardsNumberByCardType(card.CardType) >= card.SmallGroupNumber)
         {
-            // 发出事件
-            InputController.Instance.CallPlayerMakeGroup(GameController.Instance.CurrentTrunPlayre.Id, card.CardType);
+            // 记录这个鸟类
+            selectedCardType = card.CardType;
+
+            // 通知玩家抬高显示选择的卡
+            GameController.Instance.CurrentTrunPlayre.UpDisplayCards(card.CardType);
+
+            // 激活确认组群按钮
+            makeGroupButton.interactable = true;
 
             // 将事件设为已使用
             eventData.Use();
-
-            // 发出事件后关闭面板
-            Close();
         }
+    }
+
+    /// <summary>
+    /// 确认组成鸟群按钮点击时这个方法会被调用
+    /// </summary>
+    public void OnMakeGroupButtonClick()
+    {
+        Debug.Log("确认组成鸟群按钮被点击");
+
+        // 通知输入控制器发出玩家组成鸟群消息
+        InputController.Instance.CallPlayerMakeGroup(GameController.Instance.CurrentTrunPlayre.Id, selectedCardType);
+
+        // 通知玩家停止抬高显示
+        GameController.Instance.CurrentTrunPlayre.CalcelUpDisplayCards();
+
+        // 关闭面板
+        Close();
     }
 
     /// <summary>
@@ -88,6 +124,9 @@ public class MakeGroupController : MonoBehaviour
 
         // 通知输入控制器发出玩家不组成鸟群消息
         InputController.Instance.CallPlayerDontMakeGroup(GameController.Instance.CurrentTrunPlayre.Id);
+
+        // 通知玩家停止抬高显示
+        GameController.Instance.CurrentTrunPlayre.CalcelUpDisplayCards();
 
         // 关闭面板
         Close();
