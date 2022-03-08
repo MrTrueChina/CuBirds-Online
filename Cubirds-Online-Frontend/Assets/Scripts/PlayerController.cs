@@ -14,13 +14,25 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField]
     [Header("手牌横着的中心距离")]
-    private float handCardWidthDistance = 40;
+    private float handCardHorizontalDistance = 40;
+    /// <summary>
+    /// 鸟群卡行到手卡行的中心距离
+    /// </summary>
+    [SerializeField]
+    [Header("鸟群卡行到手卡行的中心距离")]
+    private float groupCardHandCardDistance = 130;
     /// <summary>
     /// 手牌横着的中心距离
     /// </summary>
     [SerializeField]
     [Header("鸟群卡横着的中心距离")]
-    private float groupCardWidthDistance = 80;
+    private float groupCardHorizontalDistance = 80;
+    /// <summary>
+    /// 手牌竖着的中心距离
+    /// </summary>
+    [SerializeField]
+    [Header("鸟群卡竖着的中心距离")]
+    private float groupCardVerticalDistance = 15;
 
     /// <summary>
     /// 这个玩家的 Id
@@ -117,7 +129,7 @@ public class PlayerController : MonoBehaviour
             card.SetDisplaySort(i);
 
             // 计算卡牌距离中心点的偏移
-            float offset = (handCards.Count - 1) * -(handCardWidthDistance / 2) + i * handCardWidthDistance;
+            float offset = (handCards.Count - 1) * -(handCardHorizontalDistance / 2) + i * handCardHorizontalDistance;
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);
@@ -162,7 +174,7 @@ public class PlayerController : MonoBehaviour
         List<CardType> cardTypes = GroupCards.Select(c => c.CardType).Distinct().ToList();
 
         // 转化出鸟类卡种类对应的横轴偏移量映射表
-        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -(groupCardWidthDistance / 2)) + (cardTypes.IndexOf(t) * groupCardWidthDistance));
+        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -(groupCardHorizontalDistance / 2)) + (cardTypes.IndexOf(t) * groupCardHorizontalDistance));
 
         // 同种类的卡出现了多少次的计数器
         int typeNumber = 0;
@@ -182,7 +194,7 @@ public class PlayerController : MonoBehaviour
             // 水平偏移量
             float horizontalOffset = typeToOffset[card.CardType];
             // 垂直偏移量，鸟群卡整体向上偏移，之后每张同类牌向上多偏移一点
-            float verticalOffset = 140 + typeNumber * 40;
+            float verticalOffset = groupCardHandCardDistance + typeNumber * groupCardVerticalDistance;
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.1f);
