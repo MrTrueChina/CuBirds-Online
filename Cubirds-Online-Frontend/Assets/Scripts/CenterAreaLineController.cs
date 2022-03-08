@@ -22,6 +22,12 @@ public class CenterAreaLineController : MonoBehaviour
     [SerializeField]
     [Header("每张牌中心点的水平距离")]
     private float horizontalDistance = 90;
+    /// <summary>
+    /// 这一行卡牌显示的最大宽度
+    /// </summary>
+    [SerializeField]
+    [Header("这一行卡牌显示的最大宽度")]
+    private float maxWidth = 650;
 
     /// <summary>
     /// 这一行的卡牌，在桌面上从左到右排列，即数组索引越大牌越靠右
@@ -184,8 +190,17 @@ public class CenterAreaLineController : MonoBehaviour
         {
             Card card = Cards[i];
 
+            // 设置卡牌显示顺序
+            card.SetDisplaySort(i);
+
             // 计算卡牌距离中心点的偏移
-            float offset = (Cards.Count - 1) * -(horizontalDistance / 2) + i * horizontalDistance;
+            float offset =
+                // 判断按照卡牌距离显示卡牌是否超过了显示宽度
+                (Cards.Count - 1) * horizontalDistance <= maxWidth ?
+                // 没超过显示宽度，按照卡片间距显示
+                (Cards.Count - 1) * -(horizontalDistance / 2) + i * horizontalDistance :
+                // 超过显示宽度，按照卡牌在宽度内平铺显示
+                -(maxWidth / 2) + i * (maxWidth / (Cards.Count - 1));
 
             // 移动卡牌
             card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
