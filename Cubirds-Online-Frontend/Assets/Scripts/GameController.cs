@@ -172,7 +172,7 @@ public class GameController : MonoBehaviour
                         tipsText.text = "给所有玩家发牌……";
 
                         // 给所有玩家发 8 张牌
-                        DeckController.DealCards(players, 16, () =>
+                        DeckController.DealCards(players, 8, () =>
                         {
                             Debug.Log("发牌回调执行");
 
