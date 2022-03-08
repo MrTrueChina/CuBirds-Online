@@ -176,9 +176,9 @@ public class PlayerController : MonoBehaviour
     }
     public IEnumerator TakeGroupCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
     {
-        // 移动卡牌到玩家位置并等待卡牌移动到位
+        // 移动卡牌到鸟群行的位置并等待卡牌移动到位
         bool moved = false;
-        card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
+        card.MoveToAndRotateTo(transform.position + transform.up * groupCardHandCardDistance, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
 
         // 添加到鸟群卡列表中
