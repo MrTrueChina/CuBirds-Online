@@ -51,6 +51,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     [Header("其他玩家的手牌最大中心宽度（当手牌过多时手牌会按照中心位置平铺到这个宽度中")]
     private float otherPlayerMaxHandCardWidth = 400;
+    /// <summary>
+    /// 手牌中显示高一些的卡显示的高度
+    /// </summary>
+    [SerializeField]
+    [Header("手牌中显示高一些的卡显示的高度")]
+    private float upHandCardsDistance = 20;
 
     /// <summary>
     /// 这个玩家的 Id
@@ -65,6 +71,11 @@ public class PlayerController : MonoBehaviour
     /// 鸟群卡
     /// </summary>
     public List<Card> GroupCards { get; private set; } = new List<Card>();
+
+    /// <summary>
+    /// 显示的高一点的卡片的类型
+    /// </summary>
+    private CardType? upDisplayCardType = null;
 
     /// <summary>
     /// 初始化这个玩家
@@ -150,7 +161,7 @@ public class PlayerController : MonoBehaviour
             float maxHandCardsWidth = GameController.Instance.IsLocalPlayer(this) ? localPlayerMaxHandCardWidth : otherPlayerMaxHandCardWidth;
 
             // 计算卡牌距离中心点的偏移
-            float offset =
+            float horizontalOffset =
                 // 判断是否显示的开，如果所有手牌按照手牌距离显示宽度不超过最大手牌宽度则显示的开，否则显示不开
                 (handCards.Count - 1) * handCardHorizontalDistance <= maxHandCardsWidth?
                 // 显示的开，按照设置的手牌间距计算手牌横向偏移
@@ -158,8 +169,11 @@ public class PlayerController : MonoBehaviour
                 // 显示不开，按照把牌平铺到这个范围里为标准计算偏移
                 -(maxHandCardsWidth / 2) + i * (maxHandCardsWidth / (handCards.Count - 1));
 
+            // 向上移动的卡片的偏移
+            float verticalOffset = card.CardType != upDisplayCardType ? 0 : upHandCardsDistance;
+
             // 移动卡牌
-            card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);
+            card.MoveToAndRotateTo(transform.position - transform.right * horizontalOffset + transform.up * verticalOffset, transform.rotation, 0.2f);
         }
     }
 
@@ -414,6 +428,31 @@ public class PlayerController : MonoBehaviour
 
         // 执行回调
         callback.Invoke();
+    }
+
+    /// <summary>
+    /// 抬高显示指定类型的卡牌
+    /// </summary>
+    /// <param name="cardType"></param>
+    /// <returns></returns>
+    public void UpDisplayCards(CardType cardType)
+    {
+        // 保存要抬高显示的卡牌种类
+        upDisplayCardType = cardType;
+
+        // 更新手卡的显示
+        DisplayHandCards();
+    }
+    /// <summary>
+    /// 取消抬高显示卡牌
+    /// </summary>
+    public void CalcelUpDisplayCards()
+    {
+        // 取消要抬高显示的卡牌种类
+        upDisplayCardType = null;
+
+        // 更新手卡的显示
+        DisplayHandCards();
     }
 
     /// <summary>

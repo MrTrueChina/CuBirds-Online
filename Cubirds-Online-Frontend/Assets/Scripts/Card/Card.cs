@@ -228,7 +228,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         }
 
         // 设置一个极高的显示顺序，防止卡牌移动的时候被放在桌子上的卡挡住
-        SetTempDisplaySort(1000);
+        SetTempDisplaySort(displaySort + 1000);
 
         // 使用 DOTween 进行移动并记录这个补间
         moveTween = transform.DOMove(targetPosition, duration);

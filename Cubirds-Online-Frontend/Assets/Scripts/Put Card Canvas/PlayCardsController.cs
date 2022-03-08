@@ -87,6 +87,9 @@ public class PlayCardsController : MonoBehaviour
         // 记录选择的卡的种类
         selectedCardType = card.CardType;
 
+        // 通知玩家抬高显示选择的牌
+        GameController.Instance.CurrentTrunPlayre.UpDisplayCards(card.CardType);
+
         // 显示选择把牌打到哪里的按钮
         selectPutLineButtonCanvas.SetActive(true);
 
