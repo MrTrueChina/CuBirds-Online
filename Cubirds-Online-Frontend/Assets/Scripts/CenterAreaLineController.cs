@@ -83,21 +83,106 @@ public class CenterAreaLineController : MonoBehaviour
     /// <returns></returns>
     private IEnumerator PutCardCorotine(PlayerController player, List<Card> putCards, bool right, Action<int> callback, float duration)
     {
-        // 放下卡牌的位置的偏移值
-        Vector3 putCardPositionOffset = right ? Vector3.right * putCardOffset : Vector3.left * putCardOffset;
-
         // 记录移动到位置的卡的数量的计数器
         int movedCardNumbers = 0;
-        // 遍历所有要打到行里的的牌
-        putCards.ForEach(putCard =>
+
+        if(Cards.Count == 0)
         {
-            // 移动到行里
-            putCard.MoveToAndRotateTo(LinePosition.position + putCardPositionOffset, LinePosition.rotation, duration, () =>
+            // 如果这一行没有卡，说明是开局的时候填充中央区，直接放到中间
+
+            //遍历放入的卡
+            putCards.ForEach(putCard =>
             {
-                // 移动到位后增加计数器
-                movedCardNumbers++;
+                // 移动到行里，直接放到中间
+                putCard.MoveToAndRotateTo(LinePosition.position, LinePosition.rotation, duration, () =>
+                {
+                    // 移动到位后增加计数器
+                    movedCardNumbers++;
+                });
             });
-        });
+        }
+        else
+        {
+            // 这一行有卡
+
+            if (right)
+            {
+                // 放在现有的卡右边
+
+                // 判断这些牌放下后会不会超出显示范围，标准是：在最靠右的牌往右找需要的坐标，如果坐标超出最大显示宽度的一半，则超出显示范围，这是因为坐标原点在 0，左右一半就是显示范围
+                if(Cards.Last().transform.localPosition.x + (putCards.Count - 1) * horizontalDistance > (maxWidth / 2))
+                {
+                    // 超出显示范围
+
+                    // 遍历所有要打到行里的的牌
+                    putCards.ForEach(putCard =>
+                    {
+                        // 移动到行里，位置是最靠右的牌的右边位置
+                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + Vector3.right * horizontalDistance, LinePosition.rotation, duration, () =>
+                        {
+                            // 移动到位后增加计数器
+                            movedCardNumbers++;
+                        });
+                    });
+                }
+                else
+                {
+                    // 没有超出显示范围
+                    
+                    // 遍历所有要打到行里的的牌
+                    for(int i = 0;i < putCards.Count; i++)
+                    {
+                        Card putCard = putCards[i];
+
+                        // 移动到行里，越靠后的越靠右
+                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + (Vector3.right * horizontalDistance * (i + 1)), LinePosition.rotation, duration, () =>
+                        {
+                            // 移动到位后增加计数器
+                            movedCardNumbers++;
+                        });
+                    }
+                }
+            }
+            else
+            {
+                // 放在现有的卡左边
+
+                // 判断这些牌放下后会不会超出显示范围，标准是：在最靠左的牌往左找需要的坐标，如果坐标小于最大显示宽度的负的一半，则超出显示范围，这是因为坐标原点在 0，左右一半就是显示范围
+                // 这里 Count-1 是因为一个奇怪的 bug，看起来包括中心卡左边能放 5 张卡，但是实际上放到第 5 张的时候判断是超出显示范围了，我没找出原因
+                if (Cards.First().transform.localPosition.x - (putCards.Count - 1) * horizontalDistance < -(maxWidth / 2))
+                {
+                    // 超出显示范围
+
+                    // 遍历所有要打到行里的的牌
+                    putCards.ForEach(putCard =>
+                    {
+                        // 移动到行里，位置是最靠左的牌的左边位置
+                        putCard.MoveToAndRotateTo(Cards.First().transform.position + Vector3.left * horizontalDistance, LinePosition.rotation, duration, () =>
+                        {
+                            // 移动到位后增加计数器
+                            movedCardNumbers++;
+                        });
+                    });
+                }
+                else
+                {
+                    // 没有超出显示范围
+
+                    // 遍历所有要打到行里的的牌
+                    for (int i = 0; i < putCards.Count; i++)
+                    {
+                        Card putCard = putCards[i];
+
+                        // 移动到行里，越靠前的越靠左
+                        putCard.MoveToAndRotateTo(Cards.First().transform.position - (Vector3.right * horizontalDistance * (putCards.Count - i)), LinePosition.rotation, duration, () =>
+                          {
+                            // 移动到位后增加计数器
+                            movedCardNumbers++;
+                        });
+                    }
+                }
+            }
+        }
 
         // 等待所有牌移动到位
         yield return new WaitUntil(() => movedCardNumbers >= putCards.Count);

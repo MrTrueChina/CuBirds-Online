@@ -213,8 +213,11 @@ public class DeckController : MonoBehaviour
             {
                 // 成功找到可以放入的中央行
 
+                // 按照 右左右 交替放置
+                bool putOnRight = targetLine.Cards.Count == 1 ? false : true;
+
                 // 把牌打到中央区的行里，从卡组出牌没有玩家，玩家传的是 null
-                targetLine.PutCard(null, targetCard, true, getCardsNumber =>
+                targetLine.PutCard(null, targetCard, putOnRight, getCardsNumber =>
                 {
                     // 当这一行达到 3 张卡时，这一行已填满，移除这一行
                     if (targetLine.Cards.Count >= 3)
