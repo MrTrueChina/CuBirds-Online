@@ -11,7 +11,7 @@ using UnityEngine.EventSystems;
 /// <summary>
 /// 卡牌组件
 /// </summary>
-public class Card : MonoBehaviour, IPointerClickHandler
+public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 {
     /// <summary>
     /// 卡牌主画布
@@ -37,31 +37,27 @@ public class Card : MonoBehaviour, IPointerClickHandler
     [SerializeField]
     [Header("鸟类图片组件")]
     private Image typeImageComponent;
+
     /// <summary>
     /// 卡背图片
     /// </summary>
+    public Sprite CardBack { get { return cardBack; } private set { cardBack = value; } }
     [SerializeField]
     [Header("卡背图片")]
     private Sprite cardBack;
+
     /// <summary>
     /// 卡图图片
     /// </summary>
-    [SerializeField]
-    [Header("卡图图片")]
-    private Sprite cardPicture;
+    public Sprite CardPicture { get; private set; }
     /// <summary>
     /// 鸟群数量角标图片
     /// </summary>
-    [SerializeField]
-    [Header("鸟群数量角标图片")]
-    private Sprite groupNumberImage;
-
+    public Sprite GroupNumberImage { get; private set; }
     /// <summary>
     /// 鸟类角标图片
     /// </summary>
-    [SerializeField]
-    [Header("鸟类角标图片")]
-    private Sprite typeImage;
+    public Sprite TypeImage { get; private set; }
 
     /// <summary>
     /// 这张牌的 ID
@@ -80,6 +76,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
     /// 组成大鸟群所需卡牌数量
     /// </summary>
     public int BigGroupNumber { get; private set; }
+    /// <summary>
+    /// 这张牌是否明牌
+    /// </summary>
+    public bool IsOpening { get; private set; }
 
     /// <summary>
     /// 卡牌移动的补间动画
@@ -97,9 +97,9 @@ public class Card : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         // 设置卡面
-        cardPictureComponent.sprite = cardPicture;
-        groupNumberImageComponent.sprite = groupNumberImage;
-        typeImageComponent.sprite = typeImage;
+        cardPictureComponent.sprite = CardPicture;
+        groupNumberImageComponent.sprite = GroupNumberImage;
+        typeImageComponent.sprite = TypeImage;
     }
 
     private void OnValidate()
@@ -107,17 +107,17 @@ public class Card : MonoBehaviour, IPointerClickHandler
         // 卡图
         if (cardPictureComponent != null)
         {
-            cardPictureComponent.sprite = cardPicture;
+            cardPictureComponent.sprite = CardPicture;
         }
         // 鸟群数量角标
         if (groupNumberImageComponent != null)
         {
-            groupNumberImageComponent.sprite = groupNumberImage;
+            groupNumberImageComponent.sprite = GroupNumberImage;
         }
         // 鸟类角标
         if (typeImageComponent != null)
         {
-            typeImageComponent.sprite = typeImage;
+            typeImageComponent.sprite = TypeImage;
         }
     }
 
@@ -132,14 +132,14 @@ public class Card : MonoBehaviour, IPointerClickHandler
         Id = id;
 
         // 卡图
-        cardPicture = cardData.cardPicture;
-        cardPictureComponent.sprite = cardPicture;
+        CardPicture = cardData.cardPicture;
+        cardPictureComponent.sprite = CardPicture;
         // 组群数量角标图片
-        groupNumberImage = cardData.groupNumberImage;
-        groupNumberImageComponent.sprite = groupNumberImage;
+        GroupNumberImage = cardData.groupNumberImage;
+        groupNumberImageComponent.sprite = GroupNumberImage;
         // 鸟类角标图片
-        typeImage = cardData.typeImage;
-        typeImageComponent.sprite = typeImage;
+        TypeImage = cardData.typeImage;
+        typeImageComponent.sprite = TypeImage;
 
         // 鸟类
         CardType = cardData.cardType;
@@ -180,10 +180,15 @@ public class Card : MonoBehaviour, IPointerClickHandler
     /// <param name="isOpen"></param>
     public void SetOpen(bool isOpen)
     {
-        if (isOpen)
+        // 记录是否明牌
+        IsOpening = isOpen;
+
+        if (IsOpening)
         {
+            // 明牌
+
             // 显示卡面
-            cardPictureComponent.sprite = cardPicture;
+            cardPictureComponent.sprite = CardPicture;
             // 显示组群数量角标
             groupNumberImageComponent.enabled = true;
             // 显示种类角标
@@ -191,8 +196,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         }
         else
         {
+            // 扣牌
+
             // 显示卡背
-            cardPictureComponent.sprite = cardBack;
+            cardPictureComponent.sprite = CardBack;
             // 隐藏组群数量角标
             groupNumberImageComponent.enabled = false;
             // 隐藏种类角标
@@ -258,5 +265,16 @@ public class Card : MonoBehaviour, IPointerClickHandler
 
         // 转发点击事件给输入控制器
         InputController.Instance.CallCardPointClick(this, eventData);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        //Debug.LogFormat("鼠标移入卡牌 {0} {1} 的范围", CardType, Id);
+
+        // 当鼠标指向这张卡的时候，通知卡片信息显示控制器显示这张卡的信息
+        ShowCardInfoController.Instance.ShowCardInfo(this);
+
+        // 设为已使用这个事件
+        eventData.Use();
     }
 }

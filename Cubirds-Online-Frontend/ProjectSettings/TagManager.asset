@@ -8,6 +8,7 @@ TagManager:
   - PlayCardsController
   - MakeGroupController
   - SelectDrawController
+  - ShowCardInfoController
   layers:
   - Default
   - TransparentFX

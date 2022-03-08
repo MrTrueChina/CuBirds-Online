@@ -17,6 +17,13 @@ public class CenterAreaLineController : MonoBehaviour
     private Transform linePosition;
 
     /// <summary>
+    /// 每张牌中心点的水平距离
+    /// </summary>
+    [SerializeField]
+    [Header("每张牌中心点的水平距离")]
+    private float horizontalDistance = 90;
+
+    /// <summary>
     /// 这一行的卡牌，在桌面上从左到右排列，即数组索引越大牌越靠右
     /// </summary>
     public List<Card> Cards { get; private set; } = new List<Card>();
@@ -178,7 +185,7 @@ public class CenterAreaLineController : MonoBehaviour
             Card card = Cards[i];
 
             // 计算卡牌距离中心点的偏移
-            float offset = (Cards.Count - 1) * -50 + i * 100;
+            float offset = (Cards.Count - 1) * -(horizontalDistance / 2) + i * horizontalDistance;
 
             // 移动卡牌
             card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);

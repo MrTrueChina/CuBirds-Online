@@ -14,7 +14,13 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField]
     [Header("手牌横着的中心距离")]
-    private float handCardWidthDistance = 50;
+    private float handCardWidthDistance = 40;
+    /// <summary>
+    /// 手牌横着的中心距离
+    /// </summary>
+    [SerializeField]
+    [Header("鸟群卡横着的中心距离")]
+    private float groupCardWidthDistance = 80;
 
     /// <summary>
     /// 这个玩家的 Id
@@ -111,7 +117,7 @@ public class PlayerController : MonoBehaviour
             card.SetDisplaySort(i);
 
             // 计算卡牌距离中心点的偏移
-            float offset = (handCards.Count - 1) * -25 + i * 50;
+            float offset = (handCards.Count - 1) * -(handCardWidthDistance / 2) + i * handCardWidthDistance;
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);
@@ -156,7 +162,7 @@ public class PlayerController : MonoBehaviour
         List<CardType> cardTypes = GroupCards.Select(c => c.CardType).Distinct().ToList();
 
         // 转化出鸟类卡种类对应的横轴偏移量映射表
-        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -60f) + (cardTypes.IndexOf(t) * 120));
+        Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t => ((cardTypes.Count - 1) * -(groupCardWidthDistance / 2)) + (cardTypes.IndexOf(t) * groupCardWidthDistance));
 
         // 同种类的卡出现了多少次的计数器
         int typeNumber = 0;

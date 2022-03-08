@@ -18,14 +18,14 @@ public class GameController : MonoBehaviour
     {
         get
         {
-            if(instance != null)
+            if (instance != null)
             {
                 return instance;
             }
 
             lock (typeof(GameController))
             {
-                if(instance == null)
+                if (instance == null)
                 {
                     instance = GameObject.FindWithTag("GameController").GetComponent<GameController>();
                 }
@@ -71,6 +71,12 @@ public class GameController : MonoBehaviour
     [Header("玩家位置列表")]
     private List<Transform> playerPositions;
     /// <summary>
+    /// 提示文字文本组件
+    /// </summary>
+    [SerializeField]
+    [Header("提示文字文本组件")]
+    private Text tipsText;
+    /// <summary>
     /// 胜利面板画布
     /// </summary>
     [SerializeField]
@@ -106,6 +112,10 @@ public class GameController : MonoBehaviour
     /// 当前回合操作的玩家
     /// </summary>
     public PlayerController CurrentTrunPlayre { get; private set; }
+    /// <summary>
+    /// 本机玩家
+    /// </summary>
+    public PlayerController LocalPlayer { get; private set; }
 
     private void Start()
     {
@@ -134,10 +144,15 @@ public class GameController : MonoBehaviour
         // 将第一个玩家设为现在回合的玩家
         CurrentTrunPlayre = players[0];
 
+        // 将第一个玩家设为本机玩家
+        LocalPlayer = players[0];
+
         // 通知牌组控制器初始化牌组
         DeckController.InitDeck(() =>
         {
             Debug.Log("初始化卡组回调执行");
+
+            tipsText.text = "摆放中央区初始卡牌……";
 
             // 向中央区摆放 3*4 的卡牌矩阵作为开局基础
             DeckController.FillCenterArea(() =>
@@ -154,10 +169,14 @@ public class GameController : MonoBehaviour
                     {
                         Debug.Log("洗牌回调执行");
 
+                        tipsText.text = "给所有玩家发牌……";
+
                         // 给所有玩家发 8 张牌
                         DeckController.DealCards(players, 8, () =>
                         {
                             Debug.Log("发牌回调执行");
+
+                            tipsText.text = "给每个玩家初始鸟群卡……";
 
                             // 给每个玩家发一个鸟群卡
                             DeckController.GivePlayersStartGroup(() =>
@@ -179,6 +198,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void PlayBirdCards()
     {
+        // 发出提示
+        tipsText.text = CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id);
+
         // 交给协程进行
         StartCoroutine(PlayBirdCardsCoroutine());
     }
@@ -246,6 +268,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void SelectDrawCard()
     {
+        // 发出提示
+        tipsText.text = CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Id);
+
         // 交给协程进行
         StartCoroutine(SelectDrawCardCoroutine());
     }
@@ -316,6 +341,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void MakeGroup()
     {
+        // 发出提示
+        tipsText.text = CurrentPlayerIsLocalPlayer() ? "你可以选择将手中的牌组成鸟群，也可以选择不组成鸟群。" : string.Format("等待玩家 {0} 组成鸟群……", CurrentTrunPlayre.Id);
+
         // 交给协程进行
         StartCoroutine(MakeGroupCoroutine());
     }
@@ -457,6 +485,9 @@ public class GameController : MonoBehaviour
         {
             // 玩家手里没牌了
 
+            // 发出提示
+            tipsText.text = string.Format("由于{0}将手牌打空，所有玩家弃牌并重新抽牌，{0}将再次获得一个回合。", (CurrentPlayerIsLocalPlayer() ? "你" : "玩家\u00A0" + CurrentTrunPlayre.Id + "\u00A0"));
+
             // 完成弃牌的玩家的计数器
             int discardCardsPlayersNumber = 0;
 
@@ -541,5 +572,15 @@ public class GameController : MonoBehaviour
 
         // 设置胜利文本
         winText.text = winTextBuilder.ToString();
+    }
+
+    /// <summary>
+    /// 检测当前回合玩家是不是本机玩家
+    /// </summary>
+    /// <returns></returns>
+    public bool CurrentPlayerIsLocalPlayer()
+    {
+        // 因为就是对比对象直接用等于号就行
+        return CurrentTrunPlayre == LocalPlayer;
     }
 }
