@@ -33,6 +33,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     [Header("鸟群卡竖着的中心距离")]
     private float groupCardVerticalDistance = 15;
+    /// <summary>
+    /// 本机玩家的手牌最大中心宽度
+    /// </summary>
+    [SerializeField]
+    [Header("本机玩家的手牌最大中心宽度（当手牌过多时手牌会按照中心位置平铺到这个宽度中")]
+    private float localPlayerMaxHandCardWidth = 650;
+    /// <summary>
+    /// 其他玩家的手牌最大中心宽度
+    /// </summary>
+    [SerializeField]
+    [Header("其他玩家的手牌最大中心宽度（当手牌过多时手牌会按照中心位置平铺到这个宽度中")]
+    private float otherPlayerMaxHandCardWidth = 400;
 
     /// <summary>
     /// 这个玩家的 Id
@@ -128,8 +140,17 @@ public class PlayerController : MonoBehaviour
             // 设置卡牌显示顺序
             card.SetDisplaySort(i);
 
+            // 根据是不是本机玩家选择手牌显示的最大宽度
+            float maxHandCardsWidth = GameController.Instance.IsLocalPlayer(this) ? localPlayerMaxHandCardWidth : otherPlayerMaxHandCardWidth;
+
             // 计算卡牌距离中心点的偏移
-            float offset = (handCards.Count - 1) * -(handCardHorizontalDistance / 2) + i * handCardHorizontalDistance;
+            float offset =
+                // 判断是否显示的开，如果所有手牌按照手牌距离显示宽度不超过最大手牌宽度则显示的开，否则显示不开
+                (handCards.Count - 1) * handCardHorizontalDistance <= maxHandCardsWidth?
+                // 显示的开，按照设置的手牌间距计算手牌横向偏移
+                (handCards.Count - 1) * -(handCardHorizontalDistance / 2) + i * handCardHorizontalDistance :
+                // 显示不开，按照把牌平铺到这个范围里为标准计算偏移
+                -(maxHandCardsWidth / 2) + i * (maxHandCardsWidth / (handCards.Count - 1));
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position - transform.right * offset, transform.rotation, 0.2f);

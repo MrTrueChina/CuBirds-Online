@@ -53,7 +53,7 @@ public class DeckController : MonoBehaviour
                 id++;
 
                 // 创建卡牌并获取卡牌组件
-                Card card = Instantiate(GameController.Instance.CardPrefab, GameController.Instance.TableCanvas.transform).GetComponent<Card>();
+                Card card = Instantiate(GameController.Instance.CardPrefab, GameController.Instance.PlayGameCanvas.transform).GetComponent<Card>();
 
                 // 初始化卡牌
                 card.InitData(id, cardData);

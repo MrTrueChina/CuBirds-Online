@@ -37,12 +37,12 @@ public class GameController : MonoBehaviour
     private static GameController instance;
 
     /// <summary>
-    /// 桌面画布
+    /// 游戏范围画布
     /// </summary>
-    public Canvas TableCanvas { get { return tableCanvas; } }
+    public Canvas PlayGameCanvas { get { return playGameCanvas; } }
     [SerializeField]
-    [Header("桌面画布")]
-    private Canvas tableCanvas;
+    [Header("游戏范围画布")]
+    private Canvas playGameCanvas;
     /// <summary>
     /// 卡组控制器
     /// </summary>
@@ -135,7 +135,7 @@ public class GameController : MonoBehaviour
             PlayerController player = new GameObject("Player " + i).AddComponent<PlayerController>();
 
             // 初始化
-            player.Init(i, playerPositions[i], TableCanvas);
+            player.Init(i, playerPositions[i], PlayGameCanvas);
 
             // 保存这个玩家
             players.Add(player);
@@ -172,7 +172,7 @@ public class GameController : MonoBehaviour
                         tipsText.text = "给所有玩家发牌……";
 
                         // 给所有玩家发 8 张牌
-                        DeckController.DealCards(players, 8, () =>
+                        DeckController.DealCards(players, 16, () =>
                         {
                             Debug.Log("发牌回调执行");
 
@@ -575,12 +575,22 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 检测指定的玩家是不是本机玩家
+    /// </summary>
+    /// <param name="player"></param>
+    /// <returns></returns>
+    public bool IsLocalPlayer(PlayerController player)
+    {
+        // 因为就是对比对象直接用等于号就行
+        return player == LocalPlayer;
+    }
+
+    /// <summary>
     /// 检测当前回合玩家是不是本机玩家
     /// </summary>
     /// <returns></returns>
     public bool CurrentPlayerIsLocalPlayer()
     {
-        // 因为就是对比对象直接用等于号就行
-        return CurrentTrunPlayre == LocalPlayer;
+        return IsLocalPlayer(CurrentTrunPlayre);
     }
 }
