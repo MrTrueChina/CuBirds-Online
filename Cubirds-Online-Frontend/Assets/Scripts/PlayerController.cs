@@ -431,6 +431,50 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
+    /// 把所有鸟群卡丢弃
+    /// </summary>
+    /// <param name="callback"></param>
+    public void DiscardAllGroupCards(Action callback)
+    {
+        // 交给协程处理
+        StartCoroutine(DiscardAllGroupCardsCoroutine(callback));
+    }
+    /// <summary>
+    /// 把所有鸟群卡丢弃的协程
+    /// </summary>
+    /// <param name="callback"></param>
+    /// <returns></returns>
+    public IEnumerator DiscardAllGroupCardsCoroutine(Action callback)
+    {
+        Debug.LogFormat("玩家 {0} 丢弃所有鸟群牌", Id);
+
+        // 已经完成发送的卡的数量
+        int sendedCardsNumber = 0;
+
+        // 复制一份手牌作为要丢弃的牌的列表
+        List<Card> needDiscardCards = new List<Card>(GroupCards);
+        // 清空手牌
+        GroupCards.Clear();
+
+        // 遍历要丢弃的牌
+        needDiscardCards.ForEach(handcard =>
+        {
+            // 交给弃牌堆
+            GameController.Instance.DiscardCardsController.TakeCard(handcard, () =>
+            {
+                // 已发送的卡计数器增加
+                sendedCardsNumber++;
+            }, 0.4f);
+        });
+
+        // 等所有的牌都送入弃牌堆
+        yield return new WaitUntil(() => sendedCardsNumber >= needDiscardCards.Count);
+
+        // 执行回调
+        callback.Invoke();
+    }
+
+    /// <summary>
     /// 抬高显示指定类型的卡牌
     /// </summary>
     /// <param name="cardType"></param>

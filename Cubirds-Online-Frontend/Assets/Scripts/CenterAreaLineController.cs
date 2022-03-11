@@ -18,13 +18,6 @@ public class CenterAreaLineController : MonoBehaviour
     private Transform linePosition;
 
     /// <summary>
-    /// 放下牌的位置到行中心的距离
-    /// </summary>
-    [SerializeField]
-    [Header("放下牌的位置到行中心的距离")]
-    private float putCardOffset = 400;
-
-    /// <summary>
     /// 每张牌中心点的水平距离
     /// </summary>
     [SerializeField]
@@ -197,7 +190,7 @@ public class CenterAreaLineController : MonoBehaviour
             // 获取现有的卡牌中最靠右的和放下的牌一样种类的牌的索引
             int lastSameTypeCardIndex = Cards.FindLastIndex((c) => c.CardType == putCards[0].CardType);
 
-            Debug.LogFormat("现有卡牌中最靠右的和放下的牌相同种类的牌是索引是 {0}", lastSameTypeCardIndex);
+            //Debug.LogFormat("现有卡牌中最靠右的和放下的牌相同种类的牌是索引是 {0}", lastSameTypeCardIndex);
 
             // 如果找到了同类型的卡，而且这张卡不在最右边，这张卡右边的卡就是可以收走的牌
             if (lastSameTypeCardIndex > -1 && lastSameTypeCardIndex < Cards.Count - 1)
@@ -216,7 +209,7 @@ public class CenterAreaLineController : MonoBehaviour
             // 获取现有的卡牌中最靠左的和放下的牌一样种类的牌的索引
             int firstSameTypeCardIndex = Cards.FindIndex((c) => c.CardType == putCards[0].CardType);
 
-            Debug.LogFormat("现有卡牌中最靠左的和放下的牌相同种类的牌是索引是 {0}", firstSameTypeCardIndex);
+            //Debug.LogFormat("现有卡牌中最靠左的和放下的牌相同种类的牌是索引是 {0}", firstSameTypeCardIndex);
 
             // 如果找到了同类型的卡，而且这张卡不在最左边（不在最左边的条件是大于零，覆盖了找到同类型的不等于负一），这张卡左边的卡就是可以收走的牌
             if (firstSameTypeCardIndex > 0)
@@ -253,7 +246,7 @@ public class CenterAreaLineController : MonoBehaviour
             // 等待收走的牌全部交到玩家手里
             yield return new WaitUntil(() => sendedCardsNumber >= getCards.Count);
 
-            Debug.Log("被收走的卡已经全部交给玩家");
+            //Debug.Log("被收走的卡已经全部交给玩家");
 
             // 显示卡牌
             DisplayCards();

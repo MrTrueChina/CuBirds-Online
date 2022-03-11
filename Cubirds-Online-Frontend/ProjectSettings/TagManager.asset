@@ -9,6 +9,7 @@ TagManager:
   - MakeGroupController
   - SelectDrawController
   - ShowCardInfoController
+  - PlayOutOfTimeTimer
   layers:
   - Default
   - TransparentFX

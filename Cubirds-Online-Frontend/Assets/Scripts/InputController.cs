@@ -58,6 +58,10 @@ public class InputController : MonoBehaviour
     /// 玩家选择不抽牌事件，参数是 玩家id
     /// </summary>
     public UnityEvent<int> OnPlayerDontDrawCardsEvent { get; } = new UnityEvent<int>();
+    /// <summary>
+    /// 玩家超时事件，参数是 玩家id
+    /// </summary>
+    public UnityEvent<int> OnPlayerOutOfTimeEvent { get; } = new UnityEvent<int>();
 
     /// <summary>
     /// 通知输入控制器有卡牌被点击
@@ -134,5 +138,17 @@ public class InputController : MonoBehaviour
 
         // 转发玩家选择不抽牌事件
         OnPlayerDontDrawCardsEvent.Invoke(playerId);
+    }
+
+    /// <summary>
+    /// 通知输入控制器有玩家超时
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void CallPlayerOutOfTime(int playerId)
+    {
+        Debug.LogFormat("玩家 {0} 超时", playerId);
+
+        // 转发玩家超时事件
+        OnPlayerOutOfTimeEvent.Invoke(playerId);
     }
 }

@@ -105,6 +105,14 @@ public class GameController : MonoBehaviour
     private CardsData cardsData;
 
     /// <summary>
+    /// 一个回合的最长时间
+    /// </summary>
+    public float MaxTurnTime { get { return maxTurnTime; } }
+    [SerializeField]
+    [Header("一个回合的最长时间（秒）")]
+    private float maxTurnTime = 60;
+
+    /// <summary>
     /// 所有玩家
     /// </summary>
     public List<PlayerController> players { get; private set; } = new List<PlayerController>();
@@ -117,8 +125,28 @@ public class GameController : MonoBehaviour
     /// </summary>
     public PlayerController LocalPlayer { get; private set; }
 
+    /// <summary>
+    /// 打牌阶段的协程
+    /// </summary>
+    private Coroutine playBirdCardsCoroutine;
+    /// <summary>
+    /// 选择是否抽牌阶段的协程
+    /// </summary>
+    private Coroutine selectDrawCardCoroutine;
+    /// <summary>
+    /// 组群阶段的协程
+    /// </summary>
+    private Coroutine makeGroupCoroutine;
+    /// <summary>
+    /// 空手判断阶段的协程
+    /// </summary>
+    private Coroutine emptyHandCheckCoroutine;
+
     private void Start()
     {
+        // 订阅玩家超时事件
+        InputController.Instance.OnPlayerOutOfTimeEvent.AddListener(OnPlayerTimeOutEvent);
+
         // 开始游戏
         StartGame();
     }
@@ -201,8 +229,11 @@ public class GameController : MonoBehaviour
         // 发出提示
         ShowTip(CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id));
 
+        // 开始计时
+        PlayOutOfTimeTimer.Instance.StartTiming(CurrentTrunPlayre, 15);
+
         // 交给协程进行
-        StartCoroutine(PlayBirdCardsCoroutine());
+        playBirdCardsCoroutine = StartCoroutine(PlayBirdCardsCoroutine());
     }
     /// <summary>
     /// 打牌阶段的协程
@@ -272,7 +303,7 @@ public class GameController : MonoBehaviour
         ShowTip(CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Id));
 
         // 交给协程进行
-        StartCoroutine(SelectDrawCardCoroutine());
+        selectDrawCardCoroutine = StartCoroutine(SelectDrawCardCoroutine());
     }
     /// <summary>
     /// 没收到牌时选择是否抽牌的阶段的协程
@@ -359,7 +390,7 @@ public class GameController : MonoBehaviour
         ShowTip(CurrentPlayerIsLocalPlayer() ? localPlayerTip : otherPlayerTip);
 
         // 交给协程进行
-        StartCoroutine(MakeGroupCoroutine());
+        makeGroupCoroutine = StartCoroutine(MakeGroupCoroutine());
     }
     /// <summary>
     /// 组群阶段的协程
@@ -461,12 +492,9 @@ public class GameController : MonoBehaviour
         if (currentPlayerWin)
         {
             // 如果当前玩家胜利
-            
-            // 激活胜利面板
-            winCanvas.SetActive(true);
 
-            // 设置胜利文本
-            winText.text = string.Format("玩家 {0} 获胜！", CurrentTrunPlayre.Id);
+            // 显示胜利信息
+            ShowWinInfo(new List<PlayerController>() { CurrentTrunPlayre });
 
             // 之后不进行其他操作了，流程结束
         }
@@ -480,12 +508,43 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 显示胜利信息
+    /// </summary>
+    /// <param name="winPlayers"></param>
+    private void ShowWinInfo(List<PlayerController> winPlayers)
+    {
+        // 玩家胜利文本构造器
+        StringBuilder winTextBuilder = new StringBuilder();
+
+        // 添加前缀
+        winTextBuilder.Append("玩家 ");
+
+        // 把并列第一的玩家们加进去
+        winPlayers.ForEach(player =>
+        {
+            winTextBuilder.Append(player.Id + "、");
+        });
+
+        // 移除最后面的顿号
+        winTextBuilder.Remove(winTextBuilder.Length - 1, 1);
+
+        // 添加后缀
+        winTextBuilder.Append(" 获胜！");
+
+        // 打开胜利面板
+        winCanvas.SetActive(true);
+
+        // 设置胜利文本
+        winText.text = winTextBuilder.ToString();
+    }
+
+    /// <summary>
     /// 空手判断阶段
     /// </summary>
     private void EmptyHandCheck()
     {
         // 交给协程进行
-        StartCoroutine(EmptyHandCheckCoroutine());
+        emptyHandCheckCoroutine = StartCoroutine(EmptyHandCheckCoroutine());
     }
     /// <summary>
     /// 空手判断阶段的协程
@@ -563,30 +622,96 @@ public class GameController : MonoBehaviour
         // 筛选出鸟群卡数量和第一名一样的玩家，即并列第一的玩家们
         List<PlayerController> winPlayers = sortedPlayers.Where(player => player.GroupCards.Count == sortedPlayers[0].GroupCards.Count).ToList();
 
-        // 玩家胜利文本构造器
-        StringBuilder winTextBuilder = new StringBuilder();
-
-        // 添加前缀
-        winTextBuilder.Append("玩家 ");
-
-        // 把并列第一的玩家们加进去
-        winPlayers.ForEach(player =>
-        {
-            winTextBuilder.Append(player.Id + "、");
-        });
-
-        // 移除最后面的顿号
-        winTextBuilder.Remove(winTextBuilder.Length - 1,1);
-
-        // 添加后缀
-        winTextBuilder.Append(" 获胜！");
-
-        // 打开胜利面板
-        winCanvas.SetActive(true);
-
-        // 设置胜利文本
-        winText.text = winTextBuilder.ToString();
+        // 显示胜利信息
+        ShowWinInfo(winPlayers);
     }
+
+    /// <summary>
+    /// 当有玩家超时时这个方法会被调用
+    /// </summary>
+    /// <param name="playerId"></param>
+    private void OnPlayerTimeOutEvent(int playerId)
+    {
+        Debug.LogFormat("收到玩家 {0} 超时事件", playerId);
+
+        StartCoroutine(RemovePlayerCoroutine(playerId));
+    }
+    /// <summary>
+    /// 把玩家移除出游戏的协程
+    /// </summary>
+    /// <param name="playerId"></param>
+    /// <returns></returns>
+    private IEnumerator RemovePlayerCoroutine(int playerId)
+    {
+        Debug.LogFormat("将玩家 {0} 移除出游戏", playerId);
+
+        // 立刻停止所有主要的游戏协程，防止被踢出的玩家进一步操作
+        StopCoroutine();
+
+        // 找到超时的玩家
+        PlayerController timeOutPlayer = players.Find(p => p.Id == playerId);
+
+        // 播放玩家超时的进度条动画并等待动画播放完毕
+        bool removePlayerBarComplete = false;
+        PlayOutOfTimeTimer.Instance.ShowRemovePlayerBar(timeOutPlayer,3,()=> removePlayerBarComplete = true);
+        yield return new WaitUntil(() => removePlayerBarComplete);
+
+        // 让超时的玩家丢弃所有的手牌和鸟群牌
+        bool handCardsDiscarded = false;
+        bool groupCardsDiscarded = false;
+        timeOutPlayer.DiscardAllHandCards(() => handCardsDiscarded = true);
+        timeOutPlayer.DiscardAllGroupCards(() => groupCardsDiscarded = true);
+
+        // 等待玩家丢完牌
+        yield return new WaitUntil(() => handCardsDiscarded && groupCardsDiscarded);
+
+        // 如果当前回合是超时玩家的回合，把回合交给下一位玩家
+        if(CurrentTrunPlayre == timeOutPlayer)
+        {
+            CurrentTrunPlayre = players.IndexOf(CurrentTrunPlayre) != players.Count - 1 ? CurrentTrunPlayre = players[players.IndexOf(CurrentTrunPlayre) + 1] : players[0];
+        }
+
+        // 从玩家列表里移除这个玩家
+        players.Remove(timeOutPlayer);
+
+        if(players.Count == 1)
+        {
+            // 只剩下一个玩家了，这个玩家直接获胜
+            ShowWinInfo(new List<PlayerController>() { players[0] });
+        }
+        else
+        {
+            // 剩下不止一个玩家，进入打牌阶段
+            PlayBirdCards();
+        }
+    }
+
+    /// <summary>
+    /// 停止所有主要的游戏流程的协程
+    /// </summary>
+    private void StopCoroutine()
+    {
+        // 打牌阶段的协程
+        if(playBirdCardsCoroutine != null)
+        {
+            StopCoroutine(playBirdCardsCoroutine);
+        }
+        // 选择是否抽牌阶段的协程
+        if(selectDrawCardCoroutine != null)
+        {
+            StopCoroutine(selectDrawCardCoroutine);
+        }
+        // 组群阶段的协程
+        if(makeGroupCoroutine != null)
+        {
+            StopCoroutine(makeGroupCoroutine);
+        }
+        // 空手判断阶段的协程
+        if(emptyHandCheckCoroutine != null)
+        {
+            StopCoroutine(emptyHandCheckCoroutine);
+        }
+}
 
     /// <summary>
     /// 检测指定的玩家是不是本机玩家
