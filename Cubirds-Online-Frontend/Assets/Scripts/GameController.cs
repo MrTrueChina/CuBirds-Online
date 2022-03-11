@@ -230,7 +230,7 @@ public class GameController : MonoBehaviour
         ShowTip(CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id));
 
         // 开始计时
-        PlayOutOfTimeTimer.Instance.StartTiming(CurrentTrunPlayre, 15);
+        PlayOutOfTimeTimer.Instance.StartTiming(CurrentTrunPlayre, 60);
 
         // 交给协程进行
         playBirdCardsCoroutine = StartCoroutine(PlayBirdCardsCoroutine());
