@@ -18,7 +18,9 @@ namespace CubirdsOnline.Backend
         // 获取当前类的 log 实例
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        // Photon5 版本需要的带配置的构造
+        /// <summary>
+        /// Photon5 版本需要的带配置的构造
+        /// </summary>
         public CubirdServer() : base(LoadConfiguration()) { }
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace CubirdsOnline.Backend
             string cbpath = Path.GetDirectoryName(typeof(CubirdServer).Assembly.CodeBase).Remove(0, 6);
 
             // 拼接 dll 位置和配置文件名称，拼接出来的就是配置文件的准确位置，用配置构建器加载配置，之后构建出配置并返回
-            return cb.AddXmlFile(Path.Combine(cbpath, "MyGameServer.xml.config")).Build();
+            return cb.AddXmlFile(Path.Combine(cbpath, "CubirdServer.xml.config")).Build();
         }
 
         /// <summary>

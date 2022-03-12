@@ -1,0 +1,6 @@
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Frontend\Assets\Plugins\Common\Cubirds-Online-Common.xml
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Frontend\Assets\Plugins\Common\Cubirds-Online-Common.dll
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Frontend\Assets\Plugins\Common\Cubirds-Online-Common.pdb
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Common\obj\Debug\Cubirds-Online-Common.csproj.CoreCompileInputs.cache
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Common\obj\Debug\Cubirds-Online-Common.dll
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Common\obj\Debug\Cubirds-Online-Common.pdb
