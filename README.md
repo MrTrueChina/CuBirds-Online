@@ -37,7 +37,7 @@ Photon5 后端
 11. Microsoft.Extensions.Primitives，6.0.0 版
 
 ### 编译时需要的、可以通过 NuGet 包管理器添加的引用：
-1. log4net，2.0.12.0 版
+1. log4net，2.0.12.0 版（用新版开机会报异常，可能是不同版本的配置方式不同）
 
 ### 需要依赖的项目：
 1. Cubirds-Online-Common
