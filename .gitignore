@@ -7,6 +7,9 @@ Cubirds-Online-Frontend/[Bb]uilds/
 Cubirds-Online-Frontend/Assets/[Pp]lugins/
 Cubirds-Online-Frontend/Assets/AssetStoreTools*
 
+# 后台和 Common 使用的依赖包，这些可以直接下载没必要传上去
+packages/
+
 # Visual Studio cache directory
 .vs/
 
