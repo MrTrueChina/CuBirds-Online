@@ -122,6 +122,9 @@ public class PlayerController : MonoBehaviour
         card.MoveToAndRotateTo(transform.position, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
 
+        // 播放卡牌摩擦音效
+        CardSoundController.Instance.PlayCardFrictionSound(0.02f);
+
         // 把卡牌添加到手牌里
         handCards.Add(card);
 
@@ -204,6 +207,9 @@ public class PlayerController : MonoBehaviour
         bool moved = false;
         card.MoveToAndRotateTo(transform.position + (transform.up * groupCardHandCardDistance) + moveToPositionXOffset, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
+
+        // 播放放下卡牌音效
+        CardSoundController.Instance.PlayPutCardSound(0.1f);
 
         // 添加到鸟群卡列表中
         GroupCards.Add(card);
@@ -365,16 +371,12 @@ public class PlayerController : MonoBehaviour
             }, 0.3f);
         }
 
-        // 把剩下的牌扔到弃牌区
-        foreach(Card discardCard in makeGroupCards)
+        // 把剩下的牌丢入弃牌区
+        GameController.Instance.DiscardCardsController.TakeCard(makeGroupCards, () =>
         {
-            // 把牌丢入弃牌区
-            GameController.Instance.DiscardCardsController.TakeCard(discardCard, () =>
-            {
-                // 牌扔到弃牌区后增加完成发送的卡的数量
-                sendedCardsNumber++;
-            });
-        }
+            // 牌扔到弃牌区后增加完成发送的卡的数量
+            sendedCardsNumber += makeGroupCards.Count;
+        });
 
         // 更新手卡的显示
         DisplayHandCards();
@@ -404,27 +406,23 @@ public class PlayerController : MonoBehaviour
     {
         Debug.LogFormat("玩家 {0} 丢弃所有手牌", Id);
 
-        // 已经完成发送的卡的数量
-        int sendedCardsNumber = 0;
-
         // 复制一份手牌作为要丢弃的牌的列表
         List<Card> needDiscardCards = new List<Card>(handCards);
         // 清空手牌
         handCards.Clear();
 
-        // 遍历要丢弃的牌
-        needDiscardCards.ForEach(handcard =>
+        // 已经完成发送的卡的数量
+        bool sended = false;
+
+        // 交给弃牌堆
+        GameController.Instance.DiscardCardsController.TakeCard(needDiscardCards, () =>
         {
-            // 交给弃牌堆
-            GameController.Instance.DiscardCardsController.TakeCard(handcard, () =>
-            {
-                // 已发送的卡计数器增加
-                sendedCardsNumber++;
-            }, 0.4f);
-        });
+            // 记录发送完毕
+            sended = true;
+        }, 0.4f);
 
         // 等所有的牌都送入弃牌堆
-        yield return new WaitUntil(() => sendedCardsNumber >= needDiscardCards.Count);
+        yield return new WaitUntil(() => sended);
 
         // 执行回调
         callback.Invoke();
@@ -448,27 +446,23 @@ public class PlayerController : MonoBehaviour
     {
         Debug.LogFormat("玩家 {0} 丢弃所有鸟群牌", Id);
 
-        // 已经完成发送的卡的数量
-        int sendedCardsNumber = 0;
-
-        // 复制一份手牌作为要丢弃的牌的列表
+        // 复制一份鸟群牌作为要丢弃的牌的列表
         List<Card> needDiscardCards = new List<Card>(GroupCards);
-        // 清空手牌
+        // 清空鸟群牌
         GroupCards.Clear();
 
-        // 遍历要丢弃的牌
-        needDiscardCards.ForEach(handcard =>
+        // 已经完成发送的卡的数量
+        bool sended = false;
+
+        // 交给弃牌堆
+        GameController.Instance.DiscardCardsController.TakeCard(needDiscardCards, () =>
         {
-            // 交给弃牌堆
-            GameController.Instance.DiscardCardsController.TakeCard(handcard, () =>
-            {
-                // 已发送的卡计数器增加
-                sendedCardsNumber++;
-            }, 0.4f);
-        });
+            // 记录发送完毕
+            sended = true;
+        }, 0.4f);
 
         // 等所有的牌都送入弃牌堆
-        yield return new WaitUntil(() => sendedCardsNumber >= needDiscardCards.Count);
+        yield return new WaitUntil(() => sended);
 
         // 执行回调
         callback.Invoke();

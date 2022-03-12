@@ -10,6 +10,7 @@ TagManager:
   - SelectDrawController
   - ShowCardInfoController
   - PlayOutOfTimeTimer
+  - CardSoundController
   layers:
   - Default
   - TransparentFX

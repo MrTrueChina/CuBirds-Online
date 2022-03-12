@@ -234,7 +234,7 @@ public class DeckController : MonoBehaviour
                 // 没找到可以放入的中央行
 
                 // 把牌扔进弃牌区
-                GameController.Instance.DiscardCardsController.TakeCard(targetCard, () =>
+                GameController.Instance.DiscardCardsController.TakeCard(new List<Card>() { targetCard }, () =>
                 {
                     // 记录没有卡牌正在发送
                     cardSending = false;

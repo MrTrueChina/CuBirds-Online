@@ -543,6 +543,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void EmptyHandCheck()
     {
+        // 到这个阶段后就停止计时，因为空手后弃牌抽满有大概十秒，这段时间玩家实际上已经没有操作了，防止玩家无辜被超时
+        PlayOutOfTimeTimer.Instance.StopTiming();
+
         // 交给协程进行
         emptyHandCheckCoroutine = StartCoroutine(EmptyHandCheckCoroutine());
     }

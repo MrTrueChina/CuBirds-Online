@@ -180,6 +180,9 @@ public class CenterAreaLineController : MonoBehaviour
         // 等待所有牌移动到位
         yield return new WaitUntil(() => movedCardNumbers >= putCards.Count);
 
+        // 播放放下卡牌的音效
+        CardSoundController.Instance.PlayPutCardSound();
+
         // 收到的牌的列表
         List<Card> getCards = new List<Card>();
 

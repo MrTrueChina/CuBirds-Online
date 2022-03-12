@@ -98,7 +98,7 @@ public class PlayOutOfTimeTimer : MonoBehaviour
             // 显示倒计时文字
             timeText.text = ((int)timer).ToString();
             // 根据计时调整倒计时文字的透明度，倒计时越接近超时文字越清晰
-            timeText.color =  new Color(timeText.color.r, timeText.color.g, timeText.color.b, 1 - timer / maxTime);
+            timeText.color = new Color(timeText.color.r, timeText.color.g, timeText.color.b, 1 - timer / maxTime);
         }
     }
 
@@ -126,6 +126,18 @@ public class PlayOutOfTimeTimer : MonoBehaviour
 
         // 保存时间
         timer = time;
+    }
+
+    /// <summary>
+    /// 停止计时
+    /// </summary>
+    public void StopTiming()
+    {
+        // 移除正在计时的玩家
+        timerPlayer = null;
+
+        // 隐藏倒计时文本
+        timeText.color = new Color(timeText.color.r, timeText.color.g, timeText.color.b, 0);
     }
 
     /// <summary>
