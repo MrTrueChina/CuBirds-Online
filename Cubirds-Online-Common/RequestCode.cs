@@ -11,5 +11,9 @@ namespace CubirdsOnline.Common
     /// </summary>
     public enum RequestCode : byte
     {
+        /// <summary>
+        /// 获取玩家 ID
+        /// </summary>
+        GET_PLAYER_ID = 0,
     }
 }

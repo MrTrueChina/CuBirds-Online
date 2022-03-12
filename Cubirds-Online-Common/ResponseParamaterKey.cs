@@ -19,5 +19,9 @@ namespace CubirdsOnline.Common
         /// <see cref="string"/> 型的错误消息的返回参数的索引
         /// </summary>
         ERROR_MESSAGE_STRING = 1,
+        /// <summary>
+        /// 玩家 ID
+        /// </summary>
+        PLAYER_ID = 2,
     }
 }

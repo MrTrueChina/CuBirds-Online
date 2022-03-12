@@ -23,7 +23,11 @@ namespace CubirdsOnline.Backend
         /// <summary>
         /// 所有已连接且没有断开连接的客户端
         /// </summary>
-        public readonly List<CubirdClientPeer> ConnectingPeers = new List<CubirdClientPeer>();
+        public List<CubirdClientPeer> ConnectingPeers { get; } = new List<CubirdClientPeer>();
+        /// <summary>
+        /// 现在游戏中已经开了还没有回收的桌子
+        /// </summary>
+        public List<Table> Tables { get; } = new List<Table>();
 
         // 静态代码块，加载类时自动执行
         static ServerModel()

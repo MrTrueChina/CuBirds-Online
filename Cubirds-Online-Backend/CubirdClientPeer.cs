@@ -17,8 +17,17 @@ namespace CubirdsOnline.Backend
         /// <summary>
         /// 这个客户端的玩家 ID
         /// </summary>
-        public int playerId = -1;
+        public int PlayerId { get; set; } = -1;
 
+        /// <summary>
+        /// 这个客户端的玩家的名称
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 构造
+        /// </summary>
+        /// <param name="initRequest"></param>
         public CubirdClientPeer(InitRequest initRequest) : base(initRequest)
         {
             log.InfoFormat("客户端建立连接，ConnectionId = {0}", ConnectionId);
@@ -27,7 +36,7 @@ namespace CubirdsOnline.Backend
             ServerModel.Instance.ConnectingPeers.Add(this);
 
             // 将连接 ID 作为玩家 ID 保存
-            playerId = ConnectionId;
+            PlayerId = ConnectionId;
         }
 
         /// <summary>
