@@ -12,7 +12,10 @@ Unity 客户端
 1. Cubirds-Online-Common 编译出来的 dll，放在 Assets/Plugins/Common 文件夹里
 
 ## Cubirds-Online-Backend
-Photon5 后端  
+Photon5 后端
+
+### 需要进行的修改
+1. 在生成路径配置里为了方便测试设置为了 Photon5 的部署文件夹，实际情况下部署和开发很可能在两个电脑上这个路径就没用了，可以改回默认的 bin 目录
 
 ### 需要引用的 DLL：
 1. Photon.SocketServer.dll，来自 Photon文件夹\lib\PhotonSocketServer\net461\Photon.SocketServer.dll
@@ -38,6 +41,10 @@ Photon5 后端
 
 ### 需要依赖的项目：
 1. Cubirds-Online-Common
+
+### 发布时需要的步骤
+1. 找到 PhotonServer.config 文件，这个不是后台需要的文件，是给 Photon5 的配置，需要添加到 Photon5 的配置里
+2. 把编译出来的文件放进 Photon5 的部署文件夹里
 
 ## Cubirds-Online-Common
 
