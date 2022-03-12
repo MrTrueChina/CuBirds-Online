@@ -17,6 +17,11 @@ namespace CubirdsOnline.Backend
         public int Id { get; set; }
 
         /// <summary>
+        /// 这个桌子的名字
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// 这一桌的玩家
         /// </summary>
         public List<PlayerInfo> players { get; } = new List<PlayerInfo>();
