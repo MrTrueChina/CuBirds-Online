@@ -10,4 +10,18 @@ using UnityEngine;
 /// </summary>
 public static class UserAPI
 {
+    /// <summary>
+    /// 获取本机用户的 ID
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void GetLocalPlayerId(Action<int> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.GET_PLAYER_ID,
+            new Dictionary<byte, object>(),
+            SendOptions.SendReliable,
+            response => handler.Invoke(response.Parameters.Get<int>(ResponseParamaterKey.PLAYER_ID)),
+            timeoutHandler);
+    }
 }

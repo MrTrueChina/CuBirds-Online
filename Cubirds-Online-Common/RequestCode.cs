@@ -15,5 +15,13 @@ namespace CubirdsOnline.Common
         /// 获取玩家 ID
         /// </summary>
         GET_PLAYER_ID = 0,
+        /// <summary>
+        /// 获取所有的桌子信息
+        /// </summary>
+        GET_ALL_TABLES_INFOS = 1,
+        /// <summary>
+        /// 开新桌子
+        /// </summary>
+        CREATE_TABLE = 2,
     }
 }

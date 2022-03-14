@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using CubirdsOnline.Common;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 using log4net;
@@ -48,14 +49,18 @@ namespace CubirdsOnline.Backend
             InitLogging();
 
             // log 没有初始化调 log 也没用
-            log.InfoFormat("log 完成初始化，开始记录 log");
+            log.Info("log 完成初始化，开始记录 log");
+
+            //log.Info("开始注册自定义序列化和反序列化");
+            //Protocol.TryRegisterCustomType(typeof(TableInfoDTO), myCustomTypeCode, TableInfoDTO.Serialize, TableInfoDTO.Deserialize);
+            //log.Info("自定义序列化和反序列化注册完毕");
 
             // 加载请求转发类，非必须，但可以在开机的时候就看到映射是不是正常
-            log.InfoFormat("初始化请求转发功能");
+            log.Info("初始化请求转发功能");
             RequestSender.RequestSender.Load();
-            log.InfoFormat("请求转发初始化完成");
+            log.Info("请求转发初始化完成");
 
-            log.InfoFormat("主类初始化完毕");
+            log.Info("主类初始化完毕");
         }
 
         /// <summary>

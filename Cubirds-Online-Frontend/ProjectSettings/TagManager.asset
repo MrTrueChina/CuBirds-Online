@@ -11,6 +11,8 @@ TagManager:
   - ShowCardInfoController
   - PlayOutOfTimeTimer
   - CardSoundController
+  - TableListController
+  - ConnectToServer
   layers:
   - Default
   - TransparentFX

@@ -11,6 +11,37 @@ using UnityEngine.UI;
 public class ConnectToServer : MonoBehaviour
 {
     /// <summary>
+    /// 实例
+    /// </summary>
+    public static ConnectToServer Instance
+    {
+        get
+        {
+            if (instance != null)
+            {
+                return instance;
+            }
+
+            lock (typeof(ConnectToServer))
+            {
+                if (instance == null)
+                {
+                    instance = GameObject.FindGameObjectWithTag("ConnectToServer").GetComponent<ConnectToServer>();
+                }
+
+                return instance;
+            }
+        }
+    }
+    private static ConnectToServer instance;
+
+    /// <summary>
+    /// 连接画布
+    /// </summary>
+    [SerializeField]
+    [Header("连接画布")]
+    private GameObject connectCanvas;
+    /// <summary>
     /// ID:端口 输入框
     /// </summary>
     [SerializeField]
@@ -98,16 +129,20 @@ public class ConnectToServer : MonoBehaviour
                 // 显示提示
                 connectInfoText.text = "连接成功";
 
-                // 向服务器发出获取玩家 ID 请求
-                PhotonEngine.SendOperation(RequestCode.GET_PLAYER_ID, new Dictionary<byte, object>(), SendOptions.SendUnreliable, getPlayerIdResponse =>
+                // 获取本机玩家 ID
+                UserAPI.GetLocalPlayerId(localPlayerId =>
                 {
-                    // 获取 ID
-                    int localPlayerId = getPlayerIdResponse.Parameters.Get<int>(ResponseParamaterKey.PLAYER_ID);
-
                     Debug.LogFormat("获取本地玩家 ID = {0}", localPlayerId);
 
                     // 保存本机玩家 ID
                     GlobalModel.Instance.LocalPLayerId = localPlayerId;
+
+                    // 切换到桌子列表面板
+                    ToTablesCanvas();
+                }, () => 
+                {
+                    // 连接超时，发出信息
+                    connectInfoText.text = "获取 ID 失败，请尝试重连";
                 });
 
                 // 改为没有开始连接状态
@@ -130,5 +165,56 @@ public class ConnectToServer : MonoBehaviour
                 connectStarted = false;
             }
         }
+    }
+
+    /// <summary>
+    /// 切换到桌子列表面板
+    /// </summary>
+    private void ToTablesCanvas()
+    {
+        // 关闭面板
+        Close();
+
+        // 打开桌子列表面板
+        TableListController.Instance.Show();
+    }
+
+    /// <summary>
+    /// 关闭面板
+    /// </summary>
+    private void Close()
+    {
+        // 禁用连接画布
+        connectCanvas.SetActive(false);
+
+        // 清空输入框
+        ipInputField.text = "";
+        netInputField.text = "";
+
+        // 清空连接状态提示文本
+        connectInfoText.text = "";
+    }
+
+    /// <summary>
+    /// 打开面板
+    /// </summary>
+    public void Show()
+    {
+        Debug.Log("显示连接到服务器面板");
+
+        // 启动画布
+        connectCanvas.SetActive(true);
+    }
+
+    /// <summary>
+    /// 退出游戏
+    /// </summary>
+    public void ExitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
     }
 }

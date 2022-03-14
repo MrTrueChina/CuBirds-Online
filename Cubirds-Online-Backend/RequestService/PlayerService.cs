@@ -11,7 +11,7 @@ using Photon.SocketServer;
 namespace CubirdsOnline.Backend.Service
 {
     /// <summary>
-    /// 游戏主流程之外的对玩家的请求进行处理的 Service
+    /// 游戏主流程之外的对玩家相关的请求进行处理的 Service
     /// </summary>
     [RequestService]
     public class PlayerService

@@ -23,5 +23,13 @@ namespace CubirdsOnline.Common
         /// 玩家 ID
         /// </summary>
         PLAYER_ID = 2,
+        /// <summary>
+        /// 桌子信息列表
+        /// </summary>
+        TABLES_INFOS = 3,
+        /// <summary>
+        /// 桌子信息
+        /// </summary>
+        TABLE_INFO = 4,
     }
 }

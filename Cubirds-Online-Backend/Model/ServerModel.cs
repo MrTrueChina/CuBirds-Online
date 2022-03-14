@@ -28,6 +28,10 @@ namespace CubirdsOnline.Backend
         /// 现在游戏中已经开了还没有回收的桌子
         /// </summary>
         public List<Table> Tables { get; } = new List<Table>();
+        /// <summary>
+        /// 桌子 ID 计数器
+        /// </summary>
+        public int TableIdCounter { get; set; } = 0;
 
         // 静态代码块，加载类时自动执行
         static ServerModel()
