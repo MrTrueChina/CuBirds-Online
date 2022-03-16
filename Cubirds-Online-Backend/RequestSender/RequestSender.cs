@@ -8,6 +8,7 @@ using ExitGames.Logging;
 using Photon.SocketServer;
 using CubirdsOnline.Common;
 using CubirdsOnline.Backend.Service;
+using CubirdsOnline.Backend.Controller;
 
 namespace CubirdsOnline.Backend.RequestSender
 {
@@ -34,14 +35,14 @@ namespace CubirdsOnline.Backend.RequestSender
             // 创建映射字典
             operationCodeToMethod = new Dictionary<byte, MethodInfo>();
 
-            // 获取所有有 Service 注解的类里的接收消息的方法
-            List<MethodInfo> serviceMethod =
-                // 获取用户的 Service 类所处的程序集
-                Assembly.GetAssembly(typeof(LockstepService))
+            // 获取所有有 Controller 注解的类里的接收消息的方法
+            List<MethodInfo> controllerMethod =
+                // 获取用户的 Controller 类所处的程序集
+                Assembly.GetAssembly(typeof(PlayerController))
                 // 获取程序集里的所有类
                 .GetTypes()
-                // 筛选出有 Service 注解的
-                .Where(t => t.GetCustomAttribute<RequestService>() != null)
+                // 筛选出有 Controller 注解的
+                .Where(t => t.GetCustomAttribute<RequestController>() != null)
                 // 获取这些类的所有公开静态方法
                 .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static))
                 // 筛选出有接收消息注解的方法
@@ -50,7 +51,7 @@ namespace CubirdsOnline.Backend.RequestSender
                 .ToList();
 
             // 放入字典
-            serviceMethod.ForEach(handler =>
+            controllerMethod.ForEach(handler =>
             {
                 // 获取操作码
                 RequestCode code = handler.GetCustomAttribute<RequestHandler>().OperationCode;

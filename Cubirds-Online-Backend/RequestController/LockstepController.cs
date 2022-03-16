@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 using CubirdsOnline.Backend.RequestSender;
 using ExitGames.Logging;
 
-namespace CubirdsOnline.Backend.Service
+namespace CubirdsOnline.Backend.Controller
 {
     /// <summary>
-    /// 游戏过程中进行帧同步的 Service
+    /// 游戏过程中进行帧同步的 Controller
     /// </summary>
-    public class LockstepService
+    [RequestController]
+    public class LockstepController
     {
         // 获取当前类的 log 实例
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
