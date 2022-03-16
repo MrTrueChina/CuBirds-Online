@@ -7,51 +7,39 @@ using System.Threading.Tasks;
 namespace CubirdsOnline.Common
 {
     /// <summary>
-    /// 桌子信息的数据传输对象
+    /// 玩家信息的数据传输对象
     /// </summary>
-    public class TableInfoDTO
+    public class PlayerInfoDTO
     {
         /// <summary>
-        /// 桌号
+        /// ID
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// 这个桌子的名字
+        /// 这个玩家的名称
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// 这一桌已经开局了
+        /// 这个玩家是否已经被移除出游戏
         /// </summary>
-        public bool Playing { get; set; }
-
-        /// <summary>
-        /// 这一桌的玩家 ID
-        /// </summary>
-        public int[] PlayerIds { get; set; }
-
-        /// <summary>
-        /// 这一桌的桌主的 ID
-        /// </summary>
-        public int MasterId { get; set; }
+        public bool IsRemoved { get; set; }
 
         /// <summary>
         /// 预留的空构造
         /// </summary>
-        public TableInfoDTO() { }
+        public PlayerInfoDTO() { }
 
         /// <summary>
         /// 使用 <see cref="ToObjectArray"/> 方法转化出的对象数组的构造
         /// </summary>
         /// <param name="objectArray"></param>
-        public TableInfoDTO(object[] objectArray)
+        public PlayerInfoDTO(object[] objectArray)
         {
             Id = (int)objectArray[0];
             Name = (string)objectArray[1];
-            Playing = (bool)objectArray[2];
-            PlayerIds = (int[])objectArray[3];
-            MasterId = (int)objectArray[4];
+            IsRemoved = (bool)objectArray[2];
         }
 
         /// <summary>
@@ -60,7 +48,7 @@ namespace CubirdsOnline.Common
         /// <returns></returns>
         public object[] ToObjectArray()
         {
-            return new object[] { Id, Name, Playing, PlayerIds, MasterId };
+            return new object[] { Id, Name, IsRemoved };
         }
     }
 }

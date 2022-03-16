@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CubirdsOnline.Common;
 
 namespace CubirdsOnline.Backend
 {
@@ -32,6 +33,20 @@ namespace CubirdsOnline.Backend
 
             // 初始化为没有被移除
             IsRemoved = false;
+        }
+
+        /// <summary>
+        /// 转为数据传输对象
+        /// </summary>
+        /// <returns></returns>
+        public PlayerInfoDTO ToDTO()
+        {
+            return new PlayerInfoDTO()
+            {
+                Id = Peer.PlayerId,
+                Name = Peer.Name,
+                IsRemoved = IsRemoved,
+            };
         }
     }
 }

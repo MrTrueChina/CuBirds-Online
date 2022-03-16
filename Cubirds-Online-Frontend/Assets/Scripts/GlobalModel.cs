@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CubirdsOnline.Common;
 using UnityEngine;
 
 /// <summary>
@@ -44,11 +45,19 @@ public class GlobalModel : MonoBehaviour
     /// </summary>
     public int LocalPLayerId { get; set; }
     /// <summary>
-    /// 这一桌所有玩家的 id
+    /// 本机玩家信息
     /// </summary>
-    public List<int> TablePlayerIds { get; set; }
+    public PlayerInfoDTO LocalPLayer { get; set; }
+    /// <summary>
+    /// 这一桌所有玩家的信息
+    /// </summary>
+    public List<PlayerInfoDTO> TablePlayers { get; set; }
     /// <summary>
     /// 开局玩家的 id
     /// </summary>
     public int StartPlayerId { get; set; }
+    /// <summary>
+    /// 现在处于的桌子的信息，但不使用这个对象里的玩家 id，玩家 id 以 <see cref="TablePlayerIds"/> 为准
+    /// </summary>
+    public TableInfoDTO TableInfo { get; set; }
 }

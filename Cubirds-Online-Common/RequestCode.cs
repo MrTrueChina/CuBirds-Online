@@ -23,5 +23,21 @@ namespace CubirdsOnline.Common
         /// 开新桌子
         /// </summary>
         CREATE_TABLE = 2,
+        /// <summary>
+        /// 加入桌子
+        /// </summary>
+        JOIN_TABLE = 3,
+        /// <summary>
+        /// 获取指定桌子上所有的玩家
+        /// </summary>
+        GET_ALL_PLAYER_ON_TABLE = 4,
+        /// <summary>
+        /// 退出桌子
+        /// </summary>
+        QUIT_TABLE = 5,
+        /// <summary>
+        /// 解散桌子
+        /// </summary>
+        DISBAND_TABLE = 6,
     }
 }

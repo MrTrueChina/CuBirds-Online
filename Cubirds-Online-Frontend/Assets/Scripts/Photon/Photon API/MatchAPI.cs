@@ -53,4 +53,55 @@ public static class MatchAPI
             response => handler.Invoke(new TableInfoDTO(response.Parameters.Get<object[]>(ResponseParamaterKey.TABLE_INFO))),
             timeoutHandler);
     }
+
+    /// <summary>
+    /// 加入桌子
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void JoinTable(int tableId, Action<ParameterDictionary> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.CREATE_TABLE,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, tableId },
+            },
+            SendOptions.SendReliable,
+            response => {
+                // 这个处理比较麻烦，不如直接把参数传给回调
+                handler.Invoke(response.Parameters);
+            },
+            timeoutHandler);
+    }
+
+    /// <summary>
+    /// 获取一个桌子上的所有玩家
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void GetAllPlayersOnTable(int tableId, Action<List<PlayerInfoDTO>> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.GET_ALL_PLAYER_ON_TABLE,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, tableId },
+            },
+            SendOptions.SendReliable,
+            response =>
+            {
+                // 获取返回
+                object[] playersArray = response.Parameters.Get<object[]>(ResponseParamaterKey.PLAYERS_INFOS);
+
+                // 转为玩家信息列表
+                List<PlayerInfoDTO> players = playersArray.ToList().Select(a => new PlayerInfoDTO(a as object[])).ToList();
+
+                // 执行回调
+                handler.Invoke(players);
+            },
+            timeoutHandler);
+    }
 }

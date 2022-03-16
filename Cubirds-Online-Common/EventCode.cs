@@ -11,5 +11,25 @@ namespace CubirdsOnline.Common
     /// </summary>
     public enum EventCode : byte
     {
+        /// <summary>
+        /// 有新桌子开出的事件
+        /// </summary>
+        TABLE_CREATED = 0,
+        /// <summary>
+        /// 有桌子移除
+        /// </summary>
+        TABLE_REMOVED = 1,
+        /// <summary>
+        /// 玩家加入桌子
+        /// </summary>
+        PLAYER_JOIN_TABLE = 2,
+        /// <summary>
+        /// 玩家退出桌子
+        /// </summary>
+        PLAYER_QUIT_TABLE = 3,
+        /// <summary>
+        /// 桌子解散
+        /// </summary>
+        DISBAND_TABLE = 4,
     }
 }

@@ -68,8 +68,8 @@ namespace CubirdsOnline.Backend
         {
             log.InfoFormat("客户端断开连接，ConnectionId = {0}", ConnectionId);
 
-            // 从连接着的客户端列表中移除
-            ServerModel.Instance.ConnectingPeers.Remove(this);
+            // 通知服务器这个客户端断开连接
+            CubirdServer.ServerInstance.OnPeerDisconnect(this);
         }
 
         /// <summary>

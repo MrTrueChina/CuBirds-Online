@@ -11,5 +11,21 @@ namespace CubirdsOnline.Common
     /// </summary>
     public enum EventParamaterKey : byte
     {
+        /// <summary>
+        /// 玩家 ID
+        /// </summary>
+        PLAYER_ID,
+        /// <summary>
+        /// 玩家信息
+        /// </summary>
+        PLAYER_INFO,
+        /// <summary>
+        /// 桌子 ID
+        /// </summary>
+        TABLE_ID,
+        /// <summary>
+        /// 桌子信息
+        /// </summary>
+        TABLE_INFO,
     }
 }

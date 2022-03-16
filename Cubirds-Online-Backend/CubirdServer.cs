@@ -16,6 +16,11 @@ namespace CubirdsOnline.Backend
     /// </summary>
     public class CubirdServer : ApplicationBase
     {
+        /// <summary>
+        /// 实例
+        /// </summary>
+        public static CubirdServer ServerInstance { get; private set; }
+
         // 获取当前类的 log 实例
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
@@ -60,6 +65,9 @@ namespace CubirdsOnline.Backend
             RequestSender.RequestSender.Load();
             log.Info("请求转发初始化完成");
 
+            // 保存实例
+            ServerInstance = this;
+
             log.Info("主类初始化完毕");
         }
 
@@ -99,6 +107,27 @@ namespace CubirdsOnline.Backend
         protected override void TearDown()
         {
             log.InfoFormat("拆毁");
+        }
+
+        /// <summary>
+        /// 当客户端断开连接时这个方法会被调用
+        /// </summary>
+        /// <param name="peer"></param>
+        public void OnPeerDisconnect(CubirdClientPeer peer)
+        {
+            // 从连接着的客户端列表中移除这个客户端
+            ServerModel.Instance.ConnectingPeers.Remove(peer);
+
+            // 遍历所有桌子
+            ServerModel.Instance.Tables.ForEach(table =>
+            {
+                // FIXME：这里有问题，不是这样处理的，是需要调用退出桌子的方法，然后这个方法应该会把玩家退出的消息同步给同一桌子的其他人
+                // 从桌子里移除这个客户端对应的玩家信息
+                table.Players.RemoveAll(player =>
+                {
+                    return player.Peer == peer;
+                });
+            });
         }
     }
 }

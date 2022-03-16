@@ -31,5 +31,13 @@ namespace CubirdsOnline.Common
         /// 桌子信息
         /// </summary>
         TABLE_INFO = 4,
+        /// <summary>
+        /// 操作成功的通用 Key
+        /// </summary>
+        SUCCESS = 5,
+        /// <summary>
+        /// 玩家信息列表
+        /// </summary>
+        PLAYERS_INFOS = 6,
     }
 }

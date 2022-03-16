@@ -23,6 +23,11 @@ namespace CubirdsOnline.Backend
         public string Name { get; set; }
 
         /// <summary>
+        /// 这一桌已经开局了
+        /// </summary>
+        public bool Playing { get; set; } = false;
+
+        /// <summary>
         /// 这一桌的玩家
         /// </summary>
         public List<PlayerInfo> Players { get; } = new List<PlayerInfo>();
@@ -44,6 +49,9 @@ namespace CubirdsOnline.Backend
             Id = id;
             Name = name;
 
+            // 新开的桌子当然没有开局
+            Playing = false;
+
             // 把玩家客户端转为玩家信息对象
             PlayerInfo masterPlayerInfo = new PlayerInfo(masterPeer);
 
@@ -64,6 +72,7 @@ namespace CubirdsOnline.Backend
             {
                 Id = Id,
                 Name = Name,
+                Playing = Playing,
                 PlayerIds = Players.Select(p => p.Peer.PlayerId).ToList().ToArray(),
                 MasterId = Master.Peer.PlayerId,
             };

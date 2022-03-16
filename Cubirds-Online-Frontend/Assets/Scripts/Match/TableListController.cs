@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using CubirdsOnline.Common;
+using ExitGames.Client.Photon;
 using UnityEngine;
+using System.Linq;
 
 /// <summary>
 /// 桌子列表面板的控制器
@@ -69,6 +71,9 @@ public class TableListController : MonoBehaviour
         // 显示面板
         tableListObject.SetActive(true);
 
+        // 订阅开出新桌子事件
+        PhotonEngine.Subscribe(EventCode.TABLE_CREATED, OnTableCreatedEvent);
+
         // 获取所有桌子的信息
         MatchAPI.GetAllTablesInfos(tables =>
         {
@@ -106,7 +111,29 @@ public class TableListController : MonoBehaviour
     /// </summary>
     private void Close()
     {
+        // 关闭面板
         tableListObject.SetActive(false);
+
+        // 取消订阅开出新桌子事件
+        PhotonEngine.Unsubscribe(EventCode.TABLE_CREATED, OnTableCreatedEvent);
+    }
+
+    /// <summary>
+    /// 当收到后台发出的开出新桌子事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnTableCreatedEvent(EventData eventData)
+    {
+        // 获取新添加的桌子
+        TableInfoDTO newTable = new TableInfoDTO(eventData.Parameters.Get<object[]>(EventParamaterKey.TABLE_INFO));
+
+        Debug.LogFormat("收到新添加桌子消息，新添加桌子 {0}", newTable.Id);
+
+        // 把桌子添加到列表里
+        tablesInfos.Add(newTable);
+
+        // 更新桌子列表的显示
+        UpdateTableList();
     }
 
     /// <summary>
@@ -134,6 +161,31 @@ public class TableListController : MonoBehaviour
     public void JoinTable(TableInfoDTO tableInfo)
     {
         Debug.LogFormat("加入桌子 {0} {1}", tableInfo.Name, tableInfo.Id);
+
+        // 发出加入桌子请求
+        MatchAPI.JoinTable(tableInfo.Id, paramater =>
+        {
+            if (paramater.Get<bool>(ResponseParamaterKey.SUCCESS))
+            {
+                // 加入成功
+
+                // 设置返回的桌子为已加入的桌子
+                GlobalModel.Instance.TableInfo = new TableInfoDTO(paramater.Get<object[]>(ResponseParamaterKey.TABLE_INFO));
+
+                // 关闭面板
+                Close();
+
+                // 打开桌子面板
+                TableCanvasController.Instance.Show();
+            }
+            else
+            {
+                // 加入失败
+
+                // 显示加入失败原因
+                Debug.Log(paramater.Get<string>(ResponseParamaterKey.ERROR_MESSAGE_STRING));
+            }
+        });
     }
 
     /// <summary>
