@@ -13,7 +13,7 @@ namespace CubirdsOnline.Backend.Service
     /// <summary>
     /// 匹配功能相关的请求的 Service
     /// </summary>
-    public class MatchServer
+    public class MatchService
     {
         // 获取当前类的 log 实例
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();

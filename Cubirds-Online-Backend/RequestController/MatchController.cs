@@ -33,7 +33,7 @@ namespace CubirdsOnline.Backend.Controller
             log.InfoFormat("客户端({0})获取所有桌子信息", clientPeer.PlayerId);
 
             // 转给 Service 处理
-            List<Table> tables = MatchServer.GetAllTablesInfos();
+            List<Table> tables = MatchService.GetAllTablesInfos();
 
             // 返回
             return new OperationResponse()
@@ -61,7 +61,7 @@ namespace CubirdsOnline.Backend.Controller
             log.InfoFormat("客户端({0})开新桌子 {1}", clientPeer.PlayerId, tableName);
 
             // 交给 Service 处理
-            Table newTable = MatchServer.CreateTable(sendParameters, clientPeer, tableName);
+            Table newTable = MatchService.CreateTable(sendParameters, clientPeer, tableName);
 
             // 返回
             return new OperationResponse()
@@ -126,7 +126,7 @@ namespace CubirdsOnline.Backend.Controller
             }
 
             // 交给 Service 处理
-            MatchServer.JoinTable(sendParameters, clientPeer, table);
+            MatchService.JoinTable(sendParameters, clientPeer, table);
 
             // 返回
             return new OperationResponse()
@@ -158,7 +158,7 @@ namespace CubirdsOnline.Backend.Controller
             log.InfoFormat("客户端({0})获取桌子 {1} 的玩家", clientPeer.PlayerId, tableId);
 
             // 从 Service 获取桌子上所有玩家的信息
-            List<PlayerInfo> players = MatchServer.GetAllPlayerOnTable(tableId);
+            List<PlayerInfo> players = MatchService.GetAllPlayerOnTable(tableId);
 
             // 返回
             return new OperationResponse()
@@ -188,7 +188,7 @@ namespace CubirdsOnline.Backend.Controller
             log.InfoFormat("客户端({0})退出桌子 {1}", clientPeer.PlayerId, tableId);
 
             // 交给 Service 处理
-            MatchServer.QuitTable(sendParameters, clientPeer, tableId);
+            MatchService.QuitTable(sendParameters, clientPeer, tableId);
 
             return new OperationResponse()
             {
