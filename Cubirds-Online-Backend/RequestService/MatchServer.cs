@@ -13,7 +13,6 @@ namespace CubirdsOnline.Backend.Service
     /// <summary>
     /// 匹配功能相关的请求的 Service
     /// </summary>
-    [RequestController]
     public class MatchServer
     {
         // 获取当前类的 log 实例
@@ -22,38 +21,36 @@ namespace CubirdsOnline.Backend.Service
         /// <summary>
         /// 获取所有桌子
         /// </summary>
-        /// <param name="operationRequest"></param>
-        /// <param name="sendParameters"></param>
-        /// <param name="clientPeer"></param>
         /// <returns></returns>
-        [RequestHandler(RequestCode.GET_ALL_TABLES_INFOS)]
-        public static OperationResponse GetAllTablesInfos(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        public static List<Table> GetAllTablesInfos()
         {
-            log.InfoFormat("客户端({0})获取所有桌子信息", clientPeer.PlayerId);
+            log.Info("获取所有桌子信息");
 
             // 返回
-            return new OperationResponse()
-            {
-                // 把桌子信息转为 DTO 返回
-                Parameters = new Dictionary<byte, object>() { { (byte)ResponseParamaterKey.TABLES_INFOS, ServerModel.Instance.Tables.Select(t => t.ToDTO().ToObjectArray()).ToList().ToArray() } },
-                // 设为请求成功
-                ReturnCode = (short)ReturnCode.OK
-            };
+            return ServerModel.Instance.Tables;
+        }
+
+        /// <summary>
+        /// 获取指定 ID 的桌子
+        /// </summary>
+        /// <param name="tableId"></param>
+        /// <returns></returns>
+        public static Table GetTableById(int tableId)
+        {
+            log.DebugFormat("获取 ID 为 {0} 的桌子", tableId);
+
+            return ServerModel.Instance.Tables.Find(t => t.Id == tableId);
         }
 
         /// <summary>
         /// 新开一个桌子
         /// </summary>
-        /// <param name="operationRequest"></param>
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
+        /// <param name="tableName"></param>
         /// <returns></returns>
-        [RequestHandler(RequestCode.CREATE_TABLE)]
-        public static OperationResponse CreateTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        public static Table CreateTable(SendParameters sendParameters, CubirdClientPeer clientPeer, string tableName)
         {
-            // 获取桌子名称
-            string tableName = operationRequest.Parameters.Get<string>(RequestParamaterKey.TABLE_NAME);
-
             log.InfoFormat("客户端({0})开新桌子 {1}", clientPeer.PlayerId, tableName);
 
             // TODO：这里需要修改，桌子 ID 应该是可以重复使用的，不然前端显示不开
@@ -85,136 +82,60 @@ namespace CubirdsOnline.Backend.Service
             ServerModel.Instance.ConnectingPeers.ForEach(p => p.SendEvent(eventData, sendParameters));
 
             // 返回
-            return new OperationResponse()
-            {
-                Parameters = new Dictionary<byte, object>() {
-                    // 把桌子信息转为 DTO 返回
-                    { (byte)ResponseParamaterKey.TABLE_INFO, newTable.ToDTO().ToObjectArray() }
-                },
-                // 设为请求成功
-                ReturnCode = (short)ReturnCode.OK
-            };
+            return newTable;
         }
 
         /// <summary>
         /// 加入桌子
         /// </summary>
-        /// <param name="operationRequest"></param>
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
-        /// <returns></returns>
-        [RequestHandler(RequestCode.JOIN_TABLE)]
-        public static OperationResponse JoinTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        /// <param name="table"></param>
+        /// <returns>如果玩家成功加入桌子则返回 true，否则返回 false</returns>
+        public static bool JoinTable(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table)
         {
-            // 获取桌子 ID
-            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+            log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, table.Id);
 
-            log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, tableId);
-
-            // 找到桌子
-            Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
-
-            if(table.Players.Count < 5 && !table.Playing)
+            // 如果桌子已经有五个人或者已经开局了，玩家不能加入这个桌子
+            if(table.Players.Count >= 5 || table.Playing)
             {
-                // 桌子还有空位而且没有开局
-
-                // 把玩家添加进桌子
-                table.Players.Add(new PlayerInfo(clientPeer));
-
-                // TODO：这里需要发个消息通知同桌的其他人这个玩家加入了
-
-                // 返回
-                return new OperationResponse()
-                {
-                    Parameters = new Dictionary<byte, object>() {
-                        // 加入成功信息
-                        { (byte)ResponseParamaterKey.SUCCESS, true },
-                        // 桌子信息
-                        { (byte)ResponseParamaterKey.TABLE_INFO, table.ToDTO().ToObjectArray() },
-                    },
-                    // 设为请求成功
-                    ReturnCode = (short)ReturnCode.OK
-                };
+                return false;
             }
-            else if(table.Players.Count >= 5)
-            {
-                // 桌子没有空位
 
-                // 返回
-                return new OperationResponse()
-                {
-                    Parameters = new Dictionary<byte, object>() {
-                        // 加入失败信息
-                        { (byte)ResponseParamaterKey.SUCCESS, false },
-                        // 提示文本
-                        { (byte)ResponseParamaterKey.ERROR_MESSAGE_STRING, "桌子已满员" },
-                    },
-                    // 设为请求成功
-                    ReturnCode = (short)ReturnCode.OK
-                };
-            }
-            else
-            {
-                // 桌子已经开局
+            // 把玩家添加进桌子
+            table.Players.Add(new PlayerInfo(clientPeer));
 
-                // 返回
-                return new OperationResponse()
-                {
-                    Parameters = new Dictionary<byte, object>() {
-                        // 加入失败信息
-                        { (byte)ResponseParamaterKey.SUCCESS, false },
-                        // 提示文本
-                        { (byte)ResponseParamaterKey.ERROR_MESSAGE_STRING, "桌子已开局" },
-                    },
-                    // 设为请求成功
-                    ReturnCode = (short)ReturnCode.OK
-                };
-            }
+            // TODO：这里需要发个消息通知同桌的其他人这个玩家加入了
+
+            // 返回
+            return true;
         }
 
         /// <summary>
         /// 获取一个桌子上所有的玩家的信息
         /// </summary>
-        /// <param name="operationRequest"></param>
-        /// <param name="sendParameters"></param>
-        /// <param name="clientPeer"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
-        [RequestHandler(RequestCode.GET_ALL_PLAYER_ON_TABLE)]
-        public static OperationResponse GetAllPlayerOnTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        public static List<PlayerInfo> GetAllPlayerOnTable(int tableId)
         {
-            // 获取桌子 ID
-            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
-
-            log.InfoFormat("客户端({0})获取桌子 {1} 的玩家", clientPeer.PlayerId, tableId);
+            log.InfoFormat("获取桌子 {0} 的玩家", tableId);
 
             // 找到桌子
             Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
 
             // 返回
-            return new OperationResponse()
-            {
-                Parameters = new Dictionary<byte, object>() {
-                    // 把玩家信息转为 DTO 数组返回
-                    { (byte)ResponseParamaterKey.PLAYERS_INFOS, table.Players.Select(p=>p.ToDTO().ToObjectArray()).ToArray() }
-                },
-                // 设为请求成功
-                ReturnCode = (short)ReturnCode.OK
-            };
+            return table.Players;
         }
 
         /// <summary>
         /// 退出桌子
         /// </summary>
-        /// <param name="operationRequest"></param>
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
-        [RequestHandler(RequestCode.QUIT_TABLE)]
-        public static OperationResponse QuitTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        public static void QuitTable(SendParameters sendParameters, CubirdClientPeer clientPeer, int tableId)
         {
-            // 获取桌子 ID
-            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
-
             log.InfoFormat("客户端({0})退出桌子 {1}", clientPeer.PlayerId, tableId);
 
             // 找到桌子
@@ -249,16 +170,6 @@ namespace CubirdsOnline.Backend.Service
                 // 从桌子上移除这个玩家
                 table.Players.Remove(quitPlayer);
             }
-
-            return new OperationResponse()
-            {
-                Parameters = new Dictionary<byte, object>() {
-                    // 返回退出成功
-                    { (byte)ResponseParamaterKey.SUCCESS, true }
-                },
-                // 设为请求成功
-                ReturnCode = (short)ReturnCode.OK
-            };
         }
     }
 }
