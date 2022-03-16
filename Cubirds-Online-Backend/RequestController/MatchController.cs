@@ -203,5 +203,51 @@ namespace CubirdsOnline.Backend.Controller
                 ReturnCode = (short)ReturnCode.OK
             };
         }
+
+        /// <summary>
+        /// 解散桌子
+        /// </summary>
+        /// <param name="operationRequest"></param>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <returns></returns>
+        [RequestHandler(RequestCode.DISBAND_TABLE)]
+        public static OperationResponse DisbandTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        {
+            // 获取桌子 ID
+            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+
+            log.InfoFormat("客户端({0})解散桌子 {1}", clientPeer.PlayerId, tableId);
+
+            // 获取桌子
+            Table table = MatchService.GetTableById(tableId);
+
+            // 如果这个玩家不是桌主则不处理
+            if(table.Master.Peer.PlayerId != clientPeer.PlayerId)
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                    // 返回解散失败
+                    { (byte)ResponseParamaterKey.SUCCESS, false }
+                },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
+
+            // 交给 Service 处理
+            MatchService.DisbandTable(sendParameters, clientPeer, table);
+
+            return new OperationResponse()
+            {
+                Parameters = new Dictionary<byte, object>() {
+                    // 返回解散成功
+                    { (byte)ResponseParamaterKey.SUCCESS, true }
+                },
+                // 设为请求成功
+                ReturnCode = (short)ReturnCode.OK
+            };
+        }
     }
 }

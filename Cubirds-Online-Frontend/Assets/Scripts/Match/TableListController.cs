@@ -198,6 +198,15 @@ public class TableListController : MonoBehaviour
         MatchAPI.CreateTable("Test Table", newTableInfo =>
         {
             Debug.LogFormat("开出新桌子 {0} {1}", newTableInfo.Id, newTableInfo.Name);
+
+            // 设置返回的桌子为已加入的桌子
+            GlobalModel.Instance.TableInfo = newTableInfo;
+
+            // 关闭面板
+            Close();
+
+            // 打开桌子面板
+            TableCanvasController.Instance.Show();
         });
     }
 }

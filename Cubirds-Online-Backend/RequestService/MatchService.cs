@@ -168,5 +168,41 @@ namespace CubirdsOnline.Backend.Service
                 table.Players.Remove(quitPlayer);
             }
         }
+
+        /// <summary>
+        /// 解散桌子
+        /// </summary>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static void DisbandTable(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table)
+        {
+            log.InfoFormat("客户端({0})解散桌子 {1}", clientPeer.PlayerId, table.Id);
+
+            // 如果这个玩家不是桌主则不解散桌子
+            if(table.Master.Peer.PlayerId != clientPeer.PlayerId)
+            {
+                return;
+            }
+
+            // 准备事件
+            EventData eventData = new EventData()
+            {
+                // 事件码
+                Code = (byte)EventCode.DISBAND_TABLE,
+                // 解散桌子不需要参数
+                Parameters = new Dictionary<byte, object>() { },
+            };
+
+            // 把消息转发给桌子上的所有玩家
+            table.Players.ForEach(p =>
+            {
+                p.Peer.SendEvent(eventData, sendParameters);
+            });
+
+            // 从列表中移除桌子
+            ServerModel.Instance.Tables.Remove(table);
+        }
     }
 }

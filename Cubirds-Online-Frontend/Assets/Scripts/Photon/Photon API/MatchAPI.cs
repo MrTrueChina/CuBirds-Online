@@ -123,4 +123,23 @@ public static class MatchAPI
             response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
             timeoutHandler);
     }
+
+    /// <summary>
+    /// 解散桌子
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void DisbandTable(int tableId, Action<bool> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.DISBAND_TABLE,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, tableId },
+            },
+            SendOptions.SendReliable,
+            response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
+            timeoutHandler);
+    }
 }

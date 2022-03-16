@@ -92,6 +92,7 @@ public class TableCanvasController : MonoBehaviour
 
         // 订阅事件
         PhotonEngine.Subscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
+        PhotonEngine.Subscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
 
         // 检测并记录本机玩家是不是房主
         bool isMaster = GlobalModel.Instance.TableInfo.MasterId == GlobalModel.Instance.LocalPLayerId;
@@ -135,15 +136,21 @@ public class TableCanvasController : MonoBehaviour
         {
             // 如果是本机玩家退出桌子
 
-            // 移除玩家列表
-            GlobalModel.Instance.TablePlayers = null;
-
-            // 移除桌子记录
-            GlobalModel.Instance.TableInfo = null;
-            
             // 回到桌子列表面板
             BackToTableList();
         }
+    }
+
+    /// <summary>
+    /// 当收到玩家退出桌子事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnDisbandTableEvent(EventData eventData)
+    {
+        Debug.Log("桌子解散");
+
+        // 回到桌子列表面板
+        BackToTableList();
     }
 
     /// <summary>
@@ -204,6 +211,9 @@ public class TableCanvasController : MonoBehaviour
     public void Disband()
     {
         Debug.Log("解散桌子");
+
+        // 发出解散桌子请求
+        MatchAPI.DisbandTable(GlobalModel.Instance.TableInfo.Id, quitSuccess => { });
     }
 
     /// <summary>
@@ -213,10 +223,17 @@ public class TableCanvasController : MonoBehaviour
     {
         Debug.Log("关闭桌子信息面板");
 
+        // 移除玩家列表
+        GlobalModel.Instance.TablePlayers = null;
+
+        // 移除桌子记录
+        GlobalModel.Instance.TableInfo = null;
+
         // 关闭面板
         tableCanvas.SetActive(false);
 
         // 取消订阅事件
         PhotonEngine.Unsubscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
+        PhotonEngine.Unsubscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
     }
 }
