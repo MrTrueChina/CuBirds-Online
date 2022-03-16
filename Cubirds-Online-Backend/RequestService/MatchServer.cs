@@ -193,7 +193,7 @@ namespace CubirdsOnline.Backend.Service
             {
                 Parameters = new Dictionary<byte, object>() {
                     // 把玩家信息转为 DTO 数组返回
-                    { (byte)ResponseParamaterKey.PLAYERS_INFOS, table.Players.Select(p=>p.ToDTO()).ToArray() }
+                    { (byte)ResponseParamaterKey.PLAYERS_INFOS, table.Players.Select(p=>p.ToDTO().ToObjectArray()).ToArray() }
                 },
                 // 设为请求成功
                 ReturnCode = (short)ReturnCode.OK

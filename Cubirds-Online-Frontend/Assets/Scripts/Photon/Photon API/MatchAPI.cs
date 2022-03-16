@@ -63,7 +63,7 @@ public static class MatchAPI
     public static void JoinTable(int tableId, Action<ParameterDictionary> handler, Action timeoutHandler = null)
     {
         PhotonEngine.SendOperation(
-            RequestCode.CREATE_TABLE,
+            RequestCode.JOIN_TABLE,
             new Dictionary<byte, object>() {
                 // 桌子 ID
                 { (byte)RequestParamaterKey.TABLE_ID, tableId },

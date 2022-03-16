@@ -9,6 +9,12 @@ using UnityEngine.UI;
 public class TableCanvasController : MonoBehaviour
 {
     /// <summary>
+    /// 桌子信息画布
+    /// </summary>
+    [SerializeField]
+    [Header("桌子信息画布")]
+    private GameObject tableCanvas;
+    /// <summary>
     /// 玩家信息条容器
     /// </summary>
     [SerializeField]
@@ -78,6 +84,9 @@ public class TableCanvasController : MonoBehaviour
     {
         Debug.Log("显示桌子面板");
 
+        // 显示面板
+        tableCanvas.SetActive(true);
+
         MatchAPI.GetAllPlayersOnTable(GlobalModel.Instance.TableInfo.Id, players =>
         {
             // 记录玩家列表
@@ -104,7 +113,8 @@ public class TableCanvasController : MonoBehaviour
         // 重新实例化所有玩家名称条
         for(int i = 0;i < GlobalModel.Instance.TablePlayers.Count; i++)
         {
-            Instantiate(playerNameBarPrefab).GetComponentInChildren<Text>().text = string.Format("玩家{0}：{1}", i + 1, GlobalModel.Instance.TablePlayers[i].Name);
+            // 实例化并直接设置名称显示
+            Instantiate(playerNameBarPrefab, playersInfosContent).GetComponentInChildren<Text>().text = string.Format("玩家{0}：{1}", i + 1, GlobalModel.Instance.TablePlayers[i].Name);
         }
     }
 
