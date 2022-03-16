@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CubirdsOnline.Common;
+using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 /// <summary>
 /// 桌子内容面板的控制器
@@ -87,6 +90,16 @@ public class TableCanvasController : MonoBehaviour
         // 显示面板
         tableCanvas.SetActive(true);
 
+        // 订阅事件
+        PhotonEngine.Subscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
+
+        // 检测并记录本机玩家是不是房主
+        bool isMaster = GlobalModel.Instance.TableInfo.MasterId == GlobalModel.Instance.LocalPLayerId;
+        // 根据是不是房主显示不同的按钮
+        startButton.gameObject.SetActive(isMaster);
+        quitButton.gameObject.SetActive(!isMaster);
+        disbandButton.gameObject.SetActive(isMaster);
+
         MatchAPI.GetAllPlayersOnTable(GlobalModel.Instance.TableInfo.Id, players =>
         {
             // 记录玩家列表
@@ -95,6 +108,54 @@ public class TableCanvasController : MonoBehaviour
             // 更新玩家列表的显示
             UpdatePlayersDisplay();
         });
+    }
+
+    /// <summary>
+    /// 当收到玩家退出桌子事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerQuitEvent(EventData eventData)
+    {
+        // 获取退出桌子的玩家的 ID
+        int quitPlayerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 退出桌子", quitPlayerId);
+
+        if(quitPlayerId != GlobalModel.Instance.LocalPLayerId)
+        {
+            // 如果不是本机玩家退出桌子
+
+            // 把这个 ID 的玩家移除出玩家列表
+            GlobalModel.Instance.TablePlayers.RemoveAll(p => p.Id == quitPlayerId);
+
+            // 更新玩家列表显示
+            UpdatePlayersDisplay();
+        }
+        else
+        {
+            // 如果是本机玩家退出桌子
+
+            // 移除玩家列表
+            GlobalModel.Instance.TablePlayers = null;
+
+            // 移除桌子记录
+            GlobalModel.Instance.TableInfo = null;
+            
+            // 回到桌子列表面板
+            BackToTableList();
+        }
+    }
+
+    /// <summary>
+    /// 回到桌子列表面板
+    /// </summary>
+    private void BackToTableList()
+    {
+        // 关闭面板
+        Close();
+
+        // 打开桌子列表面板
+        TableListController.Instance.Show();
     }
 
     /// <summary>
@@ -132,6 +193,9 @@ public class TableCanvasController : MonoBehaviour
     public void Quit()
     {
         Debug.Log("退出桌子");
+
+        // 发出退出请求
+        MatchAPI.QuitTable(GlobalModel.Instance.TableInfo.Id, quitSuccess => { });
     }
 
     /// <summary>
@@ -140,5 +204,19 @@ public class TableCanvasController : MonoBehaviour
     public void Disband()
     {
         Debug.Log("解散桌子");
+    }
+
+    /// <summary>
+    /// 关闭面板
+    /// </summary>
+    private void Close()
+    {
+        Debug.Log("关闭桌子信息面板");
+
+        // 关闭面板
+        tableCanvas.SetActive(false);
+
+        // 取消订阅事件
+        PhotonEngine.Unsubscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
     }
 }

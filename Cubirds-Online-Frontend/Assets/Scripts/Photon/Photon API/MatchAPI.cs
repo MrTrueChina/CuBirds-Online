@@ -104,4 +104,23 @@ public static class MatchAPI
             },
             timeoutHandler);
     }
+
+    /// <summary>
+    /// 退出桌子
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void QuitTable(int tableId, Action<bool> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.QUIT_TABLE,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, tableId },
+            },
+            SendOptions.SendReliable,
+            response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
+            timeoutHandler);
+    }
 }

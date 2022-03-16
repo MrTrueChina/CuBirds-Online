@@ -93,15 +93,6 @@ public class TableListController : MonoBehaviour
         // 关闭面板
         Close();
 
-        // 清空桌子列表
-        tablesInfos.Clear();
-
-        // 销毁所有的桌子信息条
-        foreach (Transform child in tableInfoBarListContent.transform)
-        {
-            Destroy(child.gameObject);
-        }
-
         // 打开连接面板
         ConnectToServer.Instance.Show();
     }
@@ -113,6 +104,15 @@ public class TableListController : MonoBehaviour
     {
         // 关闭面板
         tableListObject.SetActive(false);
+
+        // 清空桌子列表
+        tablesInfos.Clear();
+
+        // 销毁所有的桌子信息条
+        foreach (Transform child in tableInfoBarListContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
         // 取消订阅开出新桌子事件
         PhotonEngine.Unsubscribe(EventCode.TABLE_CREATED, OnTableCreatedEvent);

@@ -121,6 +121,8 @@ namespace CubirdsOnline.Backend.Service
                 // 把玩家添加进桌子
                 table.Players.Add(new PlayerInfo(clientPeer));
 
+                // TODO：这里需要发个消息通知同桌的其他人这个玩家加入了
+
                 // 返回
                 return new OperationResponse()
                 {
@@ -218,8 +220,11 @@ namespace CubirdsOnline.Backend.Service
             // 找到桌子
             Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
 
+            // 找到这个玩家
+            PlayerInfo quitPlayer = table.Players.Find(p => p.Peer.PlayerId == clientPeer.PlayerId);
+
             // 桌子上有这个玩家才处理
-            if (table.Players.Find(p => p.Peer.PlayerId == tableId) != null)
+            if (quitPlayer != null)
             {
                 // 准备事件
                 EventData eventData = new EventData()
@@ -237,8 +242,12 @@ namespace CubirdsOnline.Backend.Service
                 // 把消息转发给桌子上的所有玩家
                 table.Players.ForEach(p =>
                 {
+                    log.DebugFormat("转发玩家 {0} 退出桌子的消息给玩家 {1}", quitPlayer.Peer.PlayerId, p.Peer.PlayerId);
                     p.Peer.SendEvent(eventData, sendParameters);
                 });
+
+                // 从桌子上移除这个玩家
+                table.Players.Remove(quitPlayer);
             }
 
             return new OperationResponse()
