@@ -91,7 +91,7 @@ namespace CubirdsOnline.Backend.Controller
             log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, tableId);
 
             // 找到桌子
-            Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
+            Table table = MatchService.GetTableById(tableId);
             
             // 如果桌子上已经有五个玩家了，则桌子已经满员，不能再加入
             if (table.Players.Count >= 5)
@@ -187,8 +187,11 @@ namespace CubirdsOnline.Backend.Controller
 
             log.InfoFormat("客户端({0})退出桌子 {1}", clientPeer.PlayerId, tableId);
 
+            // 获取桌子
+            Table table = MatchService.GetTableById(tableId);
+
             // 交给 Service 处理
-            MatchService.QuitTable(sendParameters, clientPeer, tableId);
+            MatchService.QuitTable(sendParameters, clientPeer, table);
 
             return new OperationResponse()
             {

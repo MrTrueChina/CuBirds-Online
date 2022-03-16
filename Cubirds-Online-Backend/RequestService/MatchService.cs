@@ -26,8 +26,8 @@ namespace CubirdsOnline.Backend.Service
         {
             log.Info("获取所有桌子信息");
 
-            // 返回
-            return ServerModel.Instance.Tables;
+            // 复制一份返回
+            return new List<Table>(ServerModel.Instance.Tables);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace CubirdsOnline.Backend.Service
             log.InfoFormat("获取桌子 {0} 的玩家", tableId);
 
             // 找到桌子
-            Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
+            Table table = GetTableById(tableId);
 
             // 返回
             return table.Players;
@@ -132,14 +132,11 @@ namespace CubirdsOnline.Backend.Service
         /// </summary>
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
-        /// <param name="tableId"></param>
+        /// <param name="table"></param>
         /// <returns></returns>
-        public static void QuitTable(SendParameters sendParameters, CubirdClientPeer clientPeer, int tableId)
+        public static void QuitTable(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table)
         {
-            log.InfoFormat("客户端({0})退出桌子 {1}", clientPeer.PlayerId, tableId);
-
-            // 找到桌子
-            Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
+            log.InfoFormat("客户端({0})退出桌子 {1}", clientPeer.PlayerId, table.Id);
 
             // 找到这个玩家
             PlayerInfo quitPlayer = table.Players.Find(p => p.Peer.PlayerId == clientPeer.PlayerId);

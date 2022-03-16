@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using CubirdsOnline.Backend.Service;
 using CubirdsOnline.Common;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
@@ -121,12 +122,13 @@ namespace CubirdsOnline.Backend
             // 遍历所有桌子
             ServerModel.Instance.Tables.ForEach(table =>
             {
-                // FIXME：这里有问题，不是这样处理的，是需要调用退出桌子的方法，然后这个方法应该会把玩家退出的消息同步给同一桌子的其他人
-                // 从桌子里移除这个客户端对应的玩家信息
-                table.Players.RemoveAll(player =>
+                // 如果玩家在这个桌子里，把这个玩家从桌子里移除
+                if(table.Players.Find(player=>player.Peer.PlayerId == peer.PlayerId) != null)
                 {
-                    return player.Peer == peer;
-                });
+                    // TODO：这里需要调整，如果是房主则应该调用解散房间方法
+                    // 调用玩家退出桌子方法
+                    MatchService.QuitTable(new SendParameters(), peer, table);
+                }
             });
         }
     }
