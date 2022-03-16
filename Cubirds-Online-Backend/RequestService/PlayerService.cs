@@ -13,7 +13,7 @@ namespace CubirdsOnline.Backend.Service
     /// <summary>
     /// 游戏主流程之外的对玩家相关的请求进行处理的 Service
     /// </summary>
-    [RequestService]
+    [RequestController]
     public class PlayerService
     {
         // 获取当前类的 log 实例

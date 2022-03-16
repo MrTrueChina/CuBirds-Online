@@ -13,7 +13,7 @@ namespace CubirdsOnline.Backend.Service
     /// <summary>
     /// 匹配功能相关的请求的 Service
     /// </summary>
-    [RequestService]
+    [RequestController]
     public class MatchServer
     {
         // 获取当前类的 log 实例

@@ -6,7 +6,7 @@ namespace CubirdsOnline.Backend.RequestSender
     /// 表示一个类是需要接收请求的注解
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class RequestService : Attribute
+    public class RequestController : Attribute
     {
 
     }

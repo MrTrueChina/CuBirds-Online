@@ -41,7 +41,7 @@ namespace CubirdsOnline.Backend.RequestSender
                 // 获取程序集里的所有类
                 .GetTypes()
                 // 筛选出有 Service 注解的
-                .Where(t => t.GetCustomAttribute<RequestService>() != null)
+                .Where(t => t.GetCustomAttribute<RequestController>() != null)
                 // 获取这些类的所有公开静态方法
                 .SelectMany(t => t.GetMethods(BindingFlags.Public | BindingFlags.Static))
                 // 筛选出有接收消息注解的方法

@@ -11,7 +11,7 @@ namespace CubirdsOnline.Backend.Service
     /// <summary>
     /// 游戏过程中进行帧同步的 Service
     /// </summary>
-    [RequestService]
+    [RequestController]
     public class LockstepService
     {
         // 获取当前类的 log 实例
