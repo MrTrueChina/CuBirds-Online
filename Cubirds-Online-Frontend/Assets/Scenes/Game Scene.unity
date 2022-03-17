@@ -5264,6 +5264,12 @@ MonoBehaviour:
   - {fileID: 2082336520}
   - {fileID: 2144938394}
   - {fileID: 2055428389}
+  playerDisplayPositions:
+  - {fileID: 200385829}
+  - {fileID: 2144938394}
+  - {fileID: 228862623}
+  - {fileID: 2082336520}
+  - {fileID: 2055428389}
   tipsText: {fileID: 1085220776}
   winCanvas: {fileID: 994082113}
   winText: {fileID: 1733527595}

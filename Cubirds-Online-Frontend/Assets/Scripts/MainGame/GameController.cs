@@ -72,6 +72,12 @@ public class GameController : MonoBehaviour
     [Header("玩家位置列表")]
     private List<Transform> playerPositions;
     /// <summary>
+    /// 按照显示顺序的玩家位置列表
+    /// </summary>
+    [SerializeField]
+    [Header("按照显示顺序的玩家位置列表")]
+    private List<Transform> playerDisplayPositions;
+    /// <summary>
     /// 提示文字文本组件
     /// </summary>
     [SerializeField]
@@ -157,21 +163,8 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void StartGame()
     {
-        // FIXME：这里需要调整位置，本机玩家在最大的位置
-        // 生成所有玩家
-        for(int i = 0;i < GlobalModel.Instance.TablePlayers.Count; i++)
-        {
-            PlayerInfoDTO playerInfo = GlobalModel.Instance.TablePlayers[i];
-
-            // 创建玩家物体
-            PlayerController playerController = new GameObject("Player " + playerInfo.Id).AddComponent<PlayerController>();
-
-            // 初始化
-            playerController.Init(playerInfo.Id, playerPositions[i], PlayGameCanvas);
-
-            // 保存这个玩家
-            players.Add(playerController);
-        }
+        // 创建玩家
+        players = CreatePlayers();
 
         // 将第一个玩家设为现在回合的玩家
         CurrentTrunPlayre = players[0];
@@ -223,6 +216,64 @@ public class GameController : MonoBehaviour
                 });
             });
         });
+    }
+
+    /// <summary>
+    /// 创建玩家并返回玩家列表
+    /// </summary>
+    /// <returns></returns>
+    private List<PlayerController> CreatePlayers()
+    {
+        // 按照本机玩家开头的顺序创建玩家
+        // 按照原本的第一回合玩家开头的顺序保存玩家
+
+        // 记录第一个玩家的 ID
+        int originFirstPlayerId = GlobalModel.Instance.TablePlayers[0].Id;
+
+        // 根据玩家数量找到需要使用的玩家位置
+        List<Transform> usePlayersPositions = playerPositions.GetRange(0, GlobalModel.Instance.TablePlayers.Count);
+
+        // 准备一个临时的重新排序的玩家列表，让本机玩家在开头
+        List<PlayerInfoDTO> startWithLocalPlayerPLayersList = new List<PlayerInfoDTO>(GlobalModel.Instance.TablePlayers);
+        while (startWithLocalPlayerPLayersList[0].Id != GlobalModel.Instance.LocalPLayerId)
+        {
+            startWithLocalPlayerPLayersList.Insert(startWithLocalPlayerPLayersList.Count, startWithLocalPlayerPLayersList[0]);
+            startWithLocalPlayerPLayersList.RemoveAt(0);
+        }
+
+        // 记录已创建的玩家的列表
+        List<PlayerController> createdPlayers = new List<PlayerController>();
+
+        // 把玩家按顺序在需要使用的位置上创建出来
+        int currentCreatePlayerIndex = 0;
+        playerDisplayPositions.ForEach(position =>
+        {
+            if (usePlayersPositions.Contains(position))
+            {
+                PlayerInfoDTO playerInfo = startWithLocalPlayerPLayersList[currentCreatePlayerIndex];
+
+                // 创建玩家物体
+                PlayerController playerController = new GameObject("Player " + playerInfo.Id).AddComponent<PlayerController>();
+
+                // 初始化
+                playerController.Init(playerInfo.Id, position, PlayGameCanvas);
+
+                // 保存这个玩家
+                createdPlayers.Add(playerController);
+
+                currentCreatePlayerIndex++;
+            }
+        });
+
+        // 再进行重新排序，把顺序调回去
+        while(createdPlayers[0].Id != originFirstPlayerId)
+        {
+            createdPlayers.Insert(createdPlayers.Count, createdPlayers[0]);
+            createdPlayers.RemoveAt(0);
+        }
+
+        // 返回
+        return createdPlayers;
     }
 
     /// <summary>
