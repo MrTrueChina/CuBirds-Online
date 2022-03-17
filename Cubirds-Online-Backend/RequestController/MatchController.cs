@@ -92,6 +92,22 @@ namespace CubirdsOnline.Backend.Controller
 
             // 找到桌子
             Table table = MatchService.GetTableById(tableId);
+
+            // 如果没找到桌子，说明桌子解散了或者根本没开出来
+            if(table == null)
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                        // 加入失败信息
+                        { (byte)ResponseParamaterKey.SUCCESS, false },
+                        // 提示文本
+                        { (byte)ResponseParamaterKey.ERROR_MESSAGE_STRING, "桌子已解散" },
+                    },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
             
             // 如果桌子上已经有五个玩家了，则桌子已经满员，不能再加入
             if (table.Players.Count >= 5)

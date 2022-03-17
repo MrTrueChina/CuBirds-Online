@@ -96,8 +96,8 @@ namespace CubirdsOnline.Backend.Service
         {
             log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, table.Id);
 
-            // 如果桌子已经有五个人或者已经开局了，玩家不能加入这个桌子
-            if(table.Players.Count >= 5 || table.Playing)
+            // 如果这个桌子不存在（解散了），或者桌子已经有五个人或者已经开局了，玩家不能加入这个桌子
+            if (table == null || table.Players.Count >= 5 || table.Playing)
             {
                 return false;
             }
@@ -206,14 +206,18 @@ namespace CubirdsOnline.Backend.Service
             {
                 // 事件码
                 Code = (byte)EventCode.DISBAND_TABLE,
-                // 解散桌子不需要参数
-                Parameters = new Dictionary<byte, object>() { },
+                // 参数
+                Parameters = new Dictionary<byte, object>() {
+                    // 解散桌子的 ID
+                    { (byte) EventParamaterKey.TABLE_ID, table.Id },
+                },
             };
 
-            // 把消息转发给桌子上的所有玩家
-            table.Players.ForEach(p =>
+            //TODO：考虑到节约网络资源，这里最好改为只转发给这张桌子上的玩家和不在桌子上的玩家
+            // 把消息转发给所有玩家
+            ServerModel.Instance.ConnectingPeers.ForEach(p =>
             {
-                p.Peer.SendEvent(eventData, sendParameters);
+                p.SendEvent(eventData, sendParameters);
             });
 
             // 从列表中移除桌子
