@@ -102,8 +102,25 @@ namespace CubirdsOnline.Backend.Service
                 return false;
             }
 
+            // 包装一个玩家信息
+            PlayerInfo playerInfo = new PlayerInfo(clientPeer);
+
+            // 准备玩家加入桌子事件
+            EventData eventData = new EventData()
+            {
+                // 事件码
+                Code = (byte)EventCode.PLAYER_JOIN_TABLE,
+                // 参数
+                Parameters = new Dictionary<byte, object>() {
+                    // 玩家信息
+                    { (byte)EventParamaterKey.PLAYER_INFO, playerInfo.ToDTO().ToObjectArray() },
+                },
+            };
+            // 给桌子上现有的玩家发出这个玩家加入桌子的事件
+            table.Players.ForEach(p => p.Peer.SendEvent(eventData, sendParameters));
+
             // 把玩家添加进桌子
-            table.Players.Add(new PlayerInfo(clientPeer));
+            table.Players.Add(playerInfo);
 
             // TODO：这里需要发个消息通知同桌的其他人这个玩家加入了
 

@@ -93,6 +93,7 @@ public class TableCanvasController : MonoBehaviour
         // 订阅事件
         PhotonEngine.Subscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
         PhotonEngine.Subscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
+        PhotonEngine.Subscribe(EventCode.PLAYER_JOIN_TABLE, OnPlayerJoinTableEvent);
 
         // 检测并记录本机玩家是不是房主
         bool isMaster = GlobalModel.Instance.TableInfo.MasterId == GlobalModel.Instance.LocalPLayerId;
@@ -151,6 +152,24 @@ public class TableCanvasController : MonoBehaviour
 
         // 回到桌子列表面板
         BackToTableList();
+    }
+
+    /// <summary>
+    /// 当收到玩家加入桌子事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerJoinTableEvent(EventData eventData)
+    {
+        // 获取玩家信息
+        PlayerInfoDTO playerInfo = new PlayerInfoDTO(eventData.Parameters.Get<object[]>(EventParamaterKey.PLAYER_INFO));
+
+        Debug.LogFormat("玩家 {0} 加入桌子", playerInfo.Id);
+
+        // 把玩家添加到玩家列表里
+        GlobalModel.Instance.TablePlayers.Add(playerInfo);
+
+        // 更新玩家列表的显示
+        UpdatePlayersDisplay();
     }
 
     /// <summary>
@@ -235,5 +254,6 @@ public class TableCanvasController : MonoBehaviour
         // 取消订阅事件
         PhotonEngine.Unsubscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
         PhotonEngine.Unsubscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
+        PhotonEngine.Unsubscribe(EventCode.PLAYER_JOIN_TABLE, OnPlayerJoinTableEvent);
     }
 }
