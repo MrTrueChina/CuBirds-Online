@@ -122,8 +122,6 @@ namespace CubirdsOnline.Backend.Service
             // 把玩家添加进桌子
             table.Players.Add(playerInfo);
 
-            // TODO：这里需要发个消息通知同桌的其他人这个玩家加入了
-
             // 返回
             return true;
         }
