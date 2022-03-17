@@ -93,6 +93,8 @@ public partial class PhotonEngine : MonoBehaviour, IPhotonPeerListener
     /// <param name="timeoutHandler">超时回调</param>
     public static void SendOperation(RequestCode operationCode, Dictionary<byte, object> operationParameters, SendOptions sendOptions, Action<OperationResponse> handler = null, Action timeoutHandler = null)
     {
+        //Debug.LogFormat("发出请求，操作码 = {0}", operationCode);
+
         // 获取操作 ID
         long operationId = operationIdCounter;
 

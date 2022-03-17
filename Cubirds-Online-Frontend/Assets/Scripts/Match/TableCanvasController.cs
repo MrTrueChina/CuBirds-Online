@@ -183,7 +183,7 @@ public class TableCanvasController : MonoBehaviour
         Debug.Log("开始游戏");
 
         // 关闭面板
-        Close();
+        Close(false);
 
         // 保存随机数种子
         GlobalModel.Instance.RandomSeed = eventData.Parameters.Get<int>(EventParamaterKey.RANDOM_SEED);
@@ -204,7 +204,7 @@ public class TableCanvasController : MonoBehaviour
     private void BackToTableList()
     {
         // 关闭面板
-        Close();
+        Close(true);
 
         // 打开桌子列表面板
         TableListController.Instance.Show();
@@ -267,7 +267,8 @@ public class TableCanvasController : MonoBehaviour
     /// <summary>
     /// 关闭面板
     /// </summary>
-    private void Close()
+    /// <param name="removeTableInfo">是否移除记录的桌子</param>
+    private void Close(bool removeTableInfo)
     {
         Debug.Log("关闭桌子信息面板");
 
@@ -275,7 +276,10 @@ public class TableCanvasController : MonoBehaviour
         GlobalModel.Instance.TablePlayers = null;
 
         // 移除桌子记录
-        GlobalModel.Instance.TableInfo = null;
+        if (removeTableInfo)
+        {
+            GlobalModel.Instance.TableInfo = null;
+        }
 
         // 关闭面板
         tableCanvas.SetActive(false);

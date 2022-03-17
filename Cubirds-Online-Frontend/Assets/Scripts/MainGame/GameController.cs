@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using Text = UnityEngine.UI.Text;
 using System.Text;
+using CubirdsOnline.Common;
 
 /// <summary>
 /// 游戏控制器，就是发牌员和主持
@@ -156,24 +157,27 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void StartGame()
     {
+        // FIXME：这里需要调整位置，本机玩家在最大的位置
         // 生成所有玩家
-        for (int i = 0; i < playerPositions.Count; i++)
+        for(int i = 0;i < GlobalModel.Instance.TablePlayers.Count; i++)
         {
+            PlayerInfoDTO playerInfo = GlobalModel.Instance.TablePlayers[i];
+
             // 创建玩家物体
-            PlayerController player = new GameObject("Player " + i).AddComponent<PlayerController>();
+            PlayerController playerController = new GameObject("Player " + playerInfo.Id).AddComponent<PlayerController>();
 
             // 初始化
-            player.Init(i, playerPositions[i], PlayGameCanvas);
+            playerController.Init(playerInfo.Id, playerPositions[i], PlayGameCanvas);
 
             // 保存这个玩家
-            players.Add(player);
+            players.Add(playerController);
         }
 
         // 将第一个玩家设为现在回合的玩家
         CurrentTrunPlayre = players[0];
 
-        // 将第一个玩家设为本机玩家
-        LocalPlayer = players[0];
+        // 设置本机玩家
+        LocalPlayer = players.Find(p => p.Id == GlobalModel.Instance.LocalPLayerId);
 
         // 通知牌组控制器初始化牌组
         DeckController.InitDeck(() =>
@@ -266,8 +270,11 @@ public class GameController : MonoBehaviour
             playerPutedCards = true;
         });
 
-        // 显示玩家选择打牌面板
-        PlayCardsController.Instance.StartPlayCards();
+        // 如果现在是本机玩家的回合则显示玩家选择打牌面板
+        if (CurrentPlayerIsLocalPlayer())
+        {
+            PlayCardsController.Instance.StartPlayCards();
+        }
 
         // 等待玩家打出牌
         yield return new WaitUntil(() => playerPutedCards);
@@ -341,8 +348,11 @@ public class GameController : MonoBehaviour
             selected = true;
         });
 
-        // 通知选择抽不抽牌操作面板开始操作
-        SelectDrawController.Instance.StartSelect();
+        // 如果当前玩家是本机玩家，通知选择抽不抽牌操作面板开始操作
+        if (CurrentPlayerIsLocalPlayer())
+        {
+            SelectDrawController.Instance.StartSelect();
+        }
 
         // 等待玩家选择
         yield return new WaitUntil(() => selected);
@@ -409,9 +419,6 @@ public class GameController : MonoBehaviour
         // 玩家组群的鸟类
         CardType cardType = default;
 
-        // 打开组群操作面板
-        MakeGroupController.Instance.StartMakeGroup();
-
         // 订阅输入控制器的玩家进行组群事件
         InputController.Instance.OnPlayerMakeGroupEvent.AddListener((eventPlayerId, eventCardType) =>
         {
@@ -434,6 +441,12 @@ public class GameController : MonoBehaviour
             // 记录为已进行组群操作
             maked = true;
         });
+
+        // 如果当前回合玩家是本机玩家，打开组群操作面板
+        if (CurrentPlayerIsLocalPlayer())
+        {
+            MakeGroupController.Instance.StartMakeGroup();
+        }
 
         // 等待玩家完成组群操作
         yield return new WaitUntil(() => maked);
@@ -513,6 +526,9 @@ public class GameController : MonoBehaviour
     /// <param name="winPlayers"></param>
     private void ShowWinInfo(List<PlayerController> winPlayers)
     {
+        // 停止计时
+        PlayOutOfTimeTimer.Instance.StopTiming();
+
         // 玩家胜利文本构造器
         StringBuilder winTextBuilder = new StringBuilder();
 

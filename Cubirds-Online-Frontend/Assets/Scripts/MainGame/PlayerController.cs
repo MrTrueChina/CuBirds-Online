@@ -128,8 +128,8 @@ public class PlayerController : MonoBehaviour
         // 把卡牌添加到手牌里
         handCards.Add(card);
 
-        // 翻开牌
-        card.SetOpen(true);
+        // 如果是本机玩家则翻开，其他玩家扣下
+        card.SetOpen(GlobalModel.Instance.LocalPLayerId == Id);
 
         // 显示手牌
         DisplayHandCards();
@@ -312,6 +312,9 @@ public class PlayerController : MonoBehaviour
         // 从手牌中移除这些卡
         handCards.RemoveAll(c => cards.Contains(c));
 
+        // 翻开牌
+        cards.ForEach(card => card.SetOpen(true));
+
         // 调整手牌的显示
         DisplayHandCards();
 
@@ -343,6 +346,9 @@ public class PlayerController : MonoBehaviour
 
         // 找出手牌中这些鸟类的牌
         List<Card> makeGroupCards = handCards.FindAll(c => c.CardType == cardType);
+
+        // 翻开牌
+        makeGroupCards.ForEach(card => card.SetOpen(true));
 
         // 从手牌中移除
         handCards.RemoveAll(c => makeGroupCards.Contains(c));
@@ -408,8 +414,12 @@ public class PlayerController : MonoBehaviour
 
         // 复制一份手牌作为要丢弃的牌的列表
         List<Card> needDiscardCards = new List<Card>(handCards);
+
         // 清空手牌
         handCards.Clear();
+
+        // 翻开牌
+        needDiscardCards.ForEach(card => card.SetOpen(true));
 
         // 已经完成发送的卡的数量
         bool sended = false;

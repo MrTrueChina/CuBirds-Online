@@ -234,7 +234,7 @@ namespace CubirdsOnline.Backend.Service
             EventData eventData = new EventData()
             {
                 // 事件码
-                Code = (byte)EventCode.LOCK_STEP_PLAYER_DRAW_CARDS,
+                Code = (byte)EventCode.LOCK_STEP_PLAYER_DONT_DRAW_CARDS,
                 // 参数
                 Parameters = new Dictionary<byte, object>() {
                     // 操作玩家的 ID
@@ -269,8 +269,17 @@ namespace CubirdsOnline.Backend.Service
                 return;
             }
 
-            // 如果这个桌子上没有这个玩家或没有超时的玩家，不转发
-            if (!table.Players.Any(p => p.Peer.PlayerId == clientPeer.PlayerId) || !table.Players.Any(p => p.Peer.PlayerId == timeOutPlayerId))
+            // 如果这个桌子上没有发出请求的玩家，不转发
+            if (!table.Players.Any(p => p.Peer.PlayerId == clientPeer.PlayerId))
+            {
+                return;
+            }
+
+            // 找到掉线的玩家，如果这个玩家已经从游戏中移除了也算作找不到
+            PlayerInfo playerInfo = table.Players.Find(p => p.Peer.PlayerId == timeOutPlayerId && !p.IsRemoved);
+
+            // 如果这个桌子上没有这个超时的玩家，不转发
+            if (playerInfo == null)
             {
                 return;
             }
@@ -292,6 +301,9 @@ namespace CubirdsOnline.Backend.Service
             {
                 p.Peer.SendEvent(eventData, sendParameters);
             });
+
+            // 这个玩家改为已经从游戏中移除
+            playerInfo.IsRemoved = true;
         }
     }
 }

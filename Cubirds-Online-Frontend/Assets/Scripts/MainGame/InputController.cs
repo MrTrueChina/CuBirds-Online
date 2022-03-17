@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CubirdsOnline.Common;
+using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -63,6 +65,28 @@ public class InputController : MonoBehaviour
     /// </summary>
     public UnityEvent<int> OnPlayerOutOfTimeEvent { get; } = new UnityEvent<int>();
 
+    private void OnEnable()
+    {
+        // 订阅事件
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_PLAY_CARDS, OnPlayerPlayCards);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_MAKE_GROUP, OnPlayerMakeGroup);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_DONT_MAKE_GROUP, OnPlayerDontMakeGroup);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_DRAW_CARDS, OnPlayerDrawCards);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_DONT_DRAW_CARDS, OnPlayerDontDrawCards);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_OUT_OF_TIME, OnPlayerOutOfTime);
+    }
+
+    private void OnDisable()
+    {
+        // 取消订阅事件
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_PLAY_CARDS, OnPlayerPlayCards);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_MAKE_GROUP, OnPlayerMakeGroup);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_DONT_MAKE_GROUP, OnPlayerDontMakeGroup);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_DRAW_CARDS, OnPlayerDrawCards);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_DONT_DRAW_CARDS, OnPlayerDontDrawCards);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_OUT_OF_TIME, OnPlayerOutOfTime);
+    }
+
     /// <summary>
     /// 通知输入控制器有卡牌被点击
     /// </summary>
@@ -88,6 +112,24 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 打出种类为 {1} 的牌，打到 {2} 行，是否在左侧 {3}", playerId, cardType, lineIndex, putOnLeft);
 
         // 转发玩家打出鸟牌事件
+        LockstepAPI.LockStepPlayerPlayCards(cardType, lineIndex, putOnLeft);
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家打出牌事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerPlayCards(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+        CardType cardType = (CardType)(eventData.Parameters.Get<int>(EventParamaterKey.CARD_TYPE));
+        int lineIndex = eventData.Parameters.Get<int>(EventParamaterKey.CENTER_LINE_INDEX);
+        bool putOnLeft = eventData.Parameters.Get<bool>(EventParamaterKey.PUT_ON_CENTER_LINE_LEFT);
+
+        Debug.LogFormat("玩家 {0} 打出种类为 {1} 的牌，打到 {2} 行，是否在左侧 {3}", playerId, cardType, lineIndex, putOnLeft);
+
+        // 转发玩家打出鸟牌事件
         OnPlayerPlayCardsEvent.Invoke(playerId, cardType, lineIndex, putOnLeft);
     }
 
@@ -99,6 +141,22 @@ public class InputController : MonoBehaviour
     public void CallPlayerMakeGroup(int playerId, CardType cardType)
     {
         Debug.LogFormat("玩家 {0} 组成 {1} 鸟类的鸟群", playerId, cardType);
+
+        // 转发玩家组成鸟群事件
+        LockstepAPI.LockStepPlayerMakeGroup(cardType);
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家组成鸟群事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerMakeGroup(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+        CardType cardType = (CardType)(eventData.Parameters.Get<int>(EventParamaterKey.CARD_TYPE));
+
+        Debug.LogFormat("玩家 {0} 组成 {1} 鸟群", playerId, cardType);
 
         // 转发玩家组成鸟群事件
         OnPlayerMakeGroupEvent.Invoke(playerId, cardType);
@@ -113,6 +171,21 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 选择不组成鸟群", playerId);
 
         // 转发玩家选择不组成鸟群事件
+        LockstepAPI.LockStepPlayerDontMakeGroup();
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家选择不组成鸟群事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerDontMakeGroup(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 选择不组成鸟群", playerId);
+
+        // 转发玩家不组成鸟群事件
         OnPlayerDontMakeGroupEvent.Invoke(playerId);
     }
 
@@ -125,6 +198,21 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 选择抽牌", playerId);
 
         // 转发玩家选择抽牌事件
+        LockstepAPI.LockStepPlayerDrawCards();
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家抽牌事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerDrawCards(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 抽牌", playerId);
+
+        // 转发玩家抽牌
         OnPlayerDrawCardsEvent.Invoke(playerId);
     }
 
@@ -137,18 +225,48 @@ public class InputController : MonoBehaviour
         Debug.LogFormat("玩家 {0} 选择不抽牌", playerId);
 
         // 转发玩家选择不抽牌事件
+        LockstepAPI.LockStepPlayerDontDrawCards();
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家选择不抽牌事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerDontDrawCards(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 选择不抽牌", playerId);
+
+        // 转发玩家不抽牌事件
         OnPlayerDontDrawCardsEvent.Invoke(playerId);
     }
 
     /// <summary>
     /// 通知输入控制器有玩家超时
     /// </summary>
-    /// <param name="playerId"></param>
-    public void CallPlayerOutOfTime(int playerId)
+    /// <param name="timeOutPlayerId"></param>
+    public void CallPlayerOutOfTime(int timeOutPlayerId)
     {
-        Debug.LogFormat("玩家 {0} 超时", playerId);
+        Debug.LogFormat("玩家 {0} 超时", timeOutPlayerId);
 
         // 转发玩家超时事件
-        OnPlayerOutOfTimeEvent.Invoke(playerId);
+        LockstepAPI.LockStepPlayerOutOfTime(timeOutPlayerId);
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家超时事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerOutOfTime(EventData eventData)
+    {
+        // 获取参数
+        int timeOutPlayerId = eventData.Parameters.Get<int>(EventParamaterKey.TIME_OUT_PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 超时", timeOutPlayerId);
+
+        // 转发玩家超时事件
+        OnPlayerOutOfTimeEvent.Invoke(timeOutPlayerId);
     }
 }
