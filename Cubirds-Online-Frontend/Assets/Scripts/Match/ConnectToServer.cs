@@ -42,6 +42,12 @@ public class ConnectToServer : MonoBehaviour
     [Header("连接画布")]
     private GameObject connectCanvas;
     /// <summary>
+    /// 玩家名称输入框
+    /// </summary>
+    [SerializeField]
+    [Header("玩家名称输入框")]
+    private InputField nameInputField;
+    /// <summary>
     /// ID:端口 输入框
     /// </summary>
     [SerializeField]
@@ -130,16 +136,23 @@ public class ConnectToServer : MonoBehaviour
                 connectInfoText.text = "连接成功";
 
                 // 获取本机玩家 ID
-                UserAPI.GetLocalPlayerId(localPlayerId =>
+                PlayerAPI.GetLocalPlayerId(localPlayerId =>
                 {
                     Debug.LogFormat("获取本地玩家 ID = {0}", localPlayerId);
 
                     // 保存本机玩家 ID
                     GlobalModel.Instance.LocalPLayerId = localPlayerId;
 
-                    // 切换到桌子列表面板
-                    ToTablesCanvas();
-                }, () => 
+                    // 设置玩家名称
+                    PlayerAPI.SetPLayerName(nameInputField.text, success =>
+                    {
+                        // 切换到桌子列表面板
+                        ToTablesCanvas();
+                    }, () => {
+                        // 连接超时，发出信息
+                        connectInfoText.text = "设置名称失败，请尝试重连";
+                    });
+                }, () =>
                 {
                     // 连接超时，发出信息
                     connectInfoText.text = "获取 ID 失败，请尝试重连";

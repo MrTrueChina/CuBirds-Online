@@ -44,5 +44,33 @@ namespace CubirdsOnline.Backend.Controller
                 ReturnCode = (short)ReturnCode.OK
             };
         }
+
+        /// <summary>
+        /// 设置玩家名字
+        /// </summary>
+        /// <param name="operationRequest"></param>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <returns></returns>
+        [RequestHandler(RequestCode.SET_PLAYER_NAME)]
+        public static OperationResponse SetPLayerName(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        {
+            // 获取参数
+            string name = operationRequest.Parameters.Get<string>(RequestParamaterKey.PLAYER_NAME);
+
+            log.InfoFormat("客户端({0})设置名称", clientPeer.ConnectionId);
+
+            // 交给 Service 处理
+            PlayerService.SetPLayerName(clientPeer, name);
+
+            // 返回
+            return new OperationResponse()
+            {
+                // 返回操作成功
+                Parameters = new Dictionary<byte, object>() { { (byte)ResponseParamaterKey.SUCCESS, true } },
+                // 设为请求成功
+                ReturnCode = (short)ReturnCode.OK
+            };
+        }
     }
 }

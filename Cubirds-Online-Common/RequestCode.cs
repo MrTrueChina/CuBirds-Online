@@ -39,5 +39,9 @@ namespace CubirdsOnline.Common
         /// 解散桌子
         /// </summary>
         DISBAND_TABLE = 6,
+        /// <summary>
+        /// 设置玩家名字
+        /// </summary>
+        SET_PLAYER_NAME = 7,
     }
 }

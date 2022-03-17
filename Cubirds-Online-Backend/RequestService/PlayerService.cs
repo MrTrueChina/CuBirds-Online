@@ -30,5 +30,16 @@ namespace CubirdsOnline.Backend.Service
             // 直接返回客户端记录的玩家 id
             return clientPeer.PlayerId;
         }
+
+        /// <summary>
+        /// 设置玩家名字
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        internal static void SetPLayerName(CubirdClientPeer clientPeer, string name)
+        {
+            clientPeer.Name = name;
+        }
     }
 }
