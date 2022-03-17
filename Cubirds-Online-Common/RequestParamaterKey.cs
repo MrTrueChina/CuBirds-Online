@@ -31,5 +31,21 @@ namespace CubirdsOnline.Common
         /// 玩家名称
         /// </summary>
         PLAYER_NAME = 4,
+        /// <summary>
+        /// 卡牌种类
+        /// </summary>
+        CARD_TYPE = 5,
+        /// <summary>
+        /// 中央行索引
+        /// </summary>
+        CENTER_LINE_INDEX = 6,
+        /// <summary>
+        /// 是否放到中央行的左边
+        /// </summary>
+        PUT_ON_CENTER_LINE_LEFT = 7,
+        /// <summary>
+        /// 超时的玩家的 ID
+        /// </summary>
+        TIME_OUT_PLAYER_ID = 8,
     }
 }

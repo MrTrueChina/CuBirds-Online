@@ -239,7 +239,7 @@ namespace CubirdsOnline.Backend.Controller
             Table table = MatchService.GetTableById(tableId);
 
             // 如果这个玩家不是桌主则不处理
-            if(table.Master.Peer.PlayerId != clientPeer.PlayerId)
+            if (table.Master.Peer.PlayerId != clientPeer.PlayerId)
             {
                 return new OperationResponse()
                 {
@@ -259,6 +259,52 @@ namespace CubirdsOnline.Backend.Controller
             {
                 Parameters = new Dictionary<byte, object>() {
                     // 返回解散成功
+                    { (byte)ResponseParamaterKey.SUCCESS, true }
+                },
+                // 设为请求成功
+                ReturnCode = (short)ReturnCode.OK
+            };
+        }
+
+        /// <summary>
+        /// 开始游戏
+        /// </summary>
+        /// <param name="operationRequest"></param>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <returns></returns>
+        [RequestHandler(RequestCode.START_GAME)]
+        public static OperationResponse StartGame(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        {
+            // 获取桌子 ID
+            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+
+            log.InfoFormat("客户端({0})在桌子 {1} 开局", clientPeer.PlayerId, tableId);
+
+            // 获取桌子
+            Table table = MatchService.GetTableById(tableId);
+
+            // 如果这个玩家不是桌主或桌上人数不够开局则不处理
+            if (table.Master.Peer.PlayerId != clientPeer.PlayerId || table.Players.Count < 2)
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                    // 返回开局失败
+                    { (byte)ResponseParamaterKey.SUCCESS, false }
+                },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
+
+            // 交给 Service 处理
+            MatchService.StartGame(sendParameters, clientPeer, table);
+
+            return new OperationResponse()
+            {
+                Parameters = new Dictionary<byte, object>() {
+                    // 返回开局成功
                     { (byte)ResponseParamaterKey.SUCCESS, true }
                 },
                 // 设为请求成功

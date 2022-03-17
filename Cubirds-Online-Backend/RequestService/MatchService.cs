@@ -223,5 +223,45 @@ namespace CubirdsOnline.Backend.Service
             // 从列表中移除桌子
             ServerModel.Instance.Tables.Remove(table);
         }
+
+        /// <summary>
+        /// 开始游戏
+        /// </summary>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <param name="table"></param>
+        internal static void StartGame(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table)
+        {
+            // 如果玩家不是桌主或人数不足则不处理
+            if(table.Master.Peer.PlayerId != clientPeer.PlayerId || table.Players.Count < 2)
+            {
+                return;
+            }
+
+            // 设为正在进行游戏
+            table.Playing = true;
+
+            // 生成一个随机数种子
+            int randomSeed = (int)(DateTime.Now.Ticks % int.MaxValue);
+
+            // 准备开局事件
+            EventData eventData = new EventData() {
+                // 事件码
+                Code = (byte)EventCode.START_GAME,
+                // 参数
+                Parameters = new Dictionary<byte, object>() {
+                    // 桌子上所有玩家的信息
+                    { (byte)EventParamaterKey.PLAYERS_INFOS, table.Players.Select(p=>p.ToDTO().ToObjectArray()).ToArray() },
+                    // 随机数种子
+                    { (byte)EventParamaterKey.RANDOM_SEED, randomSeed },
+                },
+            };
+
+            // 给桌子上所有玩家发出事件
+            table.Players.ForEach(p =>
+            {
+                p.Peer.SendEvent(eventData, sendParameters);
+            });
+        }
     }
 }

@@ -43,5 +43,33 @@ namespace CubirdsOnline.Common
         /// 设置玩家名字
         /// </summary>
         SET_PLAYER_NAME = 7,
+        /// <summary>
+        /// 开始游戏
+        /// </summary>
+        START_GAME = 8,
+        /// <summary>
+        /// 同步玩家打出鸟牌操作
+        /// </summary>
+        LOCK_STEP_PLAYER_PLAY_CARDS = 9,
+        /// <summary>
+        /// 同步玩家组成鸟群操作
+        /// </summary>
+        LOCK_STEP_PLAYER_MAKE_GROUP = 10,
+        /// <summary>
+        /// 同步玩家不组成鸟群操作
+        /// </summary>
+        LOCK_STEP_PLAYER_DONT_MAKE_GROUP = 11,
+        /// <summary>
+        /// 同步玩家选择抽牌操作
+        /// </summary>
+        LOCK_STEP_PLAYER_DRAW_CARDS = 12,
+        /// <summary>
+        /// 同步玩家选择不抽牌操作
+        /// </summary>
+        LOCK_STEP_PLAYER_DONT_DRAW_CARDS = 13,
+        /// <summary>
+        /// 同步玩家超时操作
+        /// </summary>
+        LOCK_STEP_PLAYER_OUT_OF_TIME = 14,
     }
 }

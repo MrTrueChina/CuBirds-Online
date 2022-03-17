@@ -60,4 +60,8 @@ public class GlobalModel : MonoBehaviour
     /// 现在处于的桌子的信息，但不使用这个对象里的玩家 id，玩家 id 以 <see cref="TablePlayerIds"/> 为准
     /// </summary>
     public TableInfoDTO TableInfo { get; set; }
+    /// <summary>
+    /// 随机数种子
+    /// </summary>
+    public int RandomSeed { get; set; }
 }

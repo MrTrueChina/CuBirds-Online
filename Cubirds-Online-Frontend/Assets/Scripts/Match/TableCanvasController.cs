@@ -5,6 +5,7 @@ using ExitGames.Client.Photon;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 桌子内容面板的控制器
@@ -94,6 +95,7 @@ public class TableCanvasController : MonoBehaviour
         PhotonEngine.Subscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
         PhotonEngine.Subscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
         PhotonEngine.Subscribe(EventCode.PLAYER_JOIN_TABLE, OnPlayerJoinTableEvent);
+        PhotonEngine.Subscribe(EventCode.START_GAME, OnStartGameEvent);
 
         // 检测并记录本机玩家是不是房主
         bool isMaster = GlobalModel.Instance.TableInfo.MasterId == GlobalModel.Instance.LocalPLayerId;
@@ -173,6 +175,30 @@ public class TableCanvasController : MonoBehaviour
     }
 
     /// <summary>
+    /// 当收到开始游戏事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnStartGameEvent(EventData eventData)
+    {
+        Debug.Log("开始游戏");
+
+        // 关闭面板
+        Close();
+
+        // 保存随机数种子
+        GlobalModel.Instance.RandomSeed = eventData.Parameters.Get<int>(EventParamaterKey.RANDOM_SEED);
+
+        // 设置随机数种子
+        Random.InitState(GlobalModel.Instance.RandomSeed);
+
+        // 保存桌子上的玩家
+        GlobalModel.Instance.TablePlayers = eventData.Parameters.Get<object[]>(EventParamaterKey.PLAYERS_INFOS).Select(i => new PlayerInfoDTO(i as object[])).ToList();
+
+        // 加载游戏场景
+        SceneManager.LoadScene("Game Scene");
+    }
+
+    /// <summary>
     /// 回到桌子列表面板
     /// </summary>
     private void BackToTableList()
@@ -208,9 +234,12 @@ public class TableCanvasController : MonoBehaviour
     /// <summary>
     /// 开始游戏
     /// </summary>
-    public void Start()
+    public void StartGame()
     {
         Debug.Log("开始游戏");
+
+        // 发出开局请求
+        MatchAPI.StartGame(GlobalModel.Instance.TableInfo.Id, success => { });
     }
 
     /// <summary>
@@ -255,5 +284,6 @@ public class TableCanvasController : MonoBehaviour
         PhotonEngine.Unsubscribe(EventCode.PLAYER_QUIT_TABLE, OnPlayerQuitEvent);
         PhotonEngine.Unsubscribe(EventCode.DISBAND_TABLE, OnDisbandTableEvent);
         PhotonEngine.Unsubscribe(EventCode.PLAYER_JOIN_TABLE, OnPlayerJoinTableEvent);
+        PhotonEngine.Unsubscribe(EventCode.START_GAME, OnStartGameEvent);
     }
 }

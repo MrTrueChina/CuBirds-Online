@@ -142,4 +142,23 @@ public static class MatchAPI
             response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
             timeoutHandler);
     }
+
+    /// <summary>
+    /// 开始游戏
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void StartGame(int tableId, Action<bool> handler, Action timeoutHandler = null)
+    {
+        PhotonEngine.SendOperation(
+            RequestCode.START_GAME,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, tableId },
+            },
+            SendOptions.SendReliable,
+            response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
+            timeoutHandler);
+    }
 }
