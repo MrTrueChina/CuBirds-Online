@@ -12,6 +12,31 @@ using System.Linq;
 public class TableCanvasController : MonoBehaviour
 {
     /// <summary>
+    /// 实例
+    /// </summary>
+    public static TableCanvasController Instance
+    {
+        get
+        {
+            if (instance != null)
+            {
+                return instance;
+            }
+
+            lock (typeof(TableCanvasController))
+            {
+                if (instance == null)
+                {
+                    instance = GameObject.FindGameObjectWithTag("TableCanvasController").GetComponent<TableCanvasController>();
+                }
+
+                return instance;
+            }
+        }
+    }
+    private static TableCanvasController instance;
+
+    /// <summary>
     /// 桌子信息画布
     /// </summary>
     [SerializeField]
@@ -54,31 +79,6 @@ public class TableCanvasController : MonoBehaviour
     [SerializeField]
     [Header("玩家名称条预制")]
     private GameObject playerNameBarPrefab;
-
-    /// <summary>
-    /// 实例
-    /// </summary>
-    public static TableCanvasController Instance
-    {
-        get
-        {
-            if (instance != null)
-            {
-                return instance;
-            }
-
-            lock (typeof(TableCanvasController))
-            {
-                if (instance == null)
-                {
-                    instance = GameObject.FindGameObjectWithTag("TableCanvasController").GetComponent<TableCanvasController>();
-                }
-
-                return instance;
-            }
-        }
-    }
-    private static TableCanvasController instance;
 
     /// <summary>
     /// 显示面板
