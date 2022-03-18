@@ -138,7 +138,7 @@ public class MakeGroupController : MonoBehaviour
     /// <summary>
     /// 关闭组群操作面板
     /// </summary>
-    private void Close()
+    public void Close()
     {
         Debug.Log("关闭组群操作面板");
 

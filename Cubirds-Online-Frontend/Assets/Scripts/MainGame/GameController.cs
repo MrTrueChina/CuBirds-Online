@@ -257,7 +257,7 @@ public class GameController : MonoBehaviour
                 PlayerController playerController = new GameObject("Player " + playerInfo.Id).AddComponent<PlayerController>();
 
                 // 初始化
-                playerController.Init(playerInfo.Id, position, PlayGameCanvas);
+                playerController.Init(playerInfo.Id, playerInfo.Name, position, PlayGameCanvas);
 
                 // 保存这个玩家
                 createdPlayers.Add(playerController);
@@ -283,7 +283,7 @@ public class GameController : MonoBehaviour
     private void PlayBirdCards()
     {
         // 发出提示
-        ShowTip(CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Id));
+        ShowTip(CurrentPlayerIsLocalPlayer() ? "你需要打出一种鸟类卡，这一操作是必须的。" : string.Format("等待玩家 {0} 打出鸟类卡……", CurrentTrunPlayre.Name));
 
         // 开始计时
         PlayOutOfTimeTimer.Instance.StartTiming(CurrentTrunPlayre, 60);
@@ -359,7 +359,7 @@ public class GameController : MonoBehaviour
     private void SelectDrawCard()
     {
         // 发出提示
-        ShowTip(CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Id));
+        ShowTip(CurrentPlayerIsLocalPlayer() ? "因为你没有收到牌，你可以选择从卡组抽两张牌。" : string.Format("等待玩家 {0} 选择是否抽牌……", CurrentTrunPlayre.Name));
 
         // 交给协程进行
         selectDrawCardCoroutine = StartCoroutine(SelectDrawCardCoroutine());
@@ -443,7 +443,7 @@ public class GameController : MonoBehaviour
     private void MakeGroup()
     {
         // 如果现在是其他玩家的回合，显示这个提示
-        string otherPlayerTip = string.Format("等待玩家 {0} 组成鸟群……", CurrentTrunPlayre.Id);
+        string otherPlayerTip = string.Format("等待玩家 {0} 组成鸟群……", CurrentTrunPlayre.Name);
 
         // 如果现在是本机玩家的回合，显示这个提示
         string localPlayerTip = CurrentTrunPlayre.CanMakeGroup() ? "你可以选择将手中的牌组成鸟群，也可以选择不组成鸟群。" : "你手中的牌不能组成鸟群，但你可以等一会再选择不组成鸟群让其他玩家以为你在思考是否组群。";
@@ -630,7 +630,7 @@ public class GameController : MonoBehaviour
             // 玩家手里没牌了
 
             // 发出提示
-            ShowTip(string.Format("由于{0}将手牌打空，所有玩家弃牌并重新抽牌，{0}将再次获得一个回合。", (CurrentPlayerIsLocalPlayer() ? "你" : "玩家\u00A0" + CurrentTrunPlayre.Id + "\u00A0")));
+            ShowTip(string.Format("由于{0}将手牌打空，所有玩家弃牌并重新抽牌，{0}将再次获得一个回合。", (CurrentPlayerIsLocalPlayer() ? "你" : "玩家\u00A0" + CurrentTrunPlayre.Name + "\u00A0")));
 
             // 完成弃牌的玩家的计数器
             int discardCardsPlayersNumber = 0;
@@ -729,6 +729,14 @@ public class GameController : MonoBehaviour
 
         // 立刻停止所有主要的游戏协程，防止被踢出的玩家进一步操作
         StopCoroutine();
+
+        // 如果是本机玩家超时还要关闭所有操作面板
+        if(playerId == GlobalModel.Instance.LocalPLayerId)
+        {
+            PlayCardsController.Instance.Close();
+            MakeGroupController.Instance.Close();
+            SelectDrawController.Instance.Close();
+        }
 
         // 找到超时的玩家
         PlayerController timeOutPlayer = players.Find(p => p.Id == playerId);

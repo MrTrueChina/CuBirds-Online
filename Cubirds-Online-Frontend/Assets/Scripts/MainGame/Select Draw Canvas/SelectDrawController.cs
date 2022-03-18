@@ -75,7 +75,7 @@ public class SelectDrawController : MonoBehaviour
     /// <summary>
     /// 关闭操作面板
     /// </summary>
-    private void Close()
+    public void Close()
     {
         // 关闭操作面板
         selectDrawCardsCanvas.SetActive(false);

@@ -62,6 +62,10 @@ public class PlayerController : MonoBehaviour
     /// 这个玩家的 Id
     /// </summary>
     public int Id { get; private set; }
+    /// <summary>
+    /// 这个玩家的名字
+    /// </summary>
+    public string Name { get; private set; }
 
     /// <summary>
     /// 手牌
@@ -81,12 +85,16 @@ public class PlayerController : MonoBehaviour
     /// 初始化这个玩家
     /// </summary>
     /// <param name="id"></param>
+    /// <param name="name"></param>
     /// <param name="position"></param>
     /// <param name="table"></param>
-    public void Init(int id, Transform position, Canvas table)
+    public void Init(int id, string name, Transform position, Canvas table)
     {
         // 保存 ID
         Id = id;
+
+        // 保存名称
+        Name = name;
 
         // 把这个玩家物体移到桌子画布上，这样可以跟着桌子对宽高进行自适应
         transform.parent = table.transform;

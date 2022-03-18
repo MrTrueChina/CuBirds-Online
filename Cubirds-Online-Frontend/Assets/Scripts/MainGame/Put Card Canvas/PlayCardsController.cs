@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -119,7 +120,7 @@ public class PlayCardsController : MonoBehaviour
     /// <summary>
     /// 关闭这个面板
     /// </summary>
-    private void Close()
+    public void Close()
     {
         Debug.Log("关闭打牌操作面板");
 
