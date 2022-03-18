@@ -266,21 +266,31 @@ namespace CubirdsOnline.Backend.Service
             // 没有桌子或者还没开局，不转发
             if (table == null || !table.Playing)
             {
+                log.WarnFormat("桌子 {0} 还没开局", table.Id);
                 return;
             }
 
             // 如果这个桌子上没有发出请求的玩家，不转发
             if (!table.Players.Any(p => p.Peer.PlayerId == clientPeer.PlayerId))
             {
+                log.WarnFormat("桌子 {0} 上没有发出请求的玩家 {1}", table.Id, clientPeer.PlayerId);
                 return;
             }
 
             // 找到掉线的玩家，如果这个玩家已经从游戏中移除了也算作找不到
-            PlayerInfo playerInfo = table.Players.Find(p => p.Peer.PlayerId == timeOutPlayerId && !p.IsRemoved);
+            PlayerInfo timeOutPlayer = table.Players.Find(p => p.Peer.PlayerId == timeOutPlayerId && !p.IsRemoved);
 
             // 如果这个桌子上没有这个超时的玩家，不转发
-            if (playerInfo == null)
+            if (timeOutPlayer == null)
             {
+                log.WarnFormat("桌子 {0} 上没有超时的玩家 {1}", table.Id, timeOutPlayerId);
+
+
+                // Debug 功能，输出桌子上所有的玩家
+                StringBuilder stringBuilder = new StringBuilder(string.Format("桌子 {0} 上的玩家有：", table.Id));
+                table.Players.ForEach(p => stringBuilder.Append(p.Peer.PlayerId + ", "));
+                log.Debug(stringBuilder.ToString());
+
                 return;
             }
 
@@ -292,7 +302,7 @@ namespace CubirdsOnline.Backend.Service
                 // 参数
                 Parameters = new Dictionary<byte, object>() {
                     // 超时玩家的 ID
-                    { (byte)EventParamaterKey.TIME_OUT_PLAYER_ID, timeOutPlayerId },
+                    { (byte)EventParamaterKey.TIME_OUT_PLAYER_ID, timeOutPlayer.Peer.PlayerId },
                 },
             };
 
@@ -303,7 +313,7 @@ namespace CubirdsOnline.Backend.Service
             });
 
             // 这个玩家改为已经从游戏中移除
-            playerInfo.IsRemoved = true;
+            timeOutPlayer.IsRemoved = true;
         }
     }
 }

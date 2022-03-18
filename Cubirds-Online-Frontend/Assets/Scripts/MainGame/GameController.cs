@@ -6,6 +6,7 @@ using System.Linq;
 using Text = UnityEngine.UI.Text;
 using System.Text;
 using CubirdsOnline.Common;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 游戏控制器，就是发牌员和主持
@@ -84,17 +85,17 @@ public class GameController : MonoBehaviour
     [Header("提示文字文本组件")]
     private Text tipsText;
     /// <summary>
-    /// 胜利面板画布
+    /// 游戏结束面板画布
     /// </summary>
     [SerializeField]
-    [Header("胜利面板画布")]
-    private GameObject winCanvas;
+    [Header("游戏结束面板画布")]
+    private GameObject endInfoCanvas;
     /// <summary>
-    /// 胜利面板文本组件
+    /// 游戏结束面板文本组件
     /// </summary>
     [SerializeField]
-    [Header("胜利面板文本组件")]
-    private Text winText;
+    [Header("游戏结束面板文本组件")]
+    private Text endText;
 
     /// <summary>
     /// 卡牌预制
@@ -599,10 +600,10 @@ public class GameController : MonoBehaviour
         winTextBuilder.Append(" 获胜！");
 
         // 打开胜利面板
-        winCanvas.SetActive(true);
+        endInfoCanvas.SetActive(true);
 
         // 设置胜利文本
-        winText.text = winTextBuilder.ToString();
+        endText.text = winTextBuilder.ToString();
     }
 
     /// <summary>
@@ -694,6 +695,17 @@ public class GameController : MonoBehaviour
 
         // 显示胜利信息
         ShowWinInfo(winPlayers);
+    }
+
+    /// <summary>
+    /// 回到大厅
+    /// </summary>
+    public void BackToMatch()
+    {
+        Debug.Log("回到大厅");
+
+        // 加载场景
+        SceneManager.LoadScene("Match Scene");
     }
 
     /// <summary>

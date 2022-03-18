@@ -176,7 +176,7 @@ namespace CubirdsOnline.Backend.Controller
         {
             // 获取参数
             int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
-            int timeOutPlayerId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+            int timeOutPlayerId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TIME_OUT_PLAYER_ID);
 
             log.InfoFormat("客户端({0})在 {1} 桌同步玩家 {2} 超时", clientPeer.PlayerId, tableId, timeOutPlayerId);
 
