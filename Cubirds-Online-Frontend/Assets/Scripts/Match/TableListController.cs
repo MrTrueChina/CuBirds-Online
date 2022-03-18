@@ -74,7 +74,8 @@ public class TableListController : MonoBehaviour
         // 订阅事件
         PhotonEngine.Subscribe(EventCode.TABLE_CREATED, OnTableCreatedEvent);
         PhotonEngine.Subscribe(EventCode.DISBAND_TABLE, OnTableDisbandedEvent);
-        
+        PhotonEngine.Subscribe(EventCode.START_GAME, OnStartGameEvent);
+
         // 获取所有桌子的信息
         MatchAPI.GetAllTablesInfos(tables =>
         {
@@ -118,6 +119,7 @@ public class TableListController : MonoBehaviour
         // 取消订阅事件
         PhotonEngine.Unsubscribe(EventCode.TABLE_CREATED, OnTableCreatedEvent);
         PhotonEngine.Unsubscribe(EventCode.DISBAND_TABLE, OnTableDisbandedEvent);
+        PhotonEngine.Unsubscribe(EventCode.START_GAME, OnStartGameEvent);
     }
 
     /// <summary>
@@ -151,6 +153,24 @@ public class TableListController : MonoBehaviour
 
         // 从桌子列表里删除被解散的桌子
         tablesInfos.RemoveAll(t => t.Id == disbandedTableId);
+
+        // 更新桌子列表的显示
+        UpdateTableList();
+    }
+
+    /// <summary>
+    /// 当收到后台发出的解散桌子事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnStartGameEvent(EventData eventData)
+    {
+        // 获取开始游戏的桌子的 ID
+        int startGameTableId = eventData.Parameters.Get<int>(EventParamaterKey.TABLE_ID);
+
+        Debug.LogFormat("收到开始游戏消息，桌子 {0} 开始游戏", startGameTableId);
+
+        // 从桌子列表里删除开始游戏的桌子
+        tablesInfos.RemoveAll(t => t.Id == startGameTableId);
 
         // 更新桌子列表的显示
         UpdateTableList();

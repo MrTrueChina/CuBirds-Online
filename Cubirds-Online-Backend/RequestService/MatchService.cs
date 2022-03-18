@@ -19,15 +19,15 @@ namespace CubirdsOnline.Backend.Service
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// 获取所有桌子
+        /// 获取所有没开局的桌子的信息
         /// </summary>
         /// <returns></returns>
-        public static List<Table> GetAllTablesInfos()
+        public static List<Table> GetAllNotPlayingTablesInfos()
         {
-            log.Info("获取所有桌子信息");
+            log.Info("获取所有没开局的桌子的信息");
 
-            // 复制一份返回
-            return new List<Table>(ServerModel.Instance.Tables);
+            // 过滤出没有开局的桌子返回去
+            return ServerModel.Instance.Tables.Where(t => !t.Playing).ToList();
         }
 
         /// <summary>
@@ -250,6 +250,8 @@ namespace CubirdsOnline.Backend.Service
                 Code = (byte)EventCode.START_GAME,
                 // 参数
                 Parameters = new Dictionary<byte, object>() {
+                    // 桌子 ID
+                    { (byte)EventParamaterKey.TABLE_ID, table.Id },
                     // 桌子上所有玩家的信息
                     { (byte)EventParamaterKey.PLAYERS_INFOS, table.Players.Select(p=>p.ToDTO().ToObjectArray()).ToArray() },
                     // 随机数种子
@@ -257,10 +259,10 @@ namespace CubirdsOnline.Backend.Service
                 },
             };
 
-            // 给桌子上所有玩家发出事件
-            table.Players.ForEach(p =>
-            {
-                p.Peer.SendEvent(eventData, sendParameters);
+            //TODO：考虑到节约网络资源，这里最好改为只转发给这张桌子上的玩家和不在桌子上的玩家
+            // 把消息转发给所有玩家
+            ServerModel.Instance.ConnectingPeers.ForEach(p => {
+                p.SendEvent(eventData, sendParameters);
             });
         }
     }

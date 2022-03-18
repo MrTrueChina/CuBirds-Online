@@ -21,19 +21,19 @@ namespace CubirdsOnline.Backend.Controller
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
-        /// 获取所有桌子
+        /// 获取所有没开局的桌子的信息
         /// </summary>
         /// <param name="operationRequest"></param>
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
         /// <returns></returns>
         [RequestHandler(RequestCode.GET_ALL_TABLES_INFOS)]
-        public static OperationResponse GetAllTablesInfos(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        public static OperationResponse GetAllNotPlayingTablesInfos(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
         {
-            log.InfoFormat("客户端({0})获取所有桌子信息", clientPeer.PlayerId);
+            log.InfoFormat("客户端({0})获取所有没开局的桌子的信息", clientPeer.PlayerId);
 
             // 转给 Service 处理
-            List<Table> tables = MatchService.GetAllTablesInfos();
+            List<Table> tables = MatchService.GetAllNotPlayingTablesInfos();
 
             // 返回
             return new OperationResponse()

@@ -71,5 +71,9 @@ namespace CubirdsOnline.Common
         /// 同步玩家超时操作
         /// </summary>
         LOCK_STEP_PLAYER_OUT_OF_TIME = 14,
+        /// <summary>
+        /// 一个桌子的游戏结束
+        /// </summary>
+        GAME_END = 15,
     }
 }
