@@ -265,5 +265,26 @@ namespace CubirdsOnline.Backend.Service
                 p.SendEvent(eventData, sendParameters);
             });
         }
+
+        /// <summary>
+        /// 游戏结束
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="table"></param>
+        internal static void GameEnd(CubirdClientPeer clientPeer, Table table)
+        {
+            log.InfoFormat("客户端({0})在桌子 {1} 同步游戏结束事件", clientPeer.PlayerId, table.Id);
+
+            // 如果玩家不是桌子上的玩家则不处理
+            if (table.Master.Peer.PlayerId != clientPeer.PlayerId || table.Players.Count < 2)
+            {
+                return;
+            }
+
+            // 从桌子列表里移除这个桌子
+            ServerModel.Instance.Tables.Remove(table);
+
+            log.InfoFormat("桌子 {0} 结束游戏，现有 {1} 个桌子", table.Id, ServerModel.Instance.Tables.Count);
+        }
     }
 }

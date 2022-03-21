@@ -192,5 +192,33 @@ namespace CubirdsOnline.Backend.Controller
                 ReturnCode = (short)ReturnCode.OK
             };
         }
+
+        /// <summary>
+        /// 同步玩家放弃游戏操作
+        /// </summary>
+        /// <param name="operationRequest"></param>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <returns></returns>
+        [RequestHandler(RequestCode.LOCK_STEP_PLAYER_GIVE_UP)]
+        public static OperationResponse LockStepPlayerGiveUp(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        {
+            // 获取参数
+            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+
+            log.InfoFormat("客户端({0})在 {1} 桌放弃游戏", clientPeer.PlayerId, tableId);
+
+            // 转给 Service 处理
+            LockstepService.LockStepPlayerGiveUp(clientPeer, tableId, sendParameters);
+
+            // 返回
+            return new OperationResponse()
+            {
+                // 操作成功
+                Parameters = new Dictionary<byte, object>() { { (byte)ResponseParamaterKey.SUCCESS, true } },
+                // 设为请求成功
+                ReturnCode = (short)ReturnCode.OK
+            };
+        }
     }
 }

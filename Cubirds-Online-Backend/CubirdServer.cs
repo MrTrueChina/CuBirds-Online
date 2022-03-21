@@ -125,15 +125,27 @@ namespace CubirdsOnline.Backend
                 // 如果玩家在这个桌子里，把这个玩家从桌子里移除
                 if(table.Players.Find(player=>player.Peer.PlayerId == peer.PlayerId) != null)
                 {
-                    if(table.Master.Peer.PlayerId == peer.PlayerId)
+                    if (table.Playing)
                     {
-                        // 如果这个玩家是桌主，解散桌子
-                        MatchService.DisbandTable(new SendParameters(), peer, table);
+                        // 这一桌已经开局了
+
+                        // 转发这个玩家放弃游戏的事件
+                        LockstepService.LockStepPlayerGiveUp(peer, table.Id, new SendParameters());
                     }
                     else
                     {
-                        // 如果这个玩家不是桌主，这个玩家退出桌子
-                        MatchService.QuitTable(new SendParameters(), peer, table);
+                        // 这一桌还没开局
+
+                        if (table.Master.Peer.PlayerId == peer.PlayerId)
+                        {
+                            // 如果这个玩家是桌主，解散桌子
+                            MatchService.DisbandTable(new SendParameters(), peer, table);
+                        }
+                        else
+                        {
+                            // 如果这个玩家不是桌主，这个玩家退出桌子
+                            MatchService.QuitTable(new SendParameters(), peer, table);
+                        }
                     }
                 }
             });

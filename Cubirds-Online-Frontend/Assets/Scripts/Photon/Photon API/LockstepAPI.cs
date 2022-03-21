@@ -174,4 +174,29 @@ public static class LockstepAPI
             response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
             timeoutHandler);
     }
+
+    /// <summary>
+    /// 同步玩家放弃游戏
+    /// </summary>
+    /// <param name="handler"></param>
+    /// <param name="timeoutHandler"></param>
+    public static void LockStepPlayerGiveUp(Action<bool> handler = null, Action timeoutHandler = null)
+    {
+        // 补充成功回调，防止空异常
+        if (handler == null)
+        {
+            handler = success => { };
+        }
+
+        // 发出请求
+        PhotonEngine.SendOperation(
+            RequestCode.LOCK_STEP_PLAYER_GIVE_UP,
+            new Dictionary<byte, object>() {
+                // 桌子 ID
+                { (byte)RequestParamaterKey.TABLE_ID, GlobalModel.Instance.TableInfo.Id },
+            },
+            SendOptions.SendReliable,
+            response => handler.Invoke(response.Parameters.Get<bool>(ResponseParamaterKey.SUCCESS)),
+            timeoutHandler);
+    }
 }

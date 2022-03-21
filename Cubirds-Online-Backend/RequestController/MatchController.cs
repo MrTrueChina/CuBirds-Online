@@ -311,5 +311,65 @@ namespace CubirdsOnline.Backend.Controller
                 ReturnCode = (short)ReturnCode.OK
             };
         }
+
+        /// <summary>
+        /// 游戏结束
+        /// </summary>
+        /// <param name="operationRequest"></param>
+        /// <param name="sendParameters"></param>
+        /// <param name="clientPeer"></param>
+        /// <returns></returns>
+        [RequestHandler(RequestCode.GAME_END)]
+        public static OperationResponse GameEnd(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
+        {
+            // 获取桌子 ID
+            int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+
+            log.InfoFormat("客户端({0})在桌子 {1} 同步游戏结束事件", clientPeer.PlayerId, tableId);
+
+            // 获取桌子
+            Table table = MatchService.GetTableById(tableId);
+
+            // 如果没找到桌子则不处理，此时桌子可能已经在其他玩家的请求下关闭了
+            if(table == null)
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                    // 返回结束失败
+                    { (byte)ResponseParamaterKey.SUCCESS, false }
+                },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
+
+            // 如果这个玩家不是桌子上的玩家则不处理
+            if (!table.Players.Any(p=>p.Peer.PlayerId == clientPeer.PlayerId))
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                    // 返回结束失败
+                    { (byte)ResponseParamaterKey.SUCCESS, false }
+                },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
+
+            // 交给 Service 处理
+            MatchService.GameEnd(clientPeer, table);
+
+            return new OperationResponse()
+            {
+                Parameters = new Dictionary<byte, object>() {
+                    // 返回结束成功
+                    { (byte)ResponseParamaterKey.SUCCESS, true }
+                },
+                // 设为请求成功
+                ReturnCode = (short)ReturnCode.OK
+            };
+        }
     }
 }

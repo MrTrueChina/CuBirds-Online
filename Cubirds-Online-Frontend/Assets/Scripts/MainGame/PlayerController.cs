@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using CubirdsOnline.Common;
+using ExitGames.Client.Photon;
 
 /// <summary>
 /// 玩家控制器
@@ -169,19 +171,19 @@ public class PlayerController : MonoBehaviour
             card.SetDisplaySort(i);
 
             // 根据是不是本机玩家选择手牌显示的最大宽度
-            float maxHandCardsWidth = GameController.Instance.IsLocalPlayer(this) ? localPlayerMaxHandCardWidth : otherPlayerMaxHandCardWidth;
+            float maxHandCardsWidth = GameController.Instance.IsLocalPlayer(this) ? ScaleByMainUILength.GetScaledLength(localPlayerMaxHandCardWidth) : ScaleByMainUILength.GetScaledLength(otherPlayerMaxHandCardWidth);
 
             // 计算卡牌距离中心点的偏移
             float horizontalOffset =
                 // 判断是否显示的开，如果所有手牌按照手牌距离显示宽度不超过最大手牌宽度则显示的开，否则显示不开
-                (handCards.Count - 1) * handCardHorizontalDistance <= maxHandCardsWidth?
+                (handCards.Count - 1) * ScaleByMainUILength.GetScaledLength(handCardHorizontalDistance) <= maxHandCardsWidth?
                 // 显示的开，按照设置的手牌间距计算手牌横向偏移
-                (handCards.Count - 1) * -(handCardHorizontalDistance / 2) + i * handCardHorizontalDistance :
+                (handCards.Count - 1) * -(ScaleByMainUILength.GetScaledLength(handCardHorizontalDistance) / 2) + i * ScaleByMainUILength.GetScaledLength(handCardHorizontalDistance) :
                 // 显示不开，按照把牌平铺到这个范围里为标准计算偏移
                 -(maxHandCardsWidth / 2) + i * (maxHandCardsWidth / (handCards.Count - 1));
 
             // 向上移动的卡片的偏移
-            float verticalOffset = card.CardType != upDisplayCardType ? 0 : upHandCardsDistance;
+            float verticalOffset = card.CardType != upDisplayCardType ? 0 : ScaleByMainUILength.GetScaledLength(upHandCardsDistance);
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position - transform.right * horizontalOffset + transform.up * verticalOffset, transform.rotation, 0.2f);
@@ -209,11 +211,11 @@ public class PlayerController : MonoBehaviour
     public IEnumerator TakeGroupCardCoroutine(Card card, Action callback = null, float duration = 0.5f)
     {
         // 鸟群卡移动到的位置的 x 轴偏移，为了方便写这里用 Vector3 来代替
-        Vector3 moveToPositionXOffset = GroupCards.Count == 0 ? Vector3.zero : transform.right * (GroupCards.Count + 1) * (groupCardHorizontalDistance / 2);
+        Vector3 moveToPositionXOffset = GroupCards.Count == 0 ? Vector3.zero : transform.right * (GroupCards.Count + 1) * (ScaleByMainUILength.GetScaledLength(groupCardHorizontalDistance) / 2);
 
         // 移动卡牌到鸟群行的位置并等待卡牌移动到位
         bool moved = false;
-        card.MoveToAndRotateTo(transform.position + (transform.up * groupCardHandCardDistance) + moveToPositionXOffset, transform.rotation, duration, () => { moved = true; });
+        card.MoveToAndRotateTo(transform.position + (transform.up * ScaleByMainUILength.GetScaledLength(groupCardHandCardDistance)) + moveToPositionXOffset, transform.rotation, duration, () => { moved = true; });
         yield return new WaitUntil(() => moved);
 
         // 播放放下卡牌音效
@@ -239,17 +241,17 @@ public class PlayerController : MonoBehaviour
         List<CardType> cardTypes = GroupCards.Select(c => c.CardType).Distinct().ToList();
 
         // 选取鸟群卡的最大宽度，因为鸟群卡最多显示 7 种所以玩家的鸟群卡不需要最大宽度的限制
-        float maxWidth = GameController.Instance.IsLocalPlayer(this) ? float.PositiveInfinity : otherPlayerMaxGroupCardWidth;
+        float maxWidth = GameController.Instance.IsLocalPlayer(this) ? float.PositiveInfinity : ScaleByMainUILength.GetScaledLength(otherPlayerMaxGroupCardWidth);
 
         // 转化出鸟类卡种类对应的横轴偏移量映射表
         Dictionary<CardType, float> typeToOffset = cardTypes.ToDictionary(t => t, t =>
         {
             // 判断按照鸟群卡水平距离显示鸟群卡是否超过了宽度限制
-            return (cardTypes.Count - 1) * groupCardHorizontalDistance <= otherPlayerMaxGroupCardWidth ?
+            return (cardTypes.Count - 1) * ScaleByMainUILength.GetScaledLength(groupCardHorizontalDistance) <= ScaleByMainUILength.GetScaledLength(otherPlayerMaxGroupCardWidth) ?
             // 没超过宽度限制，就按照鸟群卡水平距离显示
-            ((cardTypes.Count - 1) * -(groupCardHorizontalDistance / 2)) + (cardTypes.IndexOf(t) * groupCardHorizontalDistance) :
+            ((cardTypes.Count - 1) * -(ScaleByMainUILength.GetScaledLength(groupCardHorizontalDistance) / 2)) + (cardTypes.IndexOf(t) * ScaleByMainUILength.GetScaledLength(groupCardHorizontalDistance)) :
             // 超过宽度限制，把鸟群卡在限制宽度内平铺显示
-            -(otherPlayerMaxGroupCardWidth / 2) + (cardTypes.IndexOf(t) * (otherPlayerMaxGroupCardWidth / (cardTypes.Count - 1)));
+            -(ScaleByMainUILength.GetScaledLength(otherPlayerMaxGroupCardWidth) / 2) + (cardTypes.IndexOf(t) * (ScaleByMainUILength.GetScaledLength(otherPlayerMaxGroupCardWidth) / (cardTypes.Count - 1)));
         });
 
         // 同种类的卡出现了多少次的计数器
@@ -270,7 +272,7 @@ public class PlayerController : MonoBehaviour
             // 水平偏移量
             float horizontalOffset = typeToOffset[card.CardType];
             // 垂直偏移量，鸟群卡整体向上偏移，之后每张同类牌向上多偏移一点
-            float verticalOffset = groupCardHandCardDistance + typeNumber * groupCardVerticalDistance;
+            float verticalOffset = ScaleByMainUILength.GetScaledLength(groupCardHandCardDistance) + typeNumber * ScaleByMainUILength.GetScaledLength(groupCardVerticalDistance);
 
             // 移动卡牌
             card.MoveToAndRotateTo(transform.position + transform.up * verticalOffset - transform.right * horizontalOffset, transform.rotation, 0.3f);

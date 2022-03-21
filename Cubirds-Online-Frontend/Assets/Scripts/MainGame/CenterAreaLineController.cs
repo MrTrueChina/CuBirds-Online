@@ -103,7 +103,7 @@ public class CenterAreaLineController : MonoBehaviour
                 // 放在现有的卡右边
 
                 // 判断这些牌放下后会不会超出显示范围，标准是：在最靠右的牌往右找需要的坐标，如果坐标超出最大显示宽度的一半，则超出显示范围，这是因为坐标原点在 0，左右一半就是显示范围
-                if(Cards.Last().transform.localPosition.x + (putCards.Count - 1) * horizontalDistance > (maxWidth / 2))
+                if(Cards.Last().transform.localPosition.x + (putCards.Count - 1) * ScaleByMainUILength.GetScaledLength(horizontalDistance) > (ScaleByMainUILength.GetScaledLength(maxWidth) / 2))
                 {
                     // 超出显示范围
 
@@ -111,7 +111,7 @@ public class CenterAreaLineController : MonoBehaviour
                     putCards.ForEach(putCard =>
                     {
                         // 移动到行里，位置是最靠右的牌的右边位置
-                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + Vector3.right * horizontalDistance, LinePosition.rotation, duration, () =>
+                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + Vector3.right * ScaleByMainUILength.GetScaledLength(horizontalDistance), LinePosition.rotation, duration, () =>
                         {
                             // 移动到位后增加计数器
                             movedCardNumbers++;
@@ -128,7 +128,7 @@ public class CenterAreaLineController : MonoBehaviour
                         Card putCard = putCards[i];
 
                         // 移动到行里，越靠后的越靠右
-                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + (Vector3.right * horizontalDistance * (i + 1)), LinePosition.rotation, duration, () =>
+                        putCard.MoveToAndRotateTo(Cards.Last().transform.position + (Vector3.right * ScaleByMainUILength.GetScaledLength(horizontalDistance) * (i + 1)), LinePosition.rotation, duration, () =>
                         {
                             // 移动到位后增加计数器
                             movedCardNumbers++;
@@ -142,7 +142,7 @@ public class CenterAreaLineController : MonoBehaviour
 
                 // 判断这些牌放下后会不会超出显示范围，标准是：在最靠左的牌往左找需要的坐标，如果坐标小于最大显示宽度的负的一半，则超出显示范围，这是因为坐标原点在 0，左右一半就是显示范围
                 // 这里 Count-1 是因为一个奇怪的 bug，看起来包括中心卡左边能放 5 张卡，但是实际上放到第 5 张的时候判断是超出显示范围了，我没找出原因
-                if (Cards.First().transform.localPosition.x - (putCards.Count - 1) * horizontalDistance < -(maxWidth / 2))
+                if (Cards.First().transform.localPosition.x - (putCards.Count - 1) * ScaleByMainUILength.GetScaledLength(horizontalDistance) < -(ScaleByMainUILength.GetScaledLength(maxWidth) / 2))
                 {
                     // 超出显示范围
 
@@ -150,7 +150,7 @@ public class CenterAreaLineController : MonoBehaviour
                     putCards.ForEach(putCard =>
                     {
                         // 移动到行里，位置是最靠左的牌的左边位置
-                        putCard.MoveToAndRotateTo(Cards.First().transform.position + Vector3.left * horizontalDistance, LinePosition.rotation, duration, () =>
+                        putCard.MoveToAndRotateTo(Cards.First().transform.position + Vector3.left * ScaleByMainUILength.GetScaledLength(horizontalDistance), LinePosition.rotation, duration, () =>
                         {
                             // 移动到位后增加计数器
                             movedCardNumbers++;
@@ -167,7 +167,7 @@ public class CenterAreaLineController : MonoBehaviour
                         Card putCard = putCards[i];
 
                         // 移动到行里，越靠前的越靠左
-                        putCard.MoveToAndRotateTo(Cards.First().transform.position - (Vector3.right * horizontalDistance * (putCards.Count - i)), LinePosition.rotation, duration, () =>
+                        putCard.MoveToAndRotateTo(Cards.First().transform.position - (Vector3.right * ScaleByMainUILength.GetScaledLength(horizontalDistance) * (putCards.Count - i)), LinePosition.rotation, duration, () =>
                           {
                             // 移动到位后增加计数器
                             movedCardNumbers++;
@@ -294,7 +294,7 @@ public class CenterAreaLineController : MonoBehaviour
         }
 
         // 判断按照卡牌距离显示是否会超过最大显示宽度
-        if ((Cards.Count - 1) * horizontalDistance > maxWidth)
+        if ((Cards.Count - 1) * ScaleByMainUILength.GetScaledLength(horizontalDistance) > ScaleByMainUILength.GetScaledLength(maxWidth))
         {
             // 超过了最大显示宽度
 
@@ -304,7 +304,7 @@ public class CenterAreaLineController : MonoBehaviour
                 Card card = Cards[i];
 
                 // 计算卡牌距离中心点的偏移
-                float offset = -(maxWidth / 2) + i * (maxWidth / (Cards.Count - 1));
+                float offset = -(ScaleByMainUILength.GetScaledLength(maxWidth) / 2) + i * (ScaleByMainUILength.GetScaledLength(maxWidth) / (Cards.Count - 1));
 
                 // 移动卡牌
                 card.MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
@@ -331,7 +331,7 @@ public class CenterAreaLineController : MonoBehaviour
                 for(int i = 0; i < Cards.Count; i++)
                 {
                     // 中间的牌的水平偏移是 0，越靠前的越向左，越靠后的越向右
-                    float offset = (i - centerCardIndex) * horizontalDistance;
+                    float offset = (i - centerCardIndex) * ScaleByMainUILength.GetScaledLength(horizontalDistance);
 
                     // 移动卡牌
                     Cards[i].MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);
@@ -348,22 +348,22 @@ public class CenterAreaLineController : MonoBehaviour
                 // 最靠近中心的牌作为中心位置牌，这个牌的索引就是中心位置的索引
                 int centerCardIndex = Cards.IndexOf(distanceSortedCards.First());
 
-                if ((0 - centerCardIndex) * horizontalDistance < -(maxWidth / 2))
+                if ((0 - centerCardIndex) * ScaleByMainUILength.GetScaledLength(horizontalDistance) < -(ScaleByMainUILength.GetScaledLength(maxWidth) / 2))
                 {
                     // 如果中心牌放在最中间，最左边的牌的显示位置会超出显示范围，需要调整中心位置牌的索引（超出范围的标准是这个牌的坐标在最大范围的一半之外，因为行的位置在显示范围的中心，前后超出一半就是超出范围）
 
                     // 计算出中心位置牌在中心的情况下单侧可以显示的牌的数量
-                    int singleSigeDisplayCardsNumber = (int)(maxWidth / 2 / horizontalDistance);
+                    int singleSigeDisplayCardsNumber = (int)(ScaleByMainUILength.GetScaledLength(maxWidth) / 2 / ScaleByMainUILength.GetScaledLength(horizontalDistance));
 
                     // 从最左侧牌的索引开始，走过可显示的牌的数量，就是要让最左侧的牌能够显示需要的中心位置的牌的索引
                     centerCardIndex = singleSigeDisplayCardsNumber - 0;
                 }
-                else if (((Cards.Count - 1) - centerCardIndex) * horizontalDistance > (maxWidth / 2))
+                else if (((Cards.Count - 1) - centerCardIndex) * ScaleByMainUILength.GetScaledLength(horizontalDistance) > (ScaleByMainUILength.GetScaledLength(maxWidth) / 2))
                 {
                     // 如果中心牌放在最中间，最右边的牌的显示位置会超出显示范围，需要调整中心位置牌的索引
 
                     // 计算出中心位置牌在中心的情况下单侧可以显示的牌的数量
-                    int singleSigeDisplayCardsNumber = (int)(maxWidth / 2 / horizontalDistance);
+                    int singleSigeDisplayCardsNumber = (int)(ScaleByMainUILength.GetScaledLength(maxWidth) / 2 / ScaleByMainUILength.GetScaledLength(horizontalDistance));
 
                     // 从最右侧牌的索引开始，走过可显示的牌的数量，就是要让最右侧的牌能够显示需要的中心位置的牌的索引
                     centerCardIndex = (Cards.Count - 1) - singleSigeDisplayCardsNumber;
@@ -373,7 +373,7 @@ public class CenterAreaLineController : MonoBehaviour
                 for (int i = 0; i < Cards.Count; i++)
                 {
                     // 中间的牌的水平偏移是 0，越靠前的越向左，越靠后的越向右
-                    float offset = (i - centerCardIndex) * horizontalDistance;
+                    float offset = (i - centerCardIndex) * ScaleByMainUILength.GetScaledLength(horizontalDistance);
 
                     // 移动卡牌
                     Cards[i].MoveToAndRotateTo(LinePosition.position + LinePosition.right * offset, linePosition.rotation, 0.2f);

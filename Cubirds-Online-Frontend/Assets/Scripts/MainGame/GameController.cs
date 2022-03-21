@@ -96,6 +96,24 @@ public class GameController : MonoBehaviour
     [SerializeField]
     [Header("游戏结束面板文本组件")]
     private Text endText;
+    /// <summary>
+    /// 放弃游戏按钮
+    /// </summary>
+    [SerializeField]
+    [Header("放弃游戏按钮")]
+    private GameObject giveUpButton;
+    /// <summary>
+    /// 确认放弃游戏按钮
+    /// </summary>
+    [SerializeField]
+    [Header("确认放弃游戏按钮")]
+    private GameObject confirmGiveUpButton;
+    /// <summary>
+    /// 退出游戏按钮
+    /// </summary>
+    [SerializeField]
+    [Header("退出游戏按钮")]
+    private GameObject quitButton;
 
     /// <summary>
     /// 卡牌预制
@@ -152,11 +170,22 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        // 订阅玩家超时事件
-        InputController.Instance.OnPlayerOutOfTimeEvent.AddListener(OnPlayerTimeOutEvent);
-
         // 开始游戏
         StartGame();
+    }
+
+    private void OnEnable()
+    {
+        // 订阅事件
+        InputController.Instance.OnPlayerOutOfTimeEvent.AddListener(OnPlayerTimeOutEvent);
+        InputController.Instance.OnPlayerGiveUpEvent.AddListener(OnPlayerGiveUpEvent);
+    }
+
+    private void OnDisable()
+    {
+        // 取消订阅事件
+        InputController.Instance.OnPlayerOutOfTimeEvent.RemoveListener(OnPlayerTimeOutEvent);
+        InputController.Instance.OnPlayerGiveUpEvent.RemoveListener(OnPlayerGiveUpEvent);
     }
 
     /// <summary>
@@ -208,6 +237,9 @@ public class GameController : MonoBehaviour
                             DeckController.GivePlayersStartGroup(() =>
                             {
                                 Debug.Log("发出初始鸟群卡回调执行");
+
+                                // 显示放弃游戏按钮
+                                giveUpButton.SetActive(true);
 
                                 // 进入打牌阶段，这是游戏循环流程的入口，之后转为游戏内部进行循环
                                 PlayBirdCards();
@@ -604,6 +636,9 @@ public class GameController : MonoBehaviour
 
         // 设置胜利文本
         endText.text = winTextBuilder.ToString();
+
+        // 发出游戏结束的请求
+        MatchAPI.GameEnd(GlobalModel.Instance.TableInfo.Id, success => { });
     }
 
     /// <summary>
@@ -709,6 +744,17 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 当收到玩家放弃游戏事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerGiveUpEvent(int playerId)
+    {
+        Debug.LogFormat("收到玩家 {0} 放弃游戏事件", playerId);
+
+        // 把玩家移除出游戏
+        StartCoroutine(RemovePlayerCoroutine(playerId));
+    }
+    /// <summary>
     /// 当有玩家超时时这个方法会被调用
     /// </summary>
     /// <param name="playerId"></param>
@@ -716,6 +762,7 @@ public class GameController : MonoBehaviour
     {
         Debug.LogFormat("收到玩家 {0} 超时事件", playerId);
 
+        // 把玩家移除出游戏
         StartCoroutine(RemovePlayerCoroutine(playerId));
     }
     /// <summary>
@@ -727,24 +774,41 @@ public class GameController : MonoBehaviour
     {
         Debug.LogFormat("将玩家 {0} 移除出游戏", playerId);
 
-        // 立刻停止所有主要的游戏协程，防止被踢出的玩家进一步操作
-        StopCoroutine();
-
-        // 如果是本机玩家超时还要关闭所有操作面板
-        if(playerId == GlobalModel.Instance.LocalPLayerId)
+        // 如果是本机玩家超时，关闭所有操作面板
+        if (playerId == GlobalModel.Instance.LocalPLayerId)
         {
             PlayCardsController.Instance.Close();
             MakeGroupController.Instance.Close();
             SelectDrawController.Instance.Close();
         }
 
+        // 判断是否是移除当前回合玩家
+        bool isRemoveCurrentTurnPlayer = playerId == CurrentTrunPlayre.Id;
+
+        // 如果是当前玩家的回合
+        if (isRemoveCurrentTurnPlayer)
+        {
+            // 立刻停止所有主要游戏协程，防止被踢的玩家进一步操作
+            StopCoroutine();
+
+            // 把回合交给下一位玩家
+            CurrentTrunPlayre = players.IndexOf(CurrentTrunPlayre) != players.Count - 1 ? CurrentTrunPlayre = players[players.IndexOf(CurrentTrunPlayre) + 1] : players[0];
+        }
+
         // 找到超时的玩家
         PlayerController timeOutPlayer = players.Find(p => p.Id == playerId);
 
-        // 播放玩家超时的进度条动画并等待动画播放完毕
-        bool removePlayerBarComplete = false;
-        PlayOutOfTimeTimer.Instance.ShowRemovePlayerBar(timeOutPlayer,3,()=> removePlayerBarComplete = true);
-        yield return new WaitUntil(() => removePlayerBarComplete);
+        // 从玩家列表里移除这个玩家
+        players.Remove(timeOutPlayer);
+
+        // 如果要移除当前回合玩家，播放玩家超时的进度条动画并等待动画播放完毕，这是为了防止玩家有正在进行的可能导致玩家的牌变化的操作（例如打牌后收牌）
+        if (isRemoveCurrentTurnPlayer)
+        {
+            Debug.Log("移除的是当前回合玩家");
+            bool removePlayerBarComplete = false;
+            PlayOutOfTimeTimer.Instance.ShowRemovePlayerBar(timeOutPlayer, 3, () => removePlayerBarComplete = true);
+            yield return new WaitUntil(() => removePlayerBarComplete);
+        }
 
         // 让超时的玩家丢弃所有的手牌和鸟群牌
         bool handCardsDiscarded = false;
@@ -755,23 +819,14 @@ public class GameController : MonoBehaviour
         // 等待玩家丢完牌
         yield return new WaitUntil(() => handCardsDiscarded && groupCardsDiscarded);
 
-        // 如果当前回合是超时玩家的回合，把回合交给下一位玩家
-        if(CurrentTrunPlayre == timeOutPlayer)
+        if (players.Count == 1)
         {
-            CurrentTrunPlayre = players.IndexOf(CurrentTrunPlayre) != players.Count - 1 ? CurrentTrunPlayre = players[players.IndexOf(CurrentTrunPlayre) + 1] : players[0];
-        }
-
-        // 从玩家列表里移除这个玩家
-        players.Remove(timeOutPlayer);
-
-        if(players.Count == 1)
-        {
-            // 只剩下一个玩家了，这个玩家直接获胜
+            // 如果只剩下一个玩家了，这个玩家直接获胜
             ShowWinInfo(new List<PlayerController>() { players[0] });
         }
-        else
+        else if (isRemoveCurrentTurnPlayer)
         {
-            // 剩下不止一个玩家，进入打牌阶段
+            // 如果移除的是当前回合的玩家，再次开始打牌阶段，让游戏继续进行
             PlayBirdCards();
         }
     }
@@ -830,5 +885,32 @@ public class GameController : MonoBehaviour
     public void ShowTip(string tip)
     {
         tipsText.text = tip;
+    }
+
+    /// <summary>
+    /// 当放弃游戏按钮点击时这个方法会被调用
+    /// </summary>
+    public void OnGiveUpButtonClick()
+    {
+        // 隐藏放弃按钮
+        giveUpButton.SetActive(false);
+
+        // 显示确认放弃按钮
+        confirmGiveUpButton.SetActive(true);
+    }
+
+    /// <summary>
+    /// 当确认放弃游戏按钮点击时这个方法会被调用
+    /// </summary>
+    public void OnConfirmGiveUpButtonClick()
+    {
+        // 发出玩家放弃事件
+        InputController.Instance.CallPlayerGiveUp(GlobalModel.Instance.LocalPLayerId);
+
+        // 隐藏确认放弃按钮
+        confirmGiveUpButton.SetActive(false);
+
+        // 显示退出游戏按钮
+        quitButton.SetActive(true);
     }
 }

@@ -15,6 +15,7 @@ TagManager:
   - ConnectToServer
   - TableCanvasController
   - CreateTableController
+  - ScaleByMainUILength
   layers:
   - Default
   - TransparentFX

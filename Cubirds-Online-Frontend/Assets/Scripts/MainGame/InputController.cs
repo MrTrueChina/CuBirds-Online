@@ -64,6 +64,10 @@ public class InputController : MonoBehaviour
     /// 玩家超时事件，参数是 玩家id
     /// </summary>
     public UnityEvent<int> OnPlayerOutOfTimeEvent { get; } = new UnityEvent<int>();
+    /// <summary>
+    /// 玩家放弃游戏事件，参数是 玩家id
+    /// </summary>
+    public UnityEvent<int> OnPlayerGiveUpEvent { get; } = new UnityEvent<int>();
 
     private void OnEnable()
     {
@@ -74,6 +78,7 @@ public class InputController : MonoBehaviour
         PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_DRAW_CARDS, OnPlayerDrawCards);
         PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_DONT_DRAW_CARDS, OnPlayerDontDrawCards);
         PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_OUT_OF_TIME, OnPlayerOutOfTime);
+        PhotonEngine.Subscribe(EventCode.LOCK_STEP_PLAYER_GIVE_UP, OnPlayerGiveUp);
     }
 
     private void OnDisable()
@@ -85,6 +90,7 @@ public class InputController : MonoBehaviour
         PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_DRAW_CARDS, OnPlayerDrawCards);
         PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_DONT_DRAW_CARDS, OnPlayerDontDrawCards);
         PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_OUT_OF_TIME, OnPlayerOutOfTime);
+        PhotonEngine.Unsubscribe(EventCode.LOCK_STEP_PLAYER_GIVE_UP, OnPlayerGiveUp);
     }
 
     /// <summary>
@@ -268,5 +274,32 @@ public class InputController : MonoBehaviour
 
         // 转发玩家超时事件
         OnPlayerOutOfTimeEvent.Invoke(timeOutPlayerId);
+    }
+
+    /// <summary>
+    /// 通知输入控制器有玩家放弃游戏
+    /// </summary>
+    /// <param name="playerId"></param>
+    public void CallPlayerGiveUp(int playerId)
+    {
+        Debug.LogFormat("玩家 {0} 放弃游戏", playerId);
+
+        // 转发玩家超时事件
+        LockstepAPI.LockStepPlayerGiveUp();
+    }
+
+    /// <summary>
+    /// 收到服务器的玩家放弃游戏事件时这个方法会被调用
+    /// </summary>
+    /// <param name="eventData"></param>
+    private void OnPlayerGiveUp(EventData eventData)
+    {
+        // 获取参数
+        int playerId = eventData.Parameters.Get<int>(EventParamaterKey.PLAYER_ID);
+
+        Debug.LogFormat("玩家 {0} 放弃游戏", playerId);
+
+        // 转发玩家超时事件
+        OnPlayerGiveUpEvent.Invoke(playerId);
     }
 }

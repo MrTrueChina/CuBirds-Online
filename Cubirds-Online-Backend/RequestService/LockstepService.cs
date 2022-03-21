@@ -315,5 +315,57 @@ namespace CubirdsOnline.Backend.Service
             // 这个玩家改为已经从游戏中移除
             timeOutPlayer.IsRemoved = true;
         }
+
+        /// <summary>
+        /// 同步玩家放弃游戏操作
+        /// </summary>
+        /// <param name="clientPeer"></param>
+        /// <param name="tableId"></param>
+        /// <param name="sendParameters"></param>
+        public static void LockStepPlayerGiveUp(CubirdClientPeer clientPeer, int tableId, SendParameters sendParameters)
+        {
+            log.InfoFormat("客户端({0})在 {1} 桌放弃游戏", clientPeer.PlayerId, tableId);
+
+            // 获取桌子
+            Table table = ServerModel.Instance.Tables.Find(t => t.Id == tableId);
+
+            // 没有桌子或者还没开局，不转发
+            if (table == null || !table.Playing)
+            {
+                log.WarnFormat("桌子 {0} 还没开局", table.Id);
+                return;
+            }
+
+            // 找出这个玩家，同时这个玩家不能是已被移除的状态
+            PlayerInfo playerInfo = table.Players.Find(p => p.Peer.PlayerId == clientPeer.PlayerId && !p.IsRemoved);
+
+            // 如果这个桌子上没有发出请求的玩家，不转发
+            if (playerInfo == null)
+            {
+                log.WarnFormat("桌子 {0} 上没有发出请求的玩家 {1}", table.Id, clientPeer.PlayerId);
+                return;
+            }
+
+            // 准备事件
+            EventData eventData = new EventData()
+            {
+                // 事件码
+                Code = (byte)EventCode.LOCK_STEP_PLAYER_GIVE_UP,
+                // 参数
+                Parameters = new Dictionary<byte, object>() {
+                    // 玩家 ID
+                    { (byte)EventParamaterKey.PLAYER_ID, clientPeer.PlayerId },
+                },
+            };
+
+            // 给桌子上的所有玩家转发消息
+            table.Players.ForEach(p =>
+            {
+                p.Peer.SendEvent(eventData, sendParameters);
+            });
+
+            // 这个玩家改为已经从游戏中移除
+            playerInfo.IsRemoved = true;
+        }
     }
 }
