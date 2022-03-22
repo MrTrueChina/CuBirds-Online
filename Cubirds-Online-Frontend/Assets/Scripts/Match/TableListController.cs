@@ -41,6 +41,12 @@ public class TableListController : MonoBehaviour
     [SerializeField]
     [Header("桌子列表面板物体")]
     private GameObject tableListObject;
+    /// <summary>
+    /// 规则面板物体
+    /// </summary>
+    [SerializeField]
+    [Header("规则面板物体")]
+    private GameObject ruleObject;
 
     /// <summary>
     /// 显示桌子信息的父级
@@ -95,8 +101,35 @@ public class TableListController : MonoBehaviour
         // 关闭面板
         Close();
 
+        // 断开连接
+        PhotonEngine.Instance.Disconnect();
+
         // 打开连接面板
         ConnectToServer.Instance.Show();
+    }
+
+    /// <summary>
+    /// 显示游戏规则
+    /// </summary>
+    public void ShowRule()
+    {
+        // 关闭面板
+        Close();
+
+        // 打开游戏规则面板
+        ruleObject.SetActive(true);
+    }
+
+    /// <summary>
+    /// 关闭游戏规则
+    /// </summary>
+    public void CloseRule()
+    {
+        // 关闭游戏规则面板
+        ruleObject.SetActive(false);
+
+        // 显示面板
+        Show();
     }
 
     /// <summary>

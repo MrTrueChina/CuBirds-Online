@@ -75,6 +75,15 @@ public class ConnectToServer : MonoBehaviour
     /// </summary>
     private bool connectStarted = false;
 
+    private void OnEnable()
+    {
+        // 在激活时如果已经连接到服务器则直接打开桌子列表面板，这是让玩家可以在玩完一局后不用重新连接
+        if(PhotonEngine.Peer != null && PhotonEngine.Peer.PeerState == PeerStateValue.Connected)
+        {
+            ToTablesCanvas();
+        }
+    }
+
     /// <summary>
     /// 使用 IP:端口 进行连接
     /// </summary>
@@ -201,6 +210,7 @@ public class ConnectToServer : MonoBehaviour
         connectCanvas.SetActive(false);
 
         // 清空输入框
+        nameInputField.text = "";
         ipInputField.text = "";
         netInputField.text = "";
 

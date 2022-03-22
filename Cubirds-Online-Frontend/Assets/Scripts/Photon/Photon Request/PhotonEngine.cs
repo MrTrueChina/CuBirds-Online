@@ -80,6 +80,17 @@ public partial class PhotonEngine : MonoBehaviour, IPhotonPeerListener
         CheckRequestTimeout();
     }
 
+    public void Disconnect()
+    {
+        Debug.Log("断开连接");
+
+        // 让客户端断开连接
+        Peer.Disconnect();
+
+        // 移除客户端
+        Peer = null;
+    }
+
     private void OnDestroy()
     {
         // 如果 Photon 客户端存在，并且已连接或正在连接，不确定正在连接是不是也需要处理但为了保险加上了
