@@ -4,6 +4,9 @@
 2. Cubirds-Online-Frontend，Unity 的客户端
 3. Cubirds-Online-Backend，Photon5 的服务端
 
+## Cubirds-Online-Common
+前后端的通用数据，不需要引用包或其他项目，也不需要进行修改。
+
 ## Cubirds-Online-Frontend
 Unity 客户端
 
@@ -46,6 +49,3 @@ Photon5 服务端
 ### 发布时需要的步骤
 1. 找到 PhotonServer.config 文件，这个不是后台需要的文件，是给 Photon5 的配置，需要添加到 Photon5 的配置里
 2. 把编译出来的文件放进 Photon5 的部署文件夹里
-
-## Cubirds-Online-Common
-前后端的通用数据，不需要引用包或其他项目，也不需要进行修改。
