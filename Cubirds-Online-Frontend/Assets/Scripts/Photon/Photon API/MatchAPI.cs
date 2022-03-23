@@ -40,14 +40,16 @@ public static class MatchAPI
     /// 开一个新的桌子
     /// </summary>
     /// <param name="tableName"></param>
+    /// <param name="password"></param>
     /// <param name="handler"></param>
     /// <param name="timeoutHandler"></param>
-    public static void CreateTable(string tableName, Action<TableInfoDTO> handler, Action timeoutHandler = null)
+    public static void CreateTable(string tableName, string password, Action<TableInfoDTO> handler, Action timeoutHandler = null)
     {
         PhotonEngine.SendOperation(
             RequestCode.CREATE_TABLE,
             new Dictionary<byte, object>() {
                 { (byte)RequestParamaterKey.TABLE_NAME, tableName },
+                { (byte)RequestParamaterKey.TABLE_PASSWORD, password },
             },
             SendOptions.SendReliable,
             response => handler.Invoke(new TableInfoDTO(response.Parameters.Get<object[]>(ResponseParamaterKey.TABLE_INFO))),

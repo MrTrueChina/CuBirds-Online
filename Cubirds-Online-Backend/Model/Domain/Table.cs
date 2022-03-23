@@ -23,6 +23,16 @@ namespace CubirdsOnline.Backend
         public string Name { get; set; }
 
         /// <summary>
+        /// 是否有密码
+        /// </summary>
+        public bool HavePassword { get; set; }
+        
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         /// 这一桌已经开局了
         /// </summary>
         public bool Playing { get; set; } = false;
@@ -42,12 +52,17 @@ namespace CubirdsOnline.Backend
         /// </summary>
         /// <param name="id"></param>
         /// <param name="name"></param>
+        /// <param name="password"></param>
         /// <param name="masterPeer"></param>
-        public Table(int id, string name, CubirdClientPeer masterPeer)
+        public Table(int id, string name, string password, CubirdClientPeer masterPeer)
         {
             // 保存数据
             Id = id;
             Name = name;
+            Password = password;
+
+            // 根据是否填写了密码设置房间是否有密码
+            HavePassword = !(Password == null || Password.Length == 0);
 
             // 新开的桌子当然没有开局
             Playing = false;
@@ -72,6 +87,9 @@ namespace CubirdsOnline.Backend
             {
                 Id = Id,
                 Name = Name,
+                HavePassword = HavePassword,
+                // 密码进行脱敏处理，不进行传输
+                Password = "",
                 Playing = Playing,
                 PlayerIds = Players.Select(p => p.Peer.PlayerId).ToList().ToArray(),
                 MasterId = Master.Peer.PlayerId,

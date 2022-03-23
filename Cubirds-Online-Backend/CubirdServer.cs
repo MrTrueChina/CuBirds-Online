@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using CubirdsOnline.Backend.Service;
 using CubirdsOnline.Common;
 using ExitGames.Logging;
@@ -70,6 +73,32 @@ namespace CubirdsOnline.Backend
             ServerInstance = this;
 
             log.Info("主类初始化完毕");
+
+            // 输出本机 IP
+            string ipAddress = GetLocalIPAddress();
+            for(int i = 0;i < 10; i++)
+            {
+                log.InfoFormat("本机 IP 地址是 {0}", ipAddress);
+            }
+        }
+
+        /// <summary>
+        /// 获取本机 IP 底子
+        /// </summary>
+        /// <returns></returns>
+        public static string GetLocalIPAddress()
+        {
+            IPHostEntry host = Dns.GetHostEntry(Dns.GetHostName());
+            
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+
+            return "";
         }
 
         /// <summary>

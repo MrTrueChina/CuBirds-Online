@@ -47,5 +47,9 @@ namespace CubirdsOnline.Common
         /// 超时的玩家的 ID
         /// </summary>
         TIME_OUT_PLAYER_ID = 8,
+        /// <summary>
+        /// 桌子密码
+        /// </summary>
+        TABLE_PASSWORD = 9,
     }
 }

@@ -22,6 +22,16 @@ namespace CubirdsOnline.Common
         public string Name { get; set; }
 
         /// <summary>
+        /// 是否有密码
+        /// </summary>
+        public bool HavePassword { get; set; }
+
+        /// <summary>
+        /// 密码
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
         /// 这一桌已经开局了
         /// </summary>
         public bool Playing { get; set; }
@@ -49,9 +59,11 @@ namespace CubirdsOnline.Common
         {
             Id = (int)objectArray[0];
             Name = (string)objectArray[1];
-            Playing = (bool)objectArray[2];
-            PlayerIds = (int[])objectArray[3];
-            MasterId = (int)objectArray[4];
+            HavePassword = (bool)objectArray[2];
+            Password = (string)objectArray[3];
+            Playing = (bool)objectArray[4];
+            PlayerIds = (int[])objectArray[5];
+            MasterId = (int)objectArray[6];
         }
 
         /// <summary>
@@ -60,7 +72,7 @@ namespace CubirdsOnline.Common
         /// <returns></returns>
         public object[] ToObjectArray()
         {
-            return new object[] { Id, Name, Playing, PlayerIds, MasterId };
+            return new object[] { Id, Name, HavePassword, Password, Playing, PlayerIds, MasterId };
         }
     }
 }

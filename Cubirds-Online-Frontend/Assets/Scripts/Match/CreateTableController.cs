@@ -46,6 +46,12 @@ public class CreateTableController : MonoBehaviour
     [SerializeField]
     [Header("桌子名称输入框")]
     private InputField tableNameInput;
+    /// <summary>
+    /// 密码输入框
+    /// </summary>
+    [SerializeField]
+    [Header("密码输入框")]
+    private InputField passwordInput;
 
     /// <summary>
     /// 显示面板
@@ -61,7 +67,7 @@ public class CreateTableController : MonoBehaviour
     /// </summary>
     public void CreateTable()
     {
-        MatchAPI.CreateTable(tableNameInput.text, newTableInfo =>
+        MatchAPI.CreateTable(tableNameInput.text, passwordInput.text, newTableInfo =>
         {
             Debug.LogFormat("开出新桌子 {0} {1}", newTableInfo.Id, newTableInfo.Name);
 

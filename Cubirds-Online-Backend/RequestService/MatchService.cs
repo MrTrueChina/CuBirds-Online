@@ -48,8 +48,9 @@ namespace CubirdsOnline.Backend.Service
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
         /// <param name="tableName"></param>
+        /// <param name="password"></param>
         /// <returns></returns>
-        public static Table CreateTable(SendParameters sendParameters, CubirdClientPeer clientPeer, string tableName)
+        public static Table CreateTable(SendParameters sendParameters, CubirdClientPeer clientPeer, string tableName, string password)
         {
             log.InfoFormat("客户端({0})开新桌子 {1}", clientPeer.PlayerId, tableName);
 
@@ -58,7 +59,7 @@ namespace CubirdsOnline.Backend.Service
             int tableId = ServerModel.Instance.TableIdCounter++;
 
             // 创建桌子
-            Table newTable = new Table(tableId, tableName, clientPeer);
+            Table newTable = new Table(tableId, tableName, password, clientPeer);
 
             // 把桌子加入到列表里
             ServerModel.Instance.Tables.Add(newTable);

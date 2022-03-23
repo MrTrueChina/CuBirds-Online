@@ -55,13 +55,14 @@ namespace CubirdsOnline.Backend.Controller
         [RequestHandler(RequestCode.CREATE_TABLE)]
         public static OperationResponse CreateTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
         {
-            // 获取桌子名称
+            // 获取参数
             string tableName = operationRequest.Parameters.Get<string>(RequestParamaterKey.TABLE_NAME);
+            string tablePassword = operationRequest.Parameters.Get<string>(RequestParamaterKey.TABLE_PASSWORD);
 
             log.InfoFormat("客户端({0})开新桌子 {1}", clientPeer.PlayerId, tableName);
 
             // 交给 Service 处理
-            Table newTable = MatchService.CreateTable(sendParameters, clientPeer, tableName);
+            Table newTable = MatchService.CreateTable(sendParameters, clientPeer, tableName, tablePassword);
 
             // 返回
             return new OperationResponse()
