@@ -622,7 +622,7 @@ public class GameController : MonoBehaviour
         // 把并列第一的玩家们加进去
         winPlayers.ForEach(player =>
         {
-            winTextBuilder.Append(player.Id + "、");
+            winTextBuilder.Append(player.Name + "、");
         });
 
         // 移除最后面的顿号
