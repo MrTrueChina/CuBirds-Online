@@ -1,0 +1,14 @@
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\app.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\CubirdServer.xml.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\log4net.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\packages.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\PhotonServer.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\Cubirds-Online-Backend.dll.config
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\Cubirds-Online-Backend.xml
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\Cubirds-Online-Backend.dll
+D:\Program Files\photon-server\deploy\Cu-Birds-Online\bin\Cubirds-Online-Backend.pdb
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Backend\obj\Debug\Cubirds-Online-Backend.csprojAssemblyReference.cache
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Backend\obj\Debug\Cubirds-Online-Backend.csproj.CoreCompileInputs.cache
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Backend\obj\Debug\Cubirds-Online-Backend.csproj.CopyComplete
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Backend\obj\Debug\Cubirds-Online-Backend.dll
+D:\Projects\Various\CuBirds-Online\Cubirds-Online-Backend\obj\Debug\Cubirds-Online-Backend.pdb
