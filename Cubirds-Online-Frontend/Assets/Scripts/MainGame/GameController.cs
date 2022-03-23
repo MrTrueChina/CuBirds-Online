@@ -103,12 +103,6 @@ public class GameController : MonoBehaviour
     [Header("放弃游戏按钮")]
     private GameObject giveUpButton;
     /// <summary>
-    /// 确认放弃游戏按钮
-    /// </summary>
-    [SerializeField]
-    [Header("确认放弃游戏按钮")]
-    private GameObject confirmGiveUpButton;
-    /// <summary>
     /// 退出游戏按钮
     /// </summary>
     [SerializeField]
@@ -753,6 +747,16 @@ public class GameController : MonoBehaviour
 
         // 把玩家移除出游戏
         StartCoroutine(RemovePlayerCoroutine(playerId));
+
+        // 如果是本机玩家放弃游戏
+        if(playerId == GlobalModel.Instance.LocalPLayerId)
+        {
+            // 隐藏放弃游戏按钮
+            giveUpButton.SetActive(false);
+
+            // 显示退出游戏按钮
+            quitButton.SetActive(true);
+        }
     }
     /// <summary>
     /// 当有玩家超时时这个方法会被调用
@@ -892,25 +896,10 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void OnGiveUpButtonClick()
     {
-        // 隐藏放弃按钮
-        giveUpButton.SetActive(false);
-
-        // 显示确认放弃按钮
-        confirmGiveUpButton.SetActive(true);
-    }
-
-    /// <summary>
-    /// 当确认放弃游戏按钮点击时这个方法会被调用
-    /// </summary>
-    public void OnConfirmGiveUpButtonClick()
-    {
-        // 发出玩家放弃事件
-        InputController.Instance.CallPlayerGiveUp(GlobalModel.Instance.LocalPLayerId);
-
-        // 隐藏确认放弃按钮
-        confirmGiveUpButton.SetActive(false);
-
-        // 显示退出游戏按钮
-        quitButton.SetActive(true);
+        ConfirmationPanel.Show("确认放弃游戏", () =>
+        {
+            // 发出玩家放弃事件
+            InputController.Instance.CallPlayerGiveUp(GlobalModel.Instance.LocalPLayerId);
+        });
     }
 }

@@ -108,6 +108,13 @@ public class ConnectToServer : MonoBehaviour
     /// <param name="address"></param>
     private void StartConnect(string address)
     {
+        // 没有写名字则发出提示
+        if(nameInputField.text == null || nameInputField.text.Length == 0)
+        {
+            InfoPanel.ShowInfo("请填写名称", "为了在游戏中可以区分您和其他人需要一个名称");
+            return;
+        }
+
         PhotonEngine.Instance.StartConnect(address, "Cu-Birds-Online");
 
         // 记录开始连接

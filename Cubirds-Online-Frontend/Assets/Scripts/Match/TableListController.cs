@@ -235,8 +235,27 @@ public class TableListController : MonoBehaviour
     {
         Debug.LogFormat("加入桌子 {0} {1}", tableInfo.Name, tableInfo.Id);
 
+        if (tableInfo.HavePassword)
+        {
+            // 桌子有密码，先输入密码之后发出请求
+            TextInputPanel.Show("请输入密码", password => SendJoinTableRequest(tableInfo.Id, password));
+        }
+        else
+        {
+            // 桌子没有密码，密码可以直接填空，发出请求
+            SendJoinTableRequest(tableInfo.Id, "");
+        }
+    }
+
+    /// <summary>
+    /// 发出加入桌子请求
+    /// </summary>
+    /// <param name="tableId"></param>
+    /// <param name="password"></param>
+    private void SendJoinTableRequest(int tableId, string password)
+    {
         // 发出加入桌子请求
-        MatchAPI.JoinTable(tableInfo.Id, paramater =>
+        MatchAPI.JoinTable(tableId, password, paramater =>
         {
             if (paramater.Get<bool>(ResponseParamaterKey.SUCCESS))
             {
@@ -256,7 +275,7 @@ public class TableListController : MonoBehaviour
                 // 加入失败
 
                 // 显示加入失败原因
-                Debug.Log(paramater.Get<string>(ResponseParamaterKey.ERROR_MESSAGE_STRING));
+                InfoPanel.ShowInfo("加入失败", paramater.Get<string>(ResponseParamaterKey.ERROR_MESSAGE_STRING));
             }
         });
     }

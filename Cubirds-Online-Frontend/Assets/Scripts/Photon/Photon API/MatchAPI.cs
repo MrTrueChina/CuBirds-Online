@@ -60,15 +60,18 @@ public static class MatchAPI
     /// 加入桌子
     /// </summary>
     /// <param name="tableId"></param>
+    /// <param name="password"></param>
     /// <param name="handler"></param>
     /// <param name="timeoutHandler"></param>
-    public static void JoinTable(int tableId, Action<ParameterDictionary> handler, Action timeoutHandler = null)
+    public static void JoinTable(int tableId, string password, Action<ParameterDictionary> handler, Action timeoutHandler = null)
     {
         PhotonEngine.SendOperation(
             RequestCode.JOIN_TABLE,
             new Dictionary<byte, object>() {
                 // 桌子 ID
                 { (byte)RequestParamaterKey.TABLE_ID, tableId },
+                // 密码
+                { (byte)RequestParamaterKey.TABLE_PASSWORD, password },
             },
             SendOptions.SendReliable,
             response => {
