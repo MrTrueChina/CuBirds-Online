@@ -86,8 +86,9 @@ namespace CubirdsOnline.Backend.Controller
         [RequestHandler(RequestCode.JOIN_TABLE)]
         public static OperationResponse JoinTable(OperationRequest operationRequest, SendParameters sendParameters, CubirdClientPeer clientPeer)
         {
-            // 获取桌子 ID
+            // 获取参数
             int tableId = operationRequest.Parameters.Get<int>(RequestParamaterKey.TABLE_ID);
+            string password = operationRequest.Parameters.Get<string>(RequestParamaterKey.TABLE_PASSWORD);
 
             log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, tableId);
 
@@ -142,8 +143,24 @@ namespace CubirdsOnline.Backend.Controller
                 };
             }
 
+            // 如果桌子有密码而且密码不对，不能加入
+            if(table.HavePassword && !Equals(table.Password, password))
+            {
+                return new OperationResponse()
+                {
+                    Parameters = new Dictionary<byte, object>() {
+                        // 加入失败信息
+                        { (byte)ResponseParamaterKey.SUCCESS, false },
+                        // 提示文本
+                        { (byte)ResponseParamaterKey.ERROR_MESSAGE_STRING, "密码错误" },
+                    },
+                    // 设为请求成功
+                    ReturnCode = (short)ReturnCode.OK
+                };
+            }
+
             // 交给 Service 处理
-            MatchService.JoinTable(sendParameters, clientPeer, table);
+            MatchService.JoinTable(sendParameters, clientPeer, table, password);
 
             // 返回
             return new OperationResponse()

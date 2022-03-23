@@ -92,13 +92,14 @@ namespace CubirdsOnline.Backend.Service
         /// <param name="sendParameters"></param>
         /// <param name="clientPeer"></param>
         /// <param name="table"></param>
+        /// <param name="password"></param>
         /// <returns>如果玩家成功加入桌子则返回 true，否则返回 false</returns>
-        public static bool JoinTable(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table)
+        public static bool JoinTable(SendParameters sendParameters, CubirdClientPeer clientPeer, Table table, string password)
         {
             log.InfoFormat("客户端({0})加入桌子 {1}", clientPeer.PlayerId, table.Id);
 
-            // 如果这个桌子不存在（解散了），或者桌子已经有五个人或者已经开局了，玩家不能加入这个桌子
-            if (table == null || table.Players.Count >= 5 || table.Playing)
+            // 如果这个桌子不存在（解散了），或者桌子已经有五个人，或者已经开局了，或者桌子有密码而且密码错误，玩家不能加入这个桌子
+            if (table == null || table.Players.Count >= 5 || table.Playing || (table.HavePassword && !Equals(table.Password, password)))
             {
                 return false;
             }
