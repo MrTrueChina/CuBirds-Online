@@ -11,8 +11,12 @@
 | 后遗症 | 在什么病情程度可能出现 | 消息来源 | 特殊备注 |
 | ---- | ---- | ---- | ---- |
 | 味觉和嗅觉丧失 | 轻症就会出现 | 来自英国新闻的报道和沙雕群不幸感染的群友口述 | 能恢复，但会恢复偏，群友恢复后吃什么都有点酸味，有矫正训练但群友复阳了还没去矫正 |
-| 脑雾（注意力涣散、思维速度和集中力下降，仿佛脑子里有一团雾） | 轻症就会出现 | 来自英国新闻报道和上面那条的沙雕群友的口述 | 应该是能恢复的 |
+| 脑雾（注意力涣散、思维速度和集中力下降，仿佛脑子里有一团雾） | 轻症就会出现 | 来自英国新闻报道和上面那条的沙雕群友的口述 | 可以自然恢复，是否可以完全恢复到正常状态还不确定 |
 | 阳痿 | 不知道什么程度出现 | 来自欧洲多国新闻 | |
 | 脱髓鞘（一种神经系统的病症，可能导致神经性的四肢无力等症状） | 轻症就会出现 | 来自[耶鲁大学的一位教授的一个研究](https://www.biorxiv.org/content/10.1101/2022.01.07.475453v1#:~:text=Follow%20this%20preprint-,Mild%20respiratory%20SARS%2DCoV%2D2%20infection%20can%20cause%20multi%2D,myelin%20loss%20in%20the%20brain)，教授名字是日文读音我也不知道对应的是哪些字 | 目前没有什么好的治疗方案 |
 | 提高心血管疾病发病率（约 70%） | 不知道什么程度出现 | 来自[ScienceInsider的一篇文章](https://www.science.org/content/article/covid-19-takes-serious-toll-heart-health-full-year-after-recovery#:~:text=COVID%2D19%20boosted%20the%20risk,embolism%2C%20and%20deep%20vein%20thrombosis.)，ScienceInsider 好像是 Scinece 的一个版面 | 是乘不是加，假设本来是 1%，这个后遗症会提升到 1.7% |
-| 脑萎缩 | 不知道什么程度出现 | 这个来源可就厉害了！[《自然》的一篇文章](https://www.nature.com/articles/s41586-022-04569-5#:~:text=There%20is%20strong%20evidence%20for,mechanisms%20contributing%20to%20brain%20pathology.) | |
+| 脑萎缩 | 不知道什么程度出现（可能是轻症，见后文） | 这个来源可就厉害了！[《自然》的一篇文章](https://www.nature.com/articles/s41586-022-04569-5#:~:text=There%20is%20strong%20evidence%20for,mechanisms%20contributing%20to%20brain%20pathology.) | |
+
+还有一篇论文比较特别：[对长期新冠后遗症患者的自主神经功能障碍的调查](https://www.medrxiv.org/content/10.1101/2022.04.25.22274300v1)
+
+这篇论文表明新冠即便在轻症状态下也会导致神经性损伤（如表格中的脑雾、四肢无力、站久了头晕等症状），患者自身的健康状况越差后遗症也越有可能严重，肥胖人群相对更可能产生更严重的后遗症。
