@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ConnectToServerController : MonoBehaviour
 {
@@ -249,29 +250,29 @@ public class ConnectToServerController : MonoBehaviour
                 // 显示提示
                 InfoDialogController.Instance.Show("连接成功", 1);
 
-                //// 获取本机玩家 ID
-                //PlayerAPI.GetLocalPlayerId(localPlayerId =>
-                //{
-                //    Debug.LogFormat("获取本地玩家 ID = {0}", localPlayerId);
+                // 获取本机玩家 ID
+                PlayerAPI.GetLocalPlayerId(localPlayerId =>
+                {
+                    Debug.LogFormat("获取本地玩家 ID = {0}", localPlayerId);
 
-                //    // 保存本机玩家 ID
-                //    GlobalModel.Instance.LocalPLayerId = localPlayerId;
+                    // 保存本机玩家 ID
+                    GlobalModel.Instance.LocalPLayerId = localPlayerId;
 
-                //    // 设置玩家名称
-                //    PlayerAPI.SetPLayerName(nameInputField.text, success =>
-                //    {
-                //        // 切换到桌子列表面板
-                //        ToTablesCanvas();
-                //    }, () =>
-                //    {
-                //        // 连接超时，发出信息
-                //        connectInfoText.text = "设置名称失败，请尝试重连";
-                //    });
-                //}, () =>
-                //{
-                //    // 连接超时，发出信息
-                //    connectInfoText.text = "获取 ID 失败，请尝试重连";
-                //});
+                    // 设置玩家名称
+                    PlayerAPI.SetPLayerName(nameInputField.text, success =>
+                    {
+                        // 切换到桌子列表面板
+                        SceneManager.LoadScene("Match Scene");
+                    }, () =>
+                    {
+                        // 连接超时，发出信息
+                        InfoDialogController.Instance.Show("设置名称失败，请尝试重连", 2);
+                    });
+                }, () =>
+                {
+                    // 连接超时，发出信息
+                    InfoDialogController.Instance.Show("获取 ID 失败，请尝试重连", 2);
+                });
 
                 // 改为没有开始连接状态
                 connectStarted = false;

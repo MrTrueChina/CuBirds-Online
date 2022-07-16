@@ -4,6 +4,7 @@ using CubirdsOnline.Common;
 using ExitGames.Client.Photon;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 桌子列表面板的控制器
@@ -94,18 +95,15 @@ public class TableListController : MonoBehaviour
     }
 
     /// <summary>
-    /// 回到连接面板
+    /// 回到连接场景
     /// </summary>
     public void BackToConnect()
     {
-        // 关闭面板
-        Close();
-
         // 断开连接
         PhotonEngine.Instance.Disconnect();
 
-        // 打开连接面板
-        ConnectToServer.Instance.Show();
+        // 打开连接场景
+        SceneManager.LoadScene("Open Scene");
     }
 
     /// <summary>

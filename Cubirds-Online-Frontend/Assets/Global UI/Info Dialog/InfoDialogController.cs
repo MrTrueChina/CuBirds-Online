@@ -29,7 +29,7 @@ public class InfoDialogController : MonoBehaviour
                 if(instance == null)
                 {
                     // 从 Resources 加载预制
-                    GameObject prefab = Resources.Load<GameObject>("Info Dialog");
+                    GameObject prefab = Resources.Load<GameObject>("Global UI/Info Dialog");
 
                     // 实例化并保存组件
                     instance = Instantiate(prefab).GetComponentInChildren<InfoDialogController>();
