@@ -10,6 +10,7 @@ using UnityEngine.UI;
 /// </summary>
 public class ConnectToServer : MonoBehaviour
 {
+    #region 单例部分
     /// <summary>
     /// 实例
     /// </summary>
@@ -34,6 +35,20 @@ public class ConnectToServer : MonoBehaviour
         }
     }
     private static ConnectToServer instance;
+    #endregion
+
+    /// <summary>
+    /// 服务器按钮容器
+    /// </summary>
+    [SerializeField]
+    [Header("服务器按钮容器")]
+    private Transform serverButtonContentTransform;
+    /// <summary>
+    /// 服务器按钮预制
+    /// </summary>
+    [SerializeField]
+    [Header("服务器按钮预制")]
+    private GameObject serverButtonPrefab;
 
     /// <summary>
     /// 连接画布
@@ -106,12 +121,12 @@ public class ConnectToServer : MonoBehaviour
     /// 进行连接
     /// </summary>
     /// <param name="address"></param>
-    private void StartConnect(string address)
+    public void StartConnect(string address)
     {
         // 没有写名字则发出提示
         if(nameInputField.text == null || nameInputField.text.Length == 0)
         {
-            InfoPanel.ShowInfo("请填写名称", "为了在游戏中可以区分您和其他人需要一个名称");
+            InfoDialogController.Instance.Show("请填写名称", 1);
             return;
         }
 

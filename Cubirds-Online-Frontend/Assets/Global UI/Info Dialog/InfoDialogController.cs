@@ -4,6 +4,7 @@ using UnityEngine;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins;
+using UnityEngine.UI;
 
 /// <summary>
 /// 显示信息的对话框的控制器
@@ -31,7 +32,7 @@ public class InfoDialogController : MonoBehaviour
                     GameObject prefab = Resources.Load<GameObject>("Info Dialog");
 
                     // 实例化并保存组件
-                    instance = Instantiate(prefab).GetComponent<InfoDialogController>();
+                    instance = Instantiate(prefab).GetComponentInChildren<InfoDialogController>();
 
                     // 禁用实例，默认不显示
                     instance.gameObject.SetActive(false);
@@ -46,6 +47,13 @@ public class InfoDialogController : MonoBehaviour
 
     [SerializeField]
     private RectTransform rectTransform;
+
+    /// <summary>
+    /// 文本组件
+    /// </summary>
+    [SerializeField]
+    [Header("文本组件")]
+    private Text text;
 
     /// <summary>
     /// 显示信息，在指定时间后关闭
@@ -81,11 +89,14 @@ public class InfoDialogController : MonoBehaviour
     /// <param name="info"></param>
     public void Show(string info)
     {
-        // 激活实例
-        gameObject.SetActive(true);
+        // 设置显示的文本
+        text.text = info;
 
         // 首先把缩放调到 0，在视觉上隐藏起来
         rectTransform.localScale = new Vector3(1, 0, 1);
+
+        // 激活实例
+        rectTransform.gameObject.SetActive(true);
 
         // 渐变显示出来
         rectTransform.DOScaleY(1, 0.1f);
@@ -99,6 +110,6 @@ public class InfoDialogController : MonoBehaviour
         // 渐变关闭
         rectTransform.DOScaleY(0, 0.1f)
             // 完成后禁用实例
-            .onComplete = () => { gameObject.SetActive(false); };
+            .onComplete = () => { rectTransform.gameObject.SetActive(false); };
     }
 }

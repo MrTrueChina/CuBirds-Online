@@ -275,7 +275,7 @@ public class TableListController : MonoBehaviour
                 // 加入失败
 
                 // 显示加入失败原因
-                InfoPanel.ShowInfo("加入失败", paramater.Get<string>(ResponseParamaterKey.ERROR_MESSAGE_STRING));
+                InfoDialogController.Instance.Show("加入失败：" + paramater.Get<string>(ResponseParamaterKey.ERROR_MESSAGE_STRING), 2);
             }
         });
     }
