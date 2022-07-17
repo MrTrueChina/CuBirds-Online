@@ -1,0 +1,13 @@
+ManifestFileVersion: 0
+CRC: 1666274779
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: game/background
+      Dependencies: {}
+    Info_1:
+      Name: game/card/back
+      Dependencies: {}
+    Info_2:
+      Name: game/card/front
+      Dependencies: {}

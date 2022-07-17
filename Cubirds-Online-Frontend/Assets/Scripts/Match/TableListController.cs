@@ -68,6 +68,12 @@ public class TableListController : MonoBehaviour
     /// </summary>
     private List<TableInfoDTO> tablesInfos = new List<TableInfoDTO>();
 
+    private void Start()
+    {
+        // 桌子列表 UI 是打开场景后就开着的，直接调用显示方法
+        Show();
+    }
+
     /// <summary>
     /// 显示面板
     /// </summary>
@@ -103,7 +109,7 @@ public class TableListController : MonoBehaviour
         PhotonEngine.Instance.Disconnect();
 
         // 打开连接场景
-        SceneManager.LoadScene("Open Scene");
+        SceneManager.LoadScene("Connect Scene");
     }
 
     /// <summary>

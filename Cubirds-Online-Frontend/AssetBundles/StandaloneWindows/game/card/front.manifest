@@ -1,0 +1,42 @@
+ManifestFileVersion: 0
+CRC: 4236969192
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 49ce68dbe08597b8d60f01f2f5dd234b
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f267fd2d8bcb1179236b6179ac5313bc
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- "Assets/AssetBundle/Game/Card/Front/\u91D1\u521A\u9E66\u9E49-\u53BB\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u4E1C\u65B9\u6728\u76AE\u5A01-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u7EFF\u5934\u9E2D-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u732B\u5934\u9E70-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u77E5\u66F4\u9E1F-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u559C\u9E4A-\u53BB\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u732B\u5934\u9E70-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u5DE8\u5634\u9E1F-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u559C\u9E4A-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u5DE8\u5634\u9E1F-\u53BB\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u77E5\u66F4\u9E1F-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u4E1C\u65B9\u6728\u76AE\u5A01-\u53BB\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u706B\u70C8\u9E1F-\u53BB\u9664\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u706B\u70C8\u9E1F-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u559C\u9E4A-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u77E5\u66F4\u9E1F-\u53BB\u9664\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u91D1\u521A\u9E66\u9E49-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u732B\u5934\u9E70-\u53BB\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u7EFF\u5934\u9E2D-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u7EFF\u5934\u9E2D-\u53BB\u9664\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u706B\u70C8\u9E1F-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u5DE8\u5634\u9E1F-\u9E1F\u7C7B\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u4E1C\u65B9\u6728\u76AE\u5A01-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+- "Assets/AssetBundle/Game/Card/Front/\u91D1\u521A\u9E66\u9E49-\u9E1F\u7FA4\u6570\u91CF\u89D2\u6807.png"
+Dependencies: []

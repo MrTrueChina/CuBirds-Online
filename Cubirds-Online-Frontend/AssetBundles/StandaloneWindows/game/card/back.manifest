@@ -1,0 +1,19 @@
+ManifestFileVersion: 0
+CRC: 1256189472
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 3a5f76ff9efa86723ba3354196c8b90c
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: f267fd2d8bcb1179236b6179ac5313bc
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- "Assets/AssetBundle/Game/Card/Back/\u6E38\u620F\u738B\u5361\u80CC.png"
+Dependencies: []
