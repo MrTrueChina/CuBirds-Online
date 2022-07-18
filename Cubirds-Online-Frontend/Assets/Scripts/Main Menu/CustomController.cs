@@ -174,7 +174,7 @@ public class CustomController : MonoBehaviour
     /// <exception cref="FileNotFoundException">当文件不存在时抛出这个异常</exception>
     /// <exception cref="FormatException">当文件不能转为 Texture2D 时抛出这个异常</exception>
     /// <returns></returns>
-    private Sprite LoadSpriteFromImageFilePath(string path)
+    public static Sprite LoadSpriteFromImageFilePath(string path)
     {
         Debug.Log("将文件 " + path + " 转为 Sprite");
 
