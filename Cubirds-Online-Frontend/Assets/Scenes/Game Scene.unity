@@ -4439,9 +4439,11 @@ MonoBehaviour:
   - image: {fileID: 983001437}
     assetBundle: game/background
     resourcesName: Tablecloth
+    customImageName: Tablecloth
   - image: {fileID: 23980255}
     assetBundle: game/background
     resourcesName: Cushion
+    customImageName: Cushion
 --- !u!1 &1180545618
 GameObject:
   m_ObjectHideFlags: 0

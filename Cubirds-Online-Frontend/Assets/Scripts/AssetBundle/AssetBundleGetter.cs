@@ -24,6 +24,11 @@ public class AssetBundleGetter : MonoBehaviour
         /// </summary>
         [Header("资源包里的文件名")]
         public string resourcesName;
+        /// <summary>
+        /// 自定义图片的文件名
+        /// </summary>
+        [Header("自定义图片的文件名")]
+        public string customImageName;
     }
 
     /// <summary>

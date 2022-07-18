@@ -204,6 +204,7 @@ MonoBehaviour:
   - image: {fileID: 1419187269}
     assetBundle: game/background
     resourcesName: Tablecloth
+    customImageName: Tablecloth
 --- !u!1 &45281943
 GameObject:
   m_ObjectHideFlags: 0

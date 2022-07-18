@@ -1,9 +1,9 @@
 ManifestFileVersion: 0
-CRC: 1256189472
+CRC: 769260268
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 3a5f76ff9efa86723ba3354196c8b90c
+    Hash: 0443d4bdda981dc293173900a4eb1f29
   TypeTreeHash:
     serializedVersion: 2
     Hash: f267fd2d8bcb1179236b6179ac5313bc
@@ -15,5 +15,5 @@ ClassTypes:
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
-- "Assets/AssetBundle/Game/Card/Back/\u6E38\u620F\u738B\u5361\u80CC.png"
+- Assets/AssetBundle/Game/Card/Back/CardBack.png
 Dependencies: []
