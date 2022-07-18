@@ -88,6 +88,24 @@ public class CustomController : MonoBehaviour
     [Header("卡背图片的 AssetBundle 资源名")]
     private string cardBackResourcesName;
 
+    private void Start()
+    {
+        Sprite cardBackSprite = null;
+
+        if (File.Exists(CUSTOM_IMAGES_PATH + cardBackImageName))
+        {
+            // 卡背的自定义图片存在，使用自定义图片作为卡背
+            cardBackSprite = LoadSpriteFromImageFilePath(CUSTOM_IMAGES_PATH + cardBackImageName);
+        }
+        else
+        {
+            // 卡背的自定义图片不存在，加载 AssetBundle 中的图片作为卡背
+            cardBackSprite = AssetBundleTools.Instance.LoadAsset<Sprite>(cardBackAssetBundleName, cardBackResourcesName);
+        }
+
+        cardBackImages.ForEach(image => image.sprite = cardBackSprite);
+    }
+
     /// <summary>
     /// 选择自定义桌布
     /// </summary>
