@@ -43,6 +43,9 @@ public class DeckController : MonoBehaviour
         // id 计数器
         int id = 0;
 
+        // 清空可能已有的卡背图片数据，防止修改自定义卡背后不生效
+        Card.ClearLoadedCardBack();
+
         // 遍历所有卡牌数据
         GameController.Instance.CardsData.cardsData.ForEach(cardData =>
         {

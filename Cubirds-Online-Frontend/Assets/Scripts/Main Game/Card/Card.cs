@@ -7,12 +7,71 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine.EventSystems;
+using System.IO;
 
 /// <summary>
 /// 卡牌组件
 /// </summary>
 public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
 {
+    #region 统一卡背部分
+
+    /// <summary>
+    /// 卡背图片所属 AssetBundle 名
+    /// </summary>
+    private static string cardBackAssetBundleName = "game/card/back";
+    /// <summary>
+    /// 卡背图片 AssetBundle 资源名
+    /// </summary>
+    private static string cardBackResourcesName = "CardBack";
+    /// <summary>
+    /// 卡背自定义图片名
+    /// </summary>
+    private static string cardBackCustomName = "CardBack";
+
+    /// <summary>
+    /// 通过自定义图片和 AssetBundle 最终加载出来的用于显示的卡背
+    /// </summary>
+    private static Sprite LoadedCardBack
+    {
+        get
+        {
+            if(loadedCardBack != null)
+            {
+                return loadedCardBack;
+            }
+
+            lock (typeof(Card))
+            {
+                if(loadedCardBack == null)
+                {
+                    if (File.Exists(CustomController.CUSTOM_IMAGES_PATH + cardBackCustomName))
+                    {
+                        // 卡背的自定义图片存在，使用自定义图片作为卡背
+                        loadedCardBack = CustomController.LoadSpriteFromImageFilePath(CustomController.CUSTOM_IMAGES_PATH + cardBackCustomName);
+                    }
+                    else
+                    {
+                        // 卡背的自定义图片不存在，加载 AssetBundle 中的图片作为卡背
+                        loadedCardBack = AssetBundleTools.Instance.LoadAsset<Sprite>(cardBackAssetBundleName, cardBackResourcesName);
+                    }
+                }
+
+                return loadedCardBack;
+            }
+        }
+    }
+    private static Sprite loadedCardBack;
+
+    /// <summary>
+    /// 清理已加载的卡背数据，防止玩家在修改后由于缓存导致的修改效果不显示
+    /// </summary>
+    public static void ClearLoadedCardBack()
+    {
+        loadedCardBack = null;
+    }
+    #endregion
+
     /// <summary>
     /// 卡牌主画布
     /// </summary>
@@ -147,6 +206,9 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
         SmallGroupNumber = cardData.smallGroupNumber;
         // 组成大鸟群需要的数量
         BigGroupNumber = cardData.bigGroupNumber;
+
+        // 卡背
+        CardBack = LoadedCardBack;
     }
 
     /// <summary>
