@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!224 &620396206 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 122681997870888984, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
-  m_PrefabInstance: {fileID: 122681998343374518}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &638894959
 GameObject:
   m_ObjectHideFlags: 0
@@ -179,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.65882355, g: 0.54509807, b: 0.54509807, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -297,7 +292,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 638894960}
-  - {fileID: 620396206}
+  - {fileID: 122681998343374519}
   - {fileID: 1922620128}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -751,5 +746,46 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3801507217271436056, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_RootOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 194.82927
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831637741158, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831927065472, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3851263831927065472, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+--- !u!224 &122681998343374519 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3801507217271436056, guid: dc7dcec38ee5b7042b5d766313c834ab, type: 3}
+  m_PrefabInstance: {fileID: 122681998343374518}
+  m_PrefabAsset: {fileID: 0}

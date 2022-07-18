@@ -17,6 +17,12 @@ public class MainMenuController : MonoBehaviour
     [SerializeField]
     [Header("规则面板")]
     private GameObject ruleCanvas;
+    /// <summary>
+    /// 设置面板
+    /// </summary>
+    [SerializeField]
+    [Header("设置面板")]
+    private GameObject settingCanvas;
 
     /// <summary>
     /// 切换到连接场景
@@ -42,6 +48,24 @@ public class MainMenuController : MonoBehaviour
     {
         mainMenuCanvas.SetActive(true);
         ruleCanvas.SetActive(false);
+    }
+
+    /// <summary>
+    /// 显示设置面板
+    /// </summary>
+    public void ShowSetting()
+    {
+        mainMenuCanvas.SetActive(false);
+        settingCanvas.SetActive(true);
+    }
+
+    /// <summary>
+    /// 关闭设置面板
+    /// </summary>
+    public void CloseSetting()
+    {
+        mainMenuCanvas.SetActive(true);
+        settingCanvas.SetActive(false);
     }
 
     /// <summary>
