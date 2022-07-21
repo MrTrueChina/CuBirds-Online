@@ -90,6 +90,18 @@ public class CustomController : MonoBehaviour
 
     private void Start()
     {
+        // 初始化卡背，桌布和桌垫用通用的自定义+热更新显示就可以了
+        InitCardBack();
+
+        // 读取是否使用桌垫的设置，控制桌面显隐
+        cushionImage.gameObject.SetActive(Convert.ToBoolean(PlayerPrefs.GetInt("UseCushion", Convert.ToInt32(true))));
+    }
+
+    /// <summary>
+    /// 初始化卡背
+    /// </summary>
+    private void InitCardBack()
+    {
         Sprite cardBackSprite = null;
 
         if (File.Exists(CUSTOM_IMAGES_PATH + cardBackImageName))
@@ -119,7 +131,14 @@ public class CustomController : MonoBehaviour
     /// </summary>
     public void SelectCustomCushion()
     {
+        // 激活桌垫物体
+        cushionImage.gameObject.SetActive(true);
+
         SelectCustomImage(new List<Image>() { cushionImage }, cushionImageName);
+
+        // 保存使用桌垫的设置
+        PlayerPrefs.SetInt("UseCushion", Convert.ToInt32(true));
+        PlayerPrefs.Save();
     }
 
     /// <summary>
@@ -231,7 +250,14 @@ public class CustomController : MonoBehaviour
     /// </summary>
     public void ClearCustomCushion()
     {
+        // 激活桌垫物体
+        cushionImage.gameObject.SetActive(true);
+
         RemoveCustomImage(new List<Image>() { cushionImage }, cushionAssetBundleName, cushionResourcesName, cushionImageName);
+
+        // 保存使用桌垫的设置
+        PlayerPrefs.SetInt("UseCushion", Convert.ToInt32(true));
+        PlayerPrefs.Save();
     }
 
     /// <summary>
@@ -259,5 +285,21 @@ public class CustomController : MonoBehaviour
         {
             File.Delete(CUSTOM_IMAGES_PATH + customImageFileName);
         }
+    }
+
+    /// <summary>
+    /// 移除桌垫
+    /// </summary>
+    public void RemoveCushion()
+    {
+        // 禁用桌垫物体
+        cushionImage.gameObject.SetActive(false);
+
+        // 保存不使用桌垫的设置
+        PlayerPrefs.SetInt("UseCushion", Convert.ToInt32(false));
+        PlayerPrefs.Save();
+
+        // 移除自定义的桌垫图片
+        RemoveCustomImage(new List<Image>() { cushionImage }, cushionAssetBundleName, cushionResourcesName, cushionImageName);
     }
 }

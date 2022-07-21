@@ -58,6 +58,12 @@ public class ShowCardInfoController : MonoBehaviour
     [Header("显示这张卡总数的文本组件")]
     private Text cardNumberText;
 
+    private void Start()
+    {
+        // 卡牌显示图片改为显示已加载卡背，这个卡背图支持自定义和热更新
+        cardPictureComponent.sprite = Card.LoadedCardBack;
+    }
+
     /// <summary>
     /// 显示卡牌信息
     /// </summary>

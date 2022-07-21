@@ -32,7 +32,7 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     /// <summary>
     /// 通过自定义图片和 AssetBundle 最终加载出来的用于显示的卡背
     /// </summary>
-    private static Sprite LoadedCardBack
+    public static Sprite LoadedCardBack
     {
         get
         {

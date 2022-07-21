@@ -1328,7 +1328,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 320.00003, y: 0}
-  m_SizeDelta: {x: 500, y: 500}
+  m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &100200267
 MonoBehaviour:
@@ -9367,7 +9367,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 294678304}
         m_TargetAssemblyTypeName: CustomController, Assembly-CSharp
-        m_MethodName: ClearCustomCushion
+        m_MethodName: RemoveCushion
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
