@@ -1,0 +1,47 @@
+# 服务器配置
+server:
+  # 使用 8080 端口
+  port: 8080
+
+# Log 相关配置
+logging:
+  # Log 等级
+  level:
+    # 默认等级设为 Debug
+    ROOT: DEBUG
+
+# Spring 配置
+spring:
+  # 数据库配置
+  datasource:
+    # 数据库驱动类，这里是 PostgreSQL 的驱动类
+    driver-class-name: org.postgresql.Driver
+    # 数据库链接，这里使用了一个本地的 5432 端口的服务器，名字是 AssetBundle-Hot-Update-Test
+    url: 
+    # 用户名
+    username: 
+    # 密码
+    password: 
+  # JPA 设置
+  jpa:
+    # 使用数据库类型：PostgreSQL
+    database: POSTGRESQL
+    # 显示 SQL
+    show-sql: true
+    # hibernate 设置
+    hibernate:
+      # 对数据库表和项目中对象不一致的处理：如果不一致在启动时立即报错
+      ddl-auto: validate
+    # 属性
+    properties:
+      # hibernate 的属性设置
+      hibernate:
+        # 数据库方言，使用 PostgreSQL 的方言
+        dialect: org.hibernate.dialect.PostgreSQL92Dialect
+
+# 本地文件相关的配置
+local-files:
+  # 本地文件存放位置的根路径，使用时需要把斜杠转为跨平台分隔符
+  local-files-root-path: files/
+  # 热更新的文件存放路径
+  hot-update-path: hotUpdate/
