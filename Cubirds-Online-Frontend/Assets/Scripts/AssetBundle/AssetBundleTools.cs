@@ -78,7 +78,7 @@ public class AssetBundleTools : MonoBehaviour
     public T LoadAsset<T>(string assetBundleName, string assetName) where T : Object
     {
         // 加载资源包
-        AssetBundle assetBundle = LoadAssetBundle(assetBundleName);
+        LoadAssetBundle(assetBundleName);
 
         // 加载资源并返回
         return loadedAssetBundle[assetBundleName].LoadAsset<T>(assetName);

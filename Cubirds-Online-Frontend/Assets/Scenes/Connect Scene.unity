@@ -4142,7 +4142,7 @@ MonoBehaviour:
   serverButtonPrefab: {fileID: 998471288115393718, guid: 4bbf3ac7347dac547a67c36aac7daf4f, type: 3}
   inputServerCanvas: {fileID: 1745495112}
   gameServerInputField: {fileID: 507905673}
-  gameServerNameInputField: {fileID: 0}
+  gameServerNameInputField: {fileID: 770948689}
   updateServerInputField: {fileID: 558779756}
 --- !u!1 &1937115654
 GameObject:

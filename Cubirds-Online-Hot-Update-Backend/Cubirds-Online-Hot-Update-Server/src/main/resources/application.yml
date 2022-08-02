@@ -12,11 +12,19 @@ logging:
 
 # Spring 配置
 spring:
+  jmx:
+    enabled: false
+  servlet:
+    multipart:
+      # 限制文件体积：不限制
+      max-file-size: -1
+      # 限制请求体积：不限制
+      max-request-size: -1
   # 数据库配置
   datasource:
     # 数据库驱动类，这里是 PostgreSQL 的驱动类
     driver-class-name: org.postgresql.Driver
-    # 数据库链接，这里使用了一个本地的 5432 端口的服务器，名字是 AssetBundle-Hot-Update-Test
+    # 数据库链接
     url: 
     # 用户名
     username: 

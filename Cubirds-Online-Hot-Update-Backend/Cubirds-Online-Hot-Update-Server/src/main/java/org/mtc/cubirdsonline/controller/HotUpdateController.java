@@ -39,7 +39,7 @@ public class HotUpdateController {
 	 * @throws IOException 
 	 * @throws IllegalStateException 
 	 */
-	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	@RequestMapping(value = "upload/upload", method = RequestMethod.POST)
 	public ResponseEntity<String> uploadAssetBundle(@RequestParam("assetBundleFile") MultipartFile assetBundleFile,
 			@RequestParam("manifestFile") MultipartFile manifestFile,
 			@RequestParam("assetBundleName") String assetBundleName, @RequestParam("displayName") String displayName,
