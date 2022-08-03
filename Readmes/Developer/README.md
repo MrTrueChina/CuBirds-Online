@@ -1,10 +1,10 @@
 # 开发者手册
 
 对于开发者，这个项目分为四个主要部分：
-1. Cubirds-Online-Common，.Net原生前后端通用内容
-2. Cubirds-Online-Frontend，Unity 的客户端
-3. Cubirds-Online-Backend，Photon5 的服务端
-4. Cubirds-Online-Hot-Update-Backend，SpringBoot 的服务端
+1. Cubirds-Online-Common，[.Net原生前后端通用内容](README_COMMON.md)
+2. Cubirds-Online-Frontend，[Unity 的客户端](README_FRONTEND.md)
+3. Cubirds-Online-Backend，[Photon5 的服务端](README_BACKEND.md)
+4. Cubirds-Online-Hot-Update-Backend，[SpringBoot 的服务端](README_HOT_UPDATE_SERVER.md)
 
 除了上述主要代码内容外还有数据库和 Postman 两个部分。
 
