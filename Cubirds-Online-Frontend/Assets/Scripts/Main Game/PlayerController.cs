@@ -598,4 +598,30 @@ public class PlayerController : MonoBehaviour
         // 所有鸟类都不能组群，返回 false
         return false;
     }
+
+    /// <summary>
+    /// 显示可以组群的提示
+    /// </summary>
+    public void ShowGroupTip()
+    {
+        // 遍历所有鸟类
+        foreach (CardType cardType in (CardType[])Enum.GetValues(typeof(CardType)))
+        {
+            // 如果玩家手里的牌可以组成这个鸟类的鸟群
+            if (CanGetGroupCardNumber(cardType) > 0)
+            {
+                // 在手牌中找出所有这个鸟类的卡，让这些卡开始闪烁
+                handCards.FindAll(c => c.CardType == cardType).ForEach(c => c.Flash());
+            }
+        }
+    }
+
+    /// <summary>
+    /// 停止显示组群提示
+    /// </summary>
+    public void StopGroupTip()
+    {
+        // 遍历所有手牌，停止闪烁
+        handCards.ForEach(c => c.StopFlash());
+    }
 }

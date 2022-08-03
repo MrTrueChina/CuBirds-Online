@@ -149,6 +149,11 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     /// </summary>
     private TweenerCore<Quaternion, Quaternion, NoOptions> rotateTween;
     /// <summary>
+    /// 闪烁的补间动画
+    /// </summary>
+    TweenerCore<Color, Color, ColorOptions> flashTween;
+
+    /// <summary>
     /// 保存显示顺序的字段
     /// </summary>
     private int displaySort;
@@ -319,6 +324,31 @@ public class Card : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler
     public void MoveToAndRotateTo(Vector3 targetPosition, Quaternion targetRoattion, Action callback = null)
     {
         MoveToAndRotateTo(targetPosition, targetRoattion, 0.5f, callback);
+    }
+
+    /// <summary>
+    /// 这张卡片开始明暗闪烁
+    /// </summary>
+    public void Flash()
+    {
+        // 设置颜色从白到灰循环动画
+        flashTween = cardPictureComponent.DOColor(Color.gray * 1.5f, 0.5f).SetLoops(-1, LoopType.Yoyo);
+    }
+
+    /// <summary>
+    /// 停止明暗闪烁
+    /// </summary>
+    public void StopFlash()
+    {
+        // 如果有闪烁动画
+        if(flashTween != null)
+        {
+            // 结束动画
+            flashTween.Kill();
+        }
+
+        // 用一个较快的动画把亮度调回去
+        cardPictureComponent.DOColor(Color.white, 0.3f);
     }
 
     public void OnPointerClick(PointerEventData eventData)

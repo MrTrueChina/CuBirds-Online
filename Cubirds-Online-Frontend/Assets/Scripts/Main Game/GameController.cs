@@ -477,6 +477,12 @@ public class GameController : MonoBehaviour
         // 发出提示
         ShowTip(CurrentPlayerIsLocalPlayer() ? localPlayerTip : otherPlayerTip);
 
+        // 如果现在是本机玩家的回合，显示玩家手中可以组群的牌的提示
+        if (CurrentPlayerIsLocalPlayer())
+        {
+            LocalPlayer.ShowGroupTip();
+        }
+
         // 交给协程进行
         makeGroupCoroutine = StartCoroutine(MakeGroupCoroutine());
     }
@@ -528,6 +534,12 @@ public class GameController : MonoBehaviour
 
         // 等待玩家完成组群操作
         yield return new WaitUntil(() => maked);
+
+        // 如果当前回合玩家是本机玩家，停止组群提示
+        if (CurrentPlayerIsLocalPlayer())
+        {
+            LocalPlayer.StopGroupTip();
+        }
 
         if (makeGroup)
         {
