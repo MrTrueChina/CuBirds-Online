@@ -363,7 +363,7 @@ public class ConnectToServerController : MonoBehaviour
             // 如果发生连接错误
             if (webRequest.result == UnityWebRequest.Result.ConnectionError)
             {
-                Debug.LogError("获取热更新版本时发生连接错误: " + webRequest.error);
+                Debug.LogWarning("获取热更新版本时发生连接错误: " + webRequest.error);
 
                 // 显示连接失败消息
                 InfoDialogController.Instance.Show("没有成功连接到热跟新服务器，跳过热更新步骤");
