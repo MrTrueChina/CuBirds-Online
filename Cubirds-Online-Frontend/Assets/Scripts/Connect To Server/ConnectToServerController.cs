@@ -145,7 +145,7 @@ public class ConnectToServerController : MonoBehaviour
         Debug.Log("开始获取服务器信息");
 
         // 显示信息对话框
-        InfoDialogController.Instance.Show("获取服务器信息");
+        InfoDialogController infoDialog = InfoDialogController.Show("获取服务器信息");
 
         // 准备一个字典树组来接收配置信息
         List<Dictionary<string, string>> serverConfigList;
@@ -175,7 +175,7 @@ public class ConnectToServerController : MonoBehaviour
         });
 
         // 关闭对话框
-        InfoDialogController.Instance.Close();
+        infoDialog.Close();
 
         // 保存到服务器配置列表里
         serverConfigs = serverConfigList;
@@ -232,7 +232,7 @@ public class ConnectToServerController : MonoBehaviour
         // 没有写名字则发出提示
         if (nameInputField.text == null || nameInputField.text.Length == 0)
         {
-            InfoDialogController.Instance.Show("请填写名称", 1);
+            InfoDialogController.Show("请填写名称", 1);
             return;
         }
 
@@ -246,7 +246,7 @@ public class ConnectToServerController : MonoBehaviour
         connectStarted = true;
 
         // 显示提示
-        InfoDialogController.Instance.Show("开始连接至" + config["name"]);
+        InfoDialogController.Show("开始连接至" + config["name"], 1);
 
         // 给计时器进行连接的时间
         connectTimer = 10;
@@ -261,7 +261,7 @@ public class ConnectToServerController : MonoBehaviour
             if (PhotonEngine.Peer.PeerState == PeerStateValue.Disconnected)
             {
                 // 显示提示
-                InfoDialogController.Instance.Show("连接失败", 1);
+                InfoDialogController.Show("连接失败", 1);
 
                 // 改为没有开始连接状态
                 connectStarted = false;
@@ -273,8 +273,8 @@ public class ConnectToServerController : MonoBehaviour
             // 如果连接状态是已连接，说明连接成功
             if (PhotonEngine.Peer.PeerState == PeerStateValue.Connected)
             {
-                // 显示提示
-                InfoDialogController.Instance.Show("连接成功", 1);
+                //// 显示提示
+                //InfoDialogController.Show("连接成功", 1);
 
                 // 获取本机玩家 ID
                 PlayerAPI.GetLocalPlayerId(localPlayerId =>
@@ -294,12 +294,12 @@ public class ConnectToServerController : MonoBehaviour
                     }, () =>
                     {
                         // 连接超时，发出信息
-                        InfoDialogController.Instance.Show("设置名称失败，请尝试重连", 2);
+                        InfoDialogController.Show("设置名称失败，请尝试重连", 2);
                     });
                 }, () =>
                 {
                     // 连接超时，发出信息
-                    InfoDialogController.Instance.Show("获取 ID 失败，请尝试重连", 2);
+                    InfoDialogController.Show("获取 ID 失败，请尝试重连", 2);
                 });
 
                 // 改为没有开始连接状态
@@ -316,7 +316,7 @@ public class ConnectToServerController : MonoBehaviour
             if (connectTimer <= 0)
             {
                 // 显示提示
-                InfoDialogController.Instance.Show("连接超时", 1);
+                InfoDialogController.Show("连接超时", 1);
 
                 // 改为没有开始连接状态
                 connectStarted = false;
@@ -366,13 +366,13 @@ public class ConnectToServerController : MonoBehaviour
                 Debug.LogWarning("获取热更新版本时发生连接错误: " + webRequest.error);
 
                 // 显示连接失败消息
-                InfoDialogController.Instance.Show("没有成功连接到热跟新服务器，跳过热更新步骤");
+                InfoDialogController connectInfoDialog = InfoDialogController.Show("没有成功连接到热跟新服务器，跳过热更新步骤");
 
                 // 等待一段时间
                 yield return new WaitForSeconds(2);
 
                 // 关闭消息
-                InfoDialogController.Instance.Close();
+                connectInfoDialog.Close();
 
                 // 调用热更新失败的回调
                 failHandler.Invoke();
@@ -506,13 +506,13 @@ public class ConnectToServerController : MonoBehaviour
         Debug.Log("更新完毕");
 
         // 发出更新完毕消息
-        InfoDialogController.Instance.Show("热更新完毕");
+        InfoDialogController hotUpdateInfoDialog = InfoDialogController.Show("热更新完毕");
 
         // 等待消息显示
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
 
         // 关闭消息
-        InfoDialogController.Instance.Close();
+        hotUpdateInfoDialog.Close();
 
         // 执行成功回调
         successHandler.Invoke();

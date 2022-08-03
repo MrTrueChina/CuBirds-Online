@@ -173,19 +173,19 @@ public class CustomController : MonoBehaviour
             }
             catch (FileNotFoundException)
             {
-                InfoDialogController.Instance.Show("文件不存在", 1.5f);
+                InfoDialogController.Show("文件不存在", 1.5f);
                 return;
             }
             catch (FormatException)
             {
-                InfoDialogController.Instance.Show("无法解析文件", 1.5f);
+                InfoDialogController.Show("无法解析文件", 1.5f);
                 return;
             }
 
             // 没有读取到图片，不管什么原因都不能进行下去
             if (customSprite == null)
             {
-                InfoDialogController.Instance.Show("没能读取到文件", 1.5f);
+                InfoDialogController.Show("没能读取到文件", 1.5f);
                 return;
             }
 

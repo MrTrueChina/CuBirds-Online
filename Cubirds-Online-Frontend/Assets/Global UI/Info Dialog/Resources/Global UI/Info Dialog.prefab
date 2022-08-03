@@ -394,3 +394,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rectTransform: {fileID: 3851263831927065472}
   text: {fileID: 3851263831637741159}
+  contentSizeFitter: {fileID: 3801507218298572074}
