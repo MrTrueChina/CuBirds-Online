@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "a616f99a-ea8e-4a53-afc2-46113fc14776",
+		"name": "Cubirds-Online-Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3875468"
+	},
+	"item": [
+		{
+			"name": "Upload Hot Update AssetBundles",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-XSRF-TOKEN",
+						"value": "{{xsrf-token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "assetBundleFile",
+							"description": "AssetBundle 文件",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "manifestFile",
+							"description": "AssetBundle.manifest 文件",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8080/hotUpdate/upload/upload?assetBundleName=game/background&displayName=背景-红桌布-小蓝摔倒",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"hotUpdate",
+						"upload",
+						"upload"
+					],
+					"query": [
+						{
+							"key": "assetBundleName",
+							"value": "game/background",
+							"description": "资源包名称，用于区分资源包"
+						},
+						{
+							"key": "displayName",
+							"value": "背景-红桌布-小蓝摔倒",
+							"description": "资源包显示名称，仅作为方便区分使用"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"xsrf-token\", decodeURIComponent(pm.cookies.get(\"XSRF-TOKEN\")));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/hotUpdate/check",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"hotUpdate",
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download AssetBundle",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"xsrf-token\", decodeURIComponent(pm.cookies.get(\"XSRF-TOKEN\")));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/hotUpdate/downloadAssetBundle?assetBundleName=game/background",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"hotUpdate",
+						"downloadAssetBundle"
+					],
+					"query": [
+						{
+							"key": "assetBundleName",
+							"value": "game/background"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download Manifest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"xsrf-token\", decodeURIComponent(pm.cookies.get(\"XSRF-TOKEN\")));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "127.0.0.1:8080/hotUpdate/downloadManifest?assetBundleName=game/background",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8080",
+					"path": [
+						"hotUpdate",
+						"downloadManifest"
+					],
+					"query": [
+						{
+							"key": "assetBundleName",
+							"value": "game/background"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
