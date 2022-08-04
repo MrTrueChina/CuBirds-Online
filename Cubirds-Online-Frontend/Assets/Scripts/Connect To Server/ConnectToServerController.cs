@@ -16,6 +16,10 @@ public class ConnectToServerController : MonoBehaviour
     /// </summary>
     private const string GET_SERVER_CONFIG_URL = "https://gitcode.net/M_t_C/Get-Config-From-Github-Development-And-Test/-/raw/main/Config/CO-Test-Config.json";
     /// <summary>
+    /// 在本地写死的服务器配置，用于 WebGL 端
+    /// </summary>
+    private const string FIXED_SERVER_CONFIG = "[{\"name\":\"局域网测试服务器\",\"type\":\"IP\",\"gameServer\":\"wss://192.168.31.129:4531\",\"gameServerName\":\"Cu-Birds-Online\", \"hotUpdateServer\":\"http://192.168.31.129:8080\"},{\"name\":\"本地测试服务器\",\"type\":\"IP\",\"gameServer\":\"wss://localhost:4531\",\"gameServerName\":\"Cu-Birds-Online\", \"hotUpdateServer\":\"http://127.0.0.1:8080\"}]";
+    /// <summary>
     /// 检测热更新版本的 URL 中缀
     /// </summary>
     private const string CHECK_UPDATE_URL_INFIX = "/hotUpdate/check";
@@ -132,17 +136,25 @@ public class ConnectToServerController : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(GetServerConfig(GET_SERVER_CONFIG_URL));
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        // 编辑器和 windows 从 git 上的配置文件获取服务器列表
+        StartCoroutine(GetServerConfigWin(GET_SERVER_CONFIG_URL));
+#elif UNITY_WEBGL
+        // WebGL 版直接用固定的，因为 WebGL 本身就是在服务器主机的，服务器如果改变了 WebGL 也一定会改，不存在留在玩家电脑上无法更新的情况
+        GetServerConfigWebGL();
+#else
+        StartCoroutine(GetServerConfigWin(GET_SERVER_CONFIG_URL));
+#endif
     }
 
     #region 获取服务器配置部分
     /// <summary>
-    /// 获取服务器配置的协程
+    /// Windows 和 Unity编辑器 平台获取服务器配置的协程
     /// </summary>
     /// <returns></returns>
-    private IEnumerator GetServerConfig(string url)
+    private IEnumerator GetServerConfigWin(string url)
     {
-        Debug.Log("开始获取服务器信息");
+        Debug.Log("开始获取 Windows 平台的服务器信息");
 
         // 显示信息对话框
         InfoDialogController infoDialog = InfoDialogController.Show("获取服务器信息");
@@ -183,7 +195,20 @@ public class ConnectToServerController : MonoBehaviour
         // 显示服务器按钮
         ShowServerButtons();
     }
-    #endregion
+    /// <summary>
+    /// WebGL 平台获取服务器配置的方法
+    /// </summary>
+    private void GetServerConfigWebGL()
+    {
+        Debug.Log("开始获取 WebGL 平台的服务器信息");
+
+        // 保存到服务器配置列表里
+        serverConfigs = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(FIXED_SERVER_CONFIG);
+
+        // 显示服务器按钮
+        ShowServerButtons();
+    }
+#endregion
 
     /// <summary>
     /// 显示选择连接服务器的按钮
@@ -222,7 +247,7 @@ public class ConnectToServerController : MonoBehaviour
         inputServerCanvas.SetActive(true);
     }
 
-    #region 连接到游戏服务器部分
+#region 连接到游戏服务器部分
     /// <summary>
     /// 进行连接
     /// </summary>
@@ -287,10 +312,15 @@ public class ConnectToServerController : MonoBehaviour
                     // 设置玩家名称
                     PlayerAPI.SetPLayerName(nameInputField.text, success =>
                     {
-                        // 进行热更新，在热更新后切换场景
+#if !UNITY_EDITOR && UNITY_WEBGL
+                        // WebGL 版所有内容都来自服务器并不需要热更新
+                        SceneManager.LoadScene("Match Scene");
+#else
+                        // 其他版本需要进行热更新，在热更新后切换场景
                         StartCoroutine(HotUpdate(conenctServerConfig["hotUpdateServer"],
                             () => { SceneManager.LoadScene("Match Scene"); },
                             () => { SceneManager.LoadScene("Match Scene"); }));
+#endif
                     }, () =>
                     {
                         // 连接超时，发出信息
@@ -333,7 +363,7 @@ public class ConnectToServerController : MonoBehaviour
         SceneManager.LoadScene("Open Scene");
     }
 
-    #region 热更新部分
+#region 热更新部分
     /// <summary>
     /// 热更新的协程
     /// </summary>
@@ -573,5 +603,5 @@ public class ConnectToServerController : MonoBehaviour
             }
         }
     }
-    #endregion
+#endregion
 }
