@@ -90,6 +90,11 @@ public class CustomController : MonoBehaviour
 
     private void Start()
     {
+#if !UNITY_EDITOR && UNITY_WEBGL
+        // WebGL 没有自定义功能，直接 return
+        return;
+#endif
+
         // 初始化卡背，桌布和桌垫用通用的自定义+热更新显示就可以了
         InitCardBack();
 

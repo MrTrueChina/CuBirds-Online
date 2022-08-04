@@ -92,6 +92,17 @@ public class MainMenuController : MonoBehaviour
         customCanvas.SetActive(false);
     }
 
+    private void Start()
+    {
+#if UNITY_EDITOR
+        Debug.Log("Unity ±à¼­Æ÷");
+#elif UNITY_WEBGL
+        Debug.Log("Unity WebGL");
+#elif UNITY_STANDALONE_WIN
+        Debug.Log("Unity Windows");
+#endif
+    }
+
     /// <summary>
     /// ÍË³öÓÎÏ·
     /// </summary>

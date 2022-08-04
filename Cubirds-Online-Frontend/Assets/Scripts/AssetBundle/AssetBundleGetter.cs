@@ -41,6 +41,12 @@ public class AssetBundleGetter : MonoBehaviour
 
     private void Start()
     {
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        // EDITOR 需要优先于 WEBGL，因为没有 EDITOR 的情况下是按照发布设置处理的
+#elif UNITY_WEBGL
+        // 如果是 WebGL 端，WebGL 端没有自定义功能，并且不需要热更新功能，直接使用默认图片
+        return;
+#endif
         // 遍历映射表
         imageIndexList.ForEach(imageIndex =>
         {

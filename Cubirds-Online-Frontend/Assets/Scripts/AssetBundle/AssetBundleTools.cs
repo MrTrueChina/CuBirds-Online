@@ -55,8 +55,11 @@ public class AssetBundleTools : MonoBehaviour
     {
         get
         {
-#if UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
             return "StandaloneWindows";
+#elif UNITY_WEBGL
+            // WebGL 没有热更新功能，不需要加载资源包，这里就留空了
+            return "";
 #else
             return "";
 #endif
