@@ -169,7 +169,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_Font: {fileID: 12800000, guid: 165c6b765581cfa4c82d3b580f3f0d57, type: 3}
     m_FontSize: 48
     m_FontStyle: 0
     m_BestFit: 0
@@ -392,6 +392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5c73777db814784798a948535669a86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rootGameObject: {fileID: 0}
   rectTransform: {fileID: 3851263831927065472}
   text: {fileID: 3851263831637741159}
-  contentSizeFitter: {fileID: 3801507218298572074}
