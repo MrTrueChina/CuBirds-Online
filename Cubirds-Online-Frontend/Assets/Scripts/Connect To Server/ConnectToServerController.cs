@@ -249,6 +249,20 @@ public class ConnectToServerController : MonoBehaviour
 
 #region 连接到游戏服务器部分
     /// <summary>
+    /// 连接到手输服务器
+    /// </summary>
+    public void StartConnectToInput()
+    {
+        StartConnect(new Dictionary<string, string>() {
+            { "name", "自定义服务器" },
+            { "type", "IP" },
+            { "gameServer", gameServerInputField.text },
+            { "gameServerName", gameServerNameInputField.text },
+            { "hotUpdateServer", updateServerInputField.text }
+        });
+    }
+
+    /// <summary>
     /// 进行连接
     /// </summary>
     /// <param name="config"></param>

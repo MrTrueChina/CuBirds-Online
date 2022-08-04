@@ -1565,7 +1565,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u6E38\u620F\u670D\u52A1\u5668"
+  m_Text: "\u670D\u52A1\u5668\u5730\u5740"
 --- !u!222 &665119852
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2988,9 +2988,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ConnectToServer, Assembly-CSharp
-        m_MethodName: StartConnectByNet
+      - m_Target: {fileID: 1922764645}
+        m_TargetAssemblyTypeName: ConnectToServerController, Assembly-CSharp
+        m_MethodName: StartConnectToInput
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
