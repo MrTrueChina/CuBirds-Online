@@ -4,7 +4,7 @@
 
 ## 获取 PhotonServer
 
-在 Photon 官方获取 PhotonServer https://www.photonengine.com/en-US/sdks#server-sdkserverserver，解压后放到合适的位置。
+[在 Photon 官方获取 PhotonServer](https://www.photonengine.com/en-US/sdks#server-sdkserverserver)，解压后放到合适的位置。
 
 Photon 免费提供较少的连接数量，如果需要更多的连接数量请自行获取更高级的许可证。
 
