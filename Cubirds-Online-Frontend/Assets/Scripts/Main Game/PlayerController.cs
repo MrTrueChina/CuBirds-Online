@@ -624,4 +624,35 @@ public class PlayerController : MonoBehaviour
         // 遍历所有手牌，停止闪烁
         handCards.ForEach(c => c.StopFlash());
     }
+
+    /// <summary>
+    /// 判断这个玩家是否即将获胜
+    /// </summary>
+    public bool IsAboutToWin()
+    {
+        // 创建一个字典来存储手中鸟群牌的数量
+        Dictionary<CardType, int> groupCardTypeAndNumber = new Dictionary<CardType, int>();
+
+        // 遍历所有鸟类
+        foreach (CardType cardType in (CardType[])Enum.GetValues(typeof(CardType)))
+        {
+            // 把这个鸟类和鸟群卡中这个鸟类的卡的数量存入字典
+            groupCardTypeAndNumber.Add(cardType, GroupCards.Count(card => card.CardType == cardType));
+        }
+
+        // 如果数量超过 0 的种类有 5 个，也就是说玩家已经收集到了至少 5 种牌，玩家只要再收集两张牌就会获胜，视为即将获胜
+        if (groupCardTypeAndNumber.Count(pair => pair.Value > 0) >= 5)
+        {
+            return true;
+        }
+
+        // 如果数量达到 2 的种类有 2 个，也就是说玩家已经将至少两种牌收集了至少两张，玩家只要把这两种牌补齐到三张就会获胜，此时他也只需要最多两张牌就会获胜，视为即将获胜
+        if(groupCardTypeAndNumber.Count(pair => pair.Value >= 2) >= 2)
+        {
+            return true;
+        }
+
+        // 不符合即将获胜条件，返回 false
+        return false;
+    }
 }

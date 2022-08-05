@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 主菜单控制器
+/// </summary>
 public class MainMenuController : MonoBehaviour
 {
     /// <summary>
@@ -29,6 +32,12 @@ public class MainMenuController : MonoBehaviour
     [SerializeField]
     [Header("自定义面板")]
     private GameObject customCanvas;
+
+    private void Start()
+    {
+        // 播放通常 bgm
+        BackgroundMusicPlayer.Instance.PlayNormalBGM();
+    }
 
     /// <summary>
     /// 切换到连接场景
@@ -90,17 +99,6 @@ public class MainMenuController : MonoBehaviour
     {
         mainMenuCanvas.SetActive(true);
         customCanvas.SetActive(false);
-    }
-
-    private void Start()
-    {
-#if UNITY_EDITOR
-        Debug.Log("Unity 编辑器");
-#elif UNITY_WEBGL
-        Debug.Log("Unity WebGL");
-#elif UNITY_STANDALONE_WIN
-        Debug.Log("Unity Windows");
-#endif
     }
 
     /// <summary>

@@ -548,6 +548,9 @@ public class GameController : MonoBehaviour
             // 通知这个玩家进行组群
             players.Find(p => p.Id == playerId).MakeGroup(cardType, () =>
             {
+                // 组群完成后进行 bgm 的调整
+                BGMUpdate();
+
                 // 组群完成后执行胜利判断阶段
                 WinCheck();
             });
@@ -558,6 +561,50 @@ public class GameController : MonoBehaviour
 
             // 立刻进行空手判断阶段
             EmptyHandCheck();
+        }
+    }
+
+    /// <summary>
+    /// 根据对局情况调整播放的 BGM
+    /// </summary>
+    private void BGMUpdate()
+    {
+        if (LocalPlayer.IsAboutToWin())
+        {
+            // 如果本机玩家即将获胜
+
+            if (players.Count(player => player.IsAboutToWin()) > 1)
+            {
+                // 所有玩家中超过一人即将获胜，即有其他玩家也即将获胜
+
+                // 播放激战 bgm
+                BackgroundMusicPlayer.Instance.PlayFierceBGM();
+            }
+            else
+            {
+                // 所有玩家中只有一人即将获胜，即只有本机玩家即将获胜
+
+                // 播放优势 bgm
+                BackgroundMusicPlayer.Instance.PlayAdvantageBGM();
+            }
+        }
+        else
+        {
+            // 如果本机玩家离胜利还远
+            if(players.Count(player => player.IsAboutToWin()) == 0)
+            {
+                // 所有玩家中没有一个人即将获胜，即所有玩家都离胜利还远
+
+                // 播放通常 bgm
+                BackgroundMusicPlayer.Instance.PlayNormalBGM();
+            }
+            else
+            {
+                // 所有玩家中有至少一人即将获胜，即有其他玩家即将获胜
+
+                // 播放劣势 bgm
+                BackgroundMusicPlayer.Instance.PlayInferiorityBGM();
+            }
         }
     }
 
@@ -598,6 +645,9 @@ public class GameController : MonoBehaviour
 
             // 显示胜利信息
             ShowWinInfo(new List<PlayerController>() { CurrentTrunPlayre });
+
+            // bgm 回到通常 bgm
+            BackgroundMusicPlayer.Instance.PlayNormalBGM();
 
             // 之后不进行其他操作了，流程结束
         }
