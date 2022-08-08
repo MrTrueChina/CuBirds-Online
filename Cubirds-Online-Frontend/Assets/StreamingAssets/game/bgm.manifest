@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 1994969901
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 229d060e4edc6d01b1372a2f04f55b33
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 9a2ca7bdbd1871f7131daf57de908e0c
+HashAppended: 0
+ClassTypes:
+- Class: 83
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AssetBundle/Game/Bgm/Inferiority Bgm.ogg
+- Assets/AssetBundle/Game/Bgm/Advantage Bgm.ogg
+- Assets/AssetBundle/Game/Bgm/Normal Bgm.ogg
+- Assets/AssetBundle/Game/Bgm/Fierce Bgm.ogg
+Dependencies: []

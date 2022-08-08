@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 3139871045
+CRC: 1286582285
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -10,4 +10,7 @@ AssetBundleManifest:
       Dependencies: {}
     Info_2:
       Name: game/card/front
+      Dependencies: {}
+    Info_3:
+      Name: game/bgm
       Dependencies: {}
