@@ -73,11 +73,43 @@ public class BackgroundMusicPlayer : MonoBehaviour
     private AudioSource fierceAudioSource;
 
     /// <summary>
+    /// BGM 资源包名
+    /// </summary>
+    [SerializeField]
+    [Header("BGM 资源包名")]
+    private string bgmAssetBundleName;
+
+    /// <summary>
+    /// 通常 BGM 资源包文件名
+    /// </summary>
+    [SerializeField]
+    [Header("通常 BGM 资源包文件名")]
+    private string normalBgmAssetBundleName;
+    /// <summary>
+    /// 优势 BGM 资源包文件名
+    /// </summary>
+    [SerializeField]
+    [Header("优势 BGM 资源包文件名")]
+    private string advantageBgmAssetBundleName;
+    /// <summary>
+    /// 劣势 BGM 资源包文件名
+    /// </summary>
+    [SerializeField]
+    [Header("劣势 BGM 资源包文件名")]
+    private string inferiorityBgmAssetBundleName;
+    /// <summary>
+    /// 激烈 BGM 资源包文件名
+    /// </summary>
+    [SerializeField]
+    [Header("激烈 BGM 资源包文件名")]
+    private string fierceBgmAssetBundleName;
+
+    /// <summary>
     /// 播放通常 BGM
     /// </summary>
     public void PlayNormalBGM()
     {
-        StartAudioSourcePlay(normalAudioSource);
+        StartAudioSourcePlay(normalAudioSource, normalBgmAssetBundleName);
     }
 
     /// <summary>
@@ -85,7 +117,7 @@ public class BackgroundMusicPlayer : MonoBehaviour
     /// </summary>
     public void PlayAdvantageBGM()
     {
-        StartAudioSourcePlay(advantageAudioSource);
+        StartAudioSourcePlay(advantageAudioSource, advantageBgmAssetBundleName);
     }
 
     /// <summary>
@@ -93,7 +125,7 @@ public class BackgroundMusicPlayer : MonoBehaviour
     /// </summary>
     public void PlayInferiorityBGM()
     {
-        StartAudioSourcePlay(inferiorityAudioSource);
+        StartAudioSourcePlay(inferiorityAudioSource, inferiorityBgmAssetBundleName);
     }
 
     /// <summary>
@@ -101,14 +133,15 @@ public class BackgroundMusicPlayer : MonoBehaviour
     /// </summary>
     public void PlayFierceBGM()
     {
-        StartAudioSourcePlay(fierceAudioSource);
+        StartAudioSourcePlay(fierceAudioSource, fierceBgmAssetBundleName);
     }
 
     /// <summary>
     /// 启动指定音源的播放
     /// </summary>
     /// <param name="playAudioSource"></param>
-    private void StartAudioSourcePlay(AudioSource playAudioSource)
+    /// <param name="audioClipAssetName">音频在 AssetBundle 里的文件名</param>
+    private void StartAudioSourcePlay(AudioSource playAudioSource, string audioClipAssetName)
     {
         // 把音源合并成列表，便于后续遍历
         List<AudioSource> audioSources = new List<AudioSource>() { normalAudioSource, advantageAudioSource, inferiorityAudioSource, fierceAudioSource };
@@ -123,6 +156,9 @@ public class BackgroundMusicPlayer : MonoBehaviour
                 // 如果这个音源没在播放
                 if (!audioSource.isPlaying)
                 {
+                    // 从 AssetBundle 里加载音频设置给这个音源
+                    audioSource.clip = AssetBundleTools.Instance.LoadAsset<AudioClip>(bgmAssetBundleName, audioClipAssetName);
+
                     // 渐变把音量拉满
                     audioSource.DOFade(1, 2);
 

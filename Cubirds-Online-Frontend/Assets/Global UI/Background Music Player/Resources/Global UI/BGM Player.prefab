@@ -436,3 +436,8 @@ MonoBehaviour:
   advantageAudioSource: {fileID: 2922703955940144737}
   inferiorityAudioSource: {fileID: 2922703955940144736}
   fierceAudioSource: {fileID: 2922703955940144743}
+  bgmAssetBundleName: game/bgm
+  normalBgmAssetBundleName: Normal Bgm
+  advantageBgmAssetBundleName: Advantage Bgm
+  inferiorityBgmAssetBundleName: Inferiority Bgm
+  fierceBgmAssetBundleName: Fierce Bgm
