@@ -57,7 +57,7 @@ public partial class PhotonEngine : MonoBehaviour, IPhotonPeerListener
         Debug.LogFormat("连接 {0} 的服务器 {1}", serverAddress, serverId);
 
         // 创建客户端实例，参数是负责接收消息的类、连接方式
-        Peer = new PhotonPeer(Instance, ConnectionProtocol.Udp);
+        Peer = new PhotonPeer(Instance, ConnectionProtocol.Tcp);
 
         // 进行连接
         Peer.Connect(serverAddress, serverId);
