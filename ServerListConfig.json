@@ -1,3 +1,4 @@
 [
-    {"name":"默认服务器","type":"IP","gameServer":"http://121.37.183.161:4269","gameServerName":"Cu-Birds-Online", "hotUpdateServer":"http://121.37.183.161:8265"}
+    {"name":"正式版服务器","type":"IP","gameServer":"http://121.37.183.161:4269","gameServerName":"Cu-Birds-Online", "hotUpdateServer":"http://121.37.183.161:8265"},
+    {"name":"本地测试服务器（仅用于开发调试，通常情况下连不上）","type":"IP","gameServer":"http://127.0.0.1:5432","gameServerName":"Cu-Birds-Online", "hotUpdateServer":"http://127.0.0.1:8080"}
 ]
