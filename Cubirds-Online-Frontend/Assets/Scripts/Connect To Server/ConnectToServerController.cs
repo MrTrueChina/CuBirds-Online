@@ -14,7 +14,7 @@ public class ConnectToServerController : MonoBehaviour
     /// <summary>
     /// 获取服务器配置列表的 URL
     /// </summary>
-    private const string GET_SERVER_CONFIG_URL = "https://gitcode.net/M_t_C/Get-Config-From-Github-Development-And-Test/-/raw/main/Config/CO-Test-Config.json";
+    private const string GET_SERVER_CONFIG_URL = "https://gitcode.net/M_t_C/CuBirds-Online/-/raw/main/ServerListConfig.json";
     /// <summary>
     /// 在本地写死的服务器配置，用于 WebGL 端
     /// </summary>
